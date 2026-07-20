@@ -18,7 +18,7 @@
     "@astrojs/mdx": "^3.1.8",
     "@astrojs/sitemap": "^3.2.1",
     "@astrojs/partytown": "^2.1.2",
-    "@astrojs/netlify": "^5.5.4",
+    "@astrojs/vercel": "latest",
     "tailwindcss": "^3.4.14",
     "sharp": "^0.33.5",
     "zod": "^3.23.8"
