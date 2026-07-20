@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { canonicalFor, faqPage } from '../lib/seo';
+
+const params = Astro.url.searchParams;
+const defaultSegment = params.get('type') === 'investment' ? 'investment' : '';
+
+const faqs = [
+  {
+    question: 'What is your cancellation policy?',
+    answer:
+      'Each villa lists both a non-refundable rate and a free-cancellation rate side by side — choose whichever suits your plans when you book.',
+  },
+  {
+    question: 'Do you arrange an airport transfer?',
+    answer: 'Yes — a complimentary airport transfer is included when you book directly with us.',
+  },
+  {
+    question: 'Is there construction near the villas?',
+    answer:
+      "Parts of the estate are still being built, typically 8am–5pm. Every villa page discloses this honestly, and we'll point you to the quietest option for your dates.",
+  },
+  {
+    question: 'How do I pay?',
+    answer: 'Payment is handled securely through our booking engine at the time of reservation.',
+  },
+];
+---
+
+<BaseLayout
+  title="Contact | Anjuna Bay"
+  description="Message us on WhatsApp or send an enquiry — we usually reply within minutes."
+  canonicalUrl={canonicalFor('/contact')}
+  jsonLd={faqPage(faqs)}
+>
+  <div class="container-content pb-section pt-32 md:pt-40">
+    <SectionHeading eyebrow="Get in touch" heading="Enquire" />
+    <p class="mt-5 max-w-xl text-ink">
+      For a fast reply, message us on WhatsApp. For anything else — including property and
+      investment enquiries — use the form below.
+    </p>
+    <div class="mt-6">
+      <WhatsAppButton variant="button" />
+    </div>
+
+    <div class="mt-14 grid grid-cols-1 gap-16 lg:grid-cols-3">
+      <div class="lg:col-span-2">
+        <EnquiryForm defaultSegment={defaultSegment} />
+      </div>
+
+      <div>
+        <p class="eyebrow mb-4">Frequently asked</p>
+        <dl class="space-y-6">
+          {
+            faqs.map((f) => (
+              <div>
+                <dt class="text-sm font-medium text-ink">{f.question}</dt>
+                <dd class="mt-1.5 text-sm leading-relaxed text-muted">{f.answer}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

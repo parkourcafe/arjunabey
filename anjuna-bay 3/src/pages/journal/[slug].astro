@@ -1,0 +1,75 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import VillaCard from '../../components/VillaCard.astro';
+import { article, breadcrumbList, canonicalFor } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('journal');
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const d = post.data;
+const { Content } = await post.render();
+
+const relatedVillas = (
+  await Promise.all(d.relatedVillas.map((slug) => getEntry('villas', slug)))
+).filter((v) => v && v.data.status === 'live');
+
+const canonicalUrl = canonicalFor(`/journal/${post.slug}`);
+const dateLabel = d.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+const jsonLd = [
+  article({
+    title: d.title,
+    description: d.excerpt,
+    imageUrl: d.heroImage.src,
+    author: d.author,
+    datePublished: d.date.toISOString(),
+    canonicalUrl,
+  }),
+  breadcrumbList([
+    { name: 'Home', url: canonicalFor('/') },
+    { name: 'Journal', url: canonicalFor('/journal') },
+    { name: d.title, url: canonicalUrl },
+  ]),
+];
+---
+
+<BaseLayout
+  title={d.seo?.title ?? `${d.title} | Anjuna Bay Journal`}
+  description={d.seo?.description ?? d.excerpt}
+  canonicalUrl={canonicalUrl}
+  jsonLd={jsonLd}
+  transparentHeader={true}
+>
+  <div class="relative h-[50vh] min-h-[340px] overflow-hidden">
+    <img src={d.heroImage.src} alt={d.title} class="absolute inset-0 h-full w-full object-cover" />
+    <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" aria-hidden="true"></div>
+    <div class="container-content relative z-10 flex h-full flex-col justify-end pb-14 text-paper">
+      <p class="eyebrow mb-3 text-paper/80">{d.category} · {dateLabel}</p>
+      <h1 class="max-w-2xl font-serif text-h1 font-medium">{d.title}</h1>
+    </div>
+  </div>
+
+  <div class="container-content section">
+    <div class="prose-anjuna max-w-prose">
+      <Content />
+    </div>
+
+    {
+      relatedVillas.length > 0 && (
+        <div class="mt-16">
+          <SectionHeading eyebrow="Stay for it" heading="Villas to match" />
+          <div class="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {relatedVillas.map((v) => v && <VillaCard villa={v} />)}
+          </div>
+        </div>
+      )
+    }
+
+    <a href="/book" class="btn-primary mt-16 inline-flex" data-track="start_booking">Reserve</a>
+  </div>
+</BaseLayout>

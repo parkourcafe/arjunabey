@@ -1,0 +1,49 @@
+---
+/**
+ * StickyBookingBar — mobile-only persistent CTA on villa pages (docs/BUILD.md
+ * §9.3). Mirrors RateBlock's Guesty→WhatsApp fallback so the CTA is never dead.
+ */
+import { bookingLink, hasGuestyBooking } from '../lib/guesty';
+import { whatsappLink } from '../lib/whatsapp';
+
+export interface Props {
+  landmarkName: string;
+  guestyUnitId: string | null;
+  ratePublic: number | null;
+  currency: string;
+  /** Off-plan / unmandated villa — never bookable (CLAUDE.md rule 7). */
+  offPlan?: boolean;
+}
+
+const { landmarkName, guestyUnitId, ratePublic, currency, offPlan = false } = Astro.props;
+const currencySymbol = currency === 'USD' ? '$' : `${currency} `;
+const guestyHref = bookingLink(guestyUnitId);
+const showGuestyCta = hasGuestyBooking(guestyUnitId) && guestyHref;
+const waHref = whatsappLink({ villa: landmarkName });
+const cta = showGuestyCta ? guestyHref : waHref;
+---
+
+{
+  cta && (
+    <div class="fixed inset-x-0 bottom-0 z-30 flex items-center justify-between gap-4 border-t border-hairline bg-paper/98 px-5 py-3 backdrop-blur lg:hidden">
+      <p class="text-sm text-ink">
+        {offPlan ? (
+          'Coming soon'
+        ) : ratePublic ? (
+          <>
+            <span class="font-serif text-lg">
+              {currencySymbol}
+              {ratePublic}
+            </span>
+            <span class="text-muted"> / night</span>
+          </>
+        ) : (
+          'Enquire for rates'
+        )}
+      </p>
+      <a href={cta} class="btn-primary" data-track="start_booking" data-villa={landmarkName}>
+        {offPlan ? 'Register interest' : showGuestyCta ? 'Reserve' : 'WhatsApp us'}
+      </a>
+    </div>
+  )
+}

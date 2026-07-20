@@ -1,0 +1,129 @@
+---
+/**
+ * RateBlock — price, terms, and the primary booking CTA for a villa page.
+ * Free-cancel sits beside non-refundable (never hide the flexible option —
+ * 01_Promotion_Strategy_RU.md §6). Never renders ratePublic below the OTA
+ * price (rate-parity rule, CLAUDE.md #2) — that guarantee lives in content
+ * review, not in code, so the villa's frontmatter comment flags it (see
+ * src/content/villas/*.mdx TODOs).
+ *
+ * Booking CTA: Guesty link when guestyUnitId + PUBLIC_GUESTY_BOOKING_URL are
+ * both configured; otherwise falls back to WhatsApp — never a dead button
+ * (CLAUDE.md rule 3 / src/lib/guesty.ts).
+ */
+import { bookingLink, hasGuestyBooking } from '../lib/guesty';
+import WhatsAppButton from './WhatsAppButton.astro';
+
+export interface Props {
+  landmarkName: string;
+  guestyUnitId: string | null;
+  ratePublic: number | null;
+  freeCancelRate: number | null;
+  currency: string;
+  includes: string[];
+  /** Off-plan / unmandated villa — never bookable (CLAUDE.md rule 7). */
+  offPlan?: boolean;
+}
+
+const {
+  landmarkName,
+  guestyUnitId,
+  ratePublic,
+  freeCancelRate,
+  currency,
+  includes,
+  offPlan = false,
+} = Astro.props;
+
+const currencySymbol = currency === 'USD' ? '$' : `${currency} `;
+const guestyHref = bookingLink(guestyUnitId);
+const showGuestyCta = hasGuestyBooking(guestyUnitId) && guestyHref;
+---
+
+{
+  offPlan ? (
+    <div class="border border-hairline bg-paper p-6 md:p-8" id="rate">
+      <p class="eyebrow mb-5 text-clay">Coming soon</p>
+      <p class="font-serif text-2xl text-ink">Not yet mandated for booking.</p>
+      <p class="mt-4 text-sm leading-relaxed text-muted">
+        {landmarkName} is still completing handover, furnishing and licensing. We'll open it for
+        reservations once a signed owner mandate is confirmed — register your interest and we'll
+        tell you first.
+      </p>
+      <div class="mt-6">
+        <WhatsAppButton
+          villa={landmarkName}
+          variant="button"
+          class="w-full"
+          label="Register interest"
+        />
+      </div>
+    </div>
+  ) : (
+    <div class="border border-hairline bg-paper p-6 md:p-8" id="rate">
+      <p class="eyebrow mb-5">Rate &amp; terms</p>
+
+      {
+    ratePublic ? (
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="border border-hairline p-4">
+          <p class="text-xs text-muted">Non-refundable</p>
+          <p class="mt-1 font-serif text-2xl text-ink">
+            {currencySymbol}
+            {ratePublic}
+            <span class="text-sm font-sans text-muted"> / night</span>
+          </p>
+        </div>
+        {freeCancelRate && (
+          <div class="border border-ocean/40 p-4">
+            <p class="text-xs text-ocean">Free cancellation</p>
+            <p class="mt-1 font-serif text-2xl text-ink">
+              {currencySymbol}
+              {freeCancelRate}
+              <span class="text-sm font-sans text-muted"> / night</span>
+            </p>
+          </div>
+        )}
+      </div>
+    ) : (
+      <p class="text-sm text-muted">
+        Rates for {landmarkName} are confirmed on enquiry — message us and we'll come back with
+        availability for your dates.
+      </p>
+    )
+  }
+
+  {
+    includes.length > 0 && (
+      <ul class="mt-5 space-y-1.5 text-sm text-ink">
+        {includes.map((item) => (
+          <li class="flex items-center gap-2">
+            <span class="h-1 w-1 shrink-0 bg-clay" aria-hidden="true" />
+            {item}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+    {
+      showGuestyCta ? (
+        <a href={guestyHref} class="btn-primary flex-1" data-track="start_booking" data-villa={landmarkName}>
+          Reserve
+        </a>
+      ) : (
+        <WhatsAppButton villa={landmarkName} variant="button" class="flex-1" />
+      )
+    }
+  </div>
+  {
+    !showGuestyCta && (
+      <p class="mt-3 text-xs text-muted">
+        Availability isn't live here yet — message us on WhatsApp and we'll confirm your dates directly.
+      </p>
+    )
+  }
+    </div>
+  )
+}

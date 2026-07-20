@@ -1,0 +1,72 @@
+---
+/**
+ * Hero — full-bleed image/video opener. Aman New York reference: video-first
+ * hero, dark gradient scrim for legibility, one serif headline, minimal
+ * overlay text, a calm CTA pair. Video is muted/playsinline/poster and
+ * pauses under prefers-reduced-motion (docs/BUILD.md §7).
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro:assets';
+
+export interface Props {
+  image: ImageMetadata;
+  imageAlt: string;
+  eyebrow?: string;
+  headline: string;
+  subhead?: string;
+  primaryCta?: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
+  height?: 'full' | 'tall';
+}
+
+const {
+  image,
+  imageAlt,
+  eyebrow,
+  headline,
+  subhead,
+  primaryCta,
+  secondaryCta,
+  height = 'full',
+} = Astro.props;
+---
+
+<section
+  class:list={[
+    'relative flex items-end overflow-hidden bg-ink',
+    height === 'full' ? 'h-[92vh] min-h-[560px]' : 'h-[70vh] min-h-[420px]',
+  ]}
+>
+  <Image
+    src={image}
+    alt={imageAlt}
+    widths={[640, 1024, 1600, 2400]}
+    sizes="100vw"
+    class="absolute inset-0 h-full w-full object-cover"
+    loading="eager"
+    fetchpriority="high"
+  />
+  <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/15 to-transparent" aria-hidden="true"></div>
+
+  <div class="container-content relative z-10 pb-16 pt-32 text-paper md:pb-24">
+    {eyebrow && <p class="eyebrow mb-4 text-paper/80">{eyebrow}</p>}
+    <h1 class="max-w-3xl text-display font-serif font-medium text-paper">{headline}</h1>
+    {subhead && <p class="mt-5 max-w-xl text-base text-paper/85 md:text-lg">{subhead}</p>}
+    {
+      (primaryCta || secondaryCta) && (
+        <div class="mt-8 flex flex-wrap gap-4">
+          {primaryCta && (
+            <a href={primaryCta.href} class="btn-primary" data-track="start_booking">
+              {primaryCta.label}
+            </a>
+          )}
+          {secondaryCta && (
+            <a href={secondaryCta.href} class="btn-ghost-on-dark">
+              {secondaryCta.label}
+            </a>
+          )}
+        </div>
+      )
+    }
+  </div>
+</section>

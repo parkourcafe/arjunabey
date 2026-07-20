@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import JournalCard from '../../components/JournalCard.astro';
+import { canonicalFor } from '../../lib/seo';
+
+const posts = (await getCollection('journal')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout
+  title="Journal | Anjuna Bay"
+  description="Notes on staying in Uluwatu — surf, honeymoons, and getting around, from the team at Anjuna Bay."
+  canonicalUrl={canonicalFor('/journal')}
+>
+  <div class="container-content pb-section pt-32 md:pt-40">
+    <SectionHeading eyebrow="Read" heading="The Journal" />
+    <div class="mt-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+      {posts.map((post) => <JournalCard post={post} />)}
+    </div>
+  </div>
+</BaseLayout>

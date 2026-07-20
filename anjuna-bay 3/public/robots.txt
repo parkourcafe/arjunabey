@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /book
+Disallow: /api/
+
+Sitemap: https://anjunabay.com/sitemap-index.xml

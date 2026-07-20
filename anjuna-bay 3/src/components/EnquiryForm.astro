@@ -1,0 +1,113 @@
+---
+/**
+ * EnquiryForm — posts to /api/enquiry.ts. Honeypot field for basic spam
+ * protection (real rate-limiting lives server-side, docs/BUILD.md §6).
+ */
+export interface Props {
+  defaultSegment?: string;
+}
+
+const { defaultSegment = '' } = Astro.props;
+---
+
+<form id="enquiry-form" class="space-y-5" novalidate>
+  <div class="hidden">
+    <label for="company">Company</label>
+    <input type="text" id="company" name="company" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+    <div>
+      <label for="name" class="mb-1.5 block text-sm text-ink">Name</label>
+      <input
+        type="text" id="name" name="name" required
+        class="w-full border border-hairline bg-sand px-3 py-2.5 text-sm focus:border-ocean focus:outline-none"
+      />
+    </div>
+    <div>
+      <label for="email" class="mb-1.5 block text-sm text-ink">Email</label>
+      <input
+        type="email" id="email" name="email" required
+        class="w-full border border-hairline bg-sand px-3 py-2.5 text-sm focus:border-ocean focus:outline-none"
+      />
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+    <div>
+      <label for="dates" class="mb-1.5 block text-sm text-ink">Dates</label>
+      <input
+        type="text" id="dates" name="dates" placeholder="e.g. 12–18 Sep"
+        class="w-full border border-hairline bg-sand px-3 py-2.5 text-sm focus:border-ocean focus:outline-none"
+      />
+    </div>
+    <div>
+      <label for="guests" class="mb-1.5 block text-sm text-ink">Guests</label>
+      <input
+        type="number" id="guests" name="guests" min="1"
+        class="w-full border border-hairline bg-sand px-3 py-2.5 text-sm focus:border-ocean focus:outline-none"
+      />
+    </div>
+    <div>
+      <label for="segment" class="mb-1.5 block text-sm text-ink">Occasion</label>
+      <select
+        id="segment" name="segment"
+        class="w-full border border-hairline bg-sand px-3 py-2.5 text-sm focus:border-ocean focus:outline-none"
+      >
+        <option value="" selected={!defaultSegment}>Prefer not to say</option>
+        <option value="honeymoon" selected={defaultSegment === 'honeymoon'}>Honeymoon</option>
+        <option value="surf" selected={defaultSegment === 'surf'}>Surf trip</option>
+        <option value="long-stay" selected={defaultSegment === 'long-stay'}>Long stay</option>
+        <option value="investment" selected={defaultSegment === 'investment'}>Investment enquiry</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+  </div>
+
+  <div>
+    <label for="message" class="mb-1.5 block text-sm text-ink">Message</label>
+    <textarea
+      id="message" name="message" rows="4"
+      class="w-full resize-none border border-hairline bg-sand px-3 py-2.5 text-sm focus:border-ocean focus:outline-none"
+    ></textarea>
+  </div>
+
+  <button type="submit" class="btn-primary" data-enquiry-submit>Send enquiry</button>
+  <p class="text-sm" data-enquiry-status role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  const form = document.getElementById('enquiry-form');
+  const status = document.querySelector('[data-enquiry-status]');
+  const submitBtn = document.querySelector('[data-enquiry-submit]');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!(form instanceof HTMLFormElement) || !status || !(submitBtn instanceof HTMLButtonElement)) return;
+
+    const email = (form.elements.namedItem('email') as HTMLInputElement)?.value ?? '';
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      status.textContent = "That email doesn't look quite right — mind checking it?";
+      status.className = 'text-sm text-red-700';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    status.textContent = 'Sending…';
+    status.className = 'text-sm text-muted';
+
+    try {
+      const res = await fetch('/api/enquiry', { method: 'POST', body: new FormData(form) });
+      if (!res.ok) throw new Error('request failed');
+      status.textContent = "You're in. We usually reply within minutes.";
+      status.className = 'text-sm text-ocean';
+      form.reset();
+      window.dispatchEvent(new CustomEvent('anjuna:track', { detail: { event: 'enquiry_submit' } }));
+    } catch {
+      status.textContent = 'Something went wrong — message us on WhatsApp instead and we\'ll pick it up directly.';
+      status.className = 'text-sm text-red-700';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+</script>

@@ -1,0 +1,130 @@
+---
+/**
+ * Villa detail — the conversion template. Section order mirrors decision
+ * weights (docs/BUILD.md §9.3 / §3): gallery → title → story → facts →
+ * location → rate/booking → reviews → Good to know → sticky bar (mobile).
+ * Both 'live' and 'off-plan' villas get a static path — an off-plan page
+ * exists so the estate's pipeline is honest and visible (RateBlock/
+ * StickyBookingBar switch to a "Coming soon / Register interest" state and
+ * never render as bookable — CLAUDE.md rule 7).
+ */
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import VillaGallery from '../../components/VillaGallery.astro';
+import AmenityList from '../../components/AmenityList.astro';
+import WalkTimeMap from '../../components/WalkTimeMap.astro';
+import RateBlock from '../../components/RateBlock.astro';
+import RatingBadge from '../../components/RatingBadge.astro';
+import GoodToKnow from '../../components/GoodToKnow.astro';
+import StickyBookingBar from '../../components/StickyBookingBar.astro';
+import { vacationRental, breadcrumbList, canonicalFor } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const villas = await getCollection('villas');
+  return villas.map((villa) => ({ params: { slug: villa.slug }, props: { villa } }));
+}
+
+const { villa } = Astro.props;
+const d = villa.data;
+const { Content } = await villa.render();
+
+const canonicalUrl = canonicalFor(`/villas/${villa.slug}`);
+const title = d.seo?.title ?? `${d.landmarkName} — ${d.bedrooms}-Bedroom Pool Villa | Anjuna Bay`;
+const description =
+  d.seo?.description ??
+  `${d.landmarkName} — a ${d.bedrooms}-bedroom cliffside pool villa at Anjuna Bay, a short walk from Thomas Beach, Uluwatu.`;
+
+const jsonLd = [
+  vacationRental(
+    {
+      landmarkName: d.landmarkName,
+      bedrooms: d.bedrooms,
+      ratePublic: d.ratePublic,
+      currency: d.currency,
+      rating: d.rating ?? null,
+      reviewCount: d.reviewCount ?? null,
+      heroImageUrl: d.heroImage.src,
+    },
+    canonicalUrl
+  ),
+  breadcrumbList([
+    { name: 'Home', url: canonicalFor('/') },
+    { name: 'Villas', url: canonicalFor('/villas') },
+    { name: d.landmarkName, url: canonicalUrl },
+  ]),
+];
+
+const walkEntries = Object.entries(d.walkTimes);
+const primaryWalk = walkEntries.length > 0 ? Math.min(...walkEntries.map(([, m]) => m)) : null;
+const offPlan = d.status === 'off-plan';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  jsonLd={jsonLd}
+  noindex={offPlan}
+>
+  <article class="pb-24 pt-24 md:pt-28">
+    <div class="container-content">
+      <VillaGallery images={[d.heroImage, ...d.gallery]} alt={d.landmarkName} />
+
+      <div class="mt-8 grid grid-cols-1 gap-12 lg:grid-cols-3">
+        <div class="lg:col-span-2">
+          <h1 class="font-serif text-h1 font-medium text-ink">
+            {d.landmarkName} — {d.bedrooms}-Bedroom Pool Villa
+            {primaryWalk && <span class="block text-lg font-sans font-normal text-muted mt-1">{primaryWalk}-min walk to Thomas Beach</span>}
+          </h1>
+          <div class="mt-3">
+            <RatingBadge rating={d.rating ?? null} reviewCount={d.reviewCount ?? null} />
+          </div>
+
+          <div class="prose-anjuna mt-8 max-w-prose">
+            <Content />
+          </div>
+
+          <div class="mt-10">
+            <AmenityList
+              amenities={d.amenities}
+              bedrooms={d.bedrooms}
+              bathrooms={d.bathrooms}
+              sizeSqm={d.sizeSqm}
+              view={d.view}
+            />
+          </div>
+
+          <div class="mt-10">
+            <WalkTimeMap walkTimes={d.walkTimes} />
+          </div>
+
+          <div class="mt-10">
+            <GoodToKnow text={d.goodToKnow} />
+          </div>
+        </div>
+
+        <aside class="lg:col-span-1">
+          <div class="lg:sticky lg:top-28">
+            <RateBlock
+              landmarkName={d.landmarkName}
+              guestyUnitId={d.guestyUnitId}
+              ratePublic={d.ratePublic}
+              freeCancelRate={d.freeCancelRate ?? null}
+              currency={d.currency}
+              includes={d.includes}
+              offPlan={offPlan}
+            />
+          </div>
+        </aside>
+      </div>
+    </div>
+  </article>
+
+  <StickyBookingBar
+    landmarkName={d.landmarkName}
+    guestyUnitId={d.guestyUnitId}
+    ratePublic={d.ratePublic}
+    currency={d.currency}
+    offPlan={offPlan}
+  />
+</BaseLayout>

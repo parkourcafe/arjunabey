@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import OfferCard from '../../components/OfferCard.astro';
+import { canonicalFor } from '../../lib/seo';
+
+const offers = (await getCollection('offers', (o) => o.data.active)).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title)
+);
+---
+
+<BaseLayout
+  title="Offers | Anjuna Bay"
+  description="Book direct for our best available rate and a complimentary airport transfer, plus length-of-stay offers for surf trips."
+  canonicalUrl={canonicalFor('/offers')}
+>
+  <div class="container-content pb-section pt-32 md:pt-40">
+    <SectionHeading eyebrow="Offers" heading="A few things we keep for direct guests" />
+    <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
+      {offers.map((offer) => <OfferCard offer={offer} />)}
+    </div>
+  </div>
+</BaseLayout>

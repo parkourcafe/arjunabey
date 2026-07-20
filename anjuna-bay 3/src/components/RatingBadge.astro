@@ -1,0 +1,22 @@
+---
+/**
+ * RatingBadge — renders nothing if rating/reviewCount are null. Never
+ * fabricate a placeholder score (CLAUDE.md rule 6).
+ */
+export interface Props {
+  rating: number | null;
+  reviewCount: number | null;
+}
+
+const { rating, reviewCount } = Astro.props;
+---
+
+{
+  rating && (
+    <span class="inline-flex items-center gap-1.5 text-sm text-ink">
+      <span aria-hidden="true">★</span>
+      {rating.toFixed(2)}
+      {reviewCount && <span class="text-muted">({reviewCount} reviews)</span>}
+    </span>
+  )
+}

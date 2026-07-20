@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { canonicalFor } from '../lib/seo';
+---
+
+<BaseLayout
+  title="Terms | Anjuna Bay"
+  description="Booking terms for Anjuna Bay villas."
+  canonicalUrl={canonicalFor('/terms')}
+>
+  <div class="container-content section max-w-prose pt-32 md:pt-40">
+    <h1 class="font-serif text-h1 font-medium text-ink">Terms</h1>
+    <div class="prose-anjuna mt-8">
+      <p>
+        {/* TODO(legal): replace with reviewed booking terms once confirmed with the
+            operator/legal counsel — docs/BUILD.md §22. Structural placeholder only. */}
+        Each villa's rate and cancellation terms (non-refundable or free-cancellation) are shown
+        on its own page and confirmed again before payment.
+      </p>
+      <h2>Rate parity</h2>
+      <p>
+        Our publicly listed rates match those on other major booking channels. Any benefit for
+        booking directly is delivered as a perk (such as a complimentary transfer), never as a
+        lower public price.
+      </p>
+    </div>
+  </div>
+</BaseLayout>

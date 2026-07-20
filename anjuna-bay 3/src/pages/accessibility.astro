@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { canonicalFor } from '../lib/seo';
+---
+
+<BaseLayout
+  title="Accessibility | Anjuna Bay"
+  description="Our accessibility commitment for this website."
+  canonicalUrl={canonicalFor('/accessibility')}
+>
+  <div class="container-content section max-w-prose pt-32 md:pt-40">
+    <h1 class="font-serif text-h1 font-medium text-ink">Accessibility</h1>
+    <div class="prose-anjuna mt-8">
+      <p>
+        This site is built to WCAG 2.2 AA: keyboard-navigable menus and galleries, visible focus
+        states, sufficient colour contrast, descriptive alt text, and support for reduced-motion
+        preferences (docs/BUILD.md §9).
+      </p>
+      <p>
+        If you encounter a barrier using this site, please tell us via the
+        <a href="/contact">contact page</a> and we'll fix it.
+      </p>
+    </div>
+  </div>
+</BaseLayout>

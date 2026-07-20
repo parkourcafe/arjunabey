@@ -1,0 +1,55 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import VillaCard from '../../components/VillaCard.astro';
+import { canonicalFor } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const experiences = await getCollection('experiences');
+  return experiences.map((exp) => ({ params: { slug: exp.slug }, props: { experience: exp } }));
+}
+
+const { experience } = Astro.props;
+const d = experience.data;
+const { Content } = await experience.render();
+
+const relatedVillas = (
+  await Promise.all(d.relatedVillas.map((slug) => getEntry('villas', slug)))
+).filter((v) => v && v.data.status === 'live');
+
+const canonicalUrl = canonicalFor(`/experiences/${experience.slug}`);
+---
+
+<BaseLayout
+  title={d.seo?.title ?? `${d.title} | Anjuna Bay`}
+  description={d.seo?.description ?? d.excerpt}
+  canonicalUrl={canonicalUrl}
+  transparentHeader={true}
+>
+  <div class="relative h-[55vh] min-h-[360px] overflow-hidden">
+    <img src={d.heroImage.src} alt={d.title} class="absolute inset-0 h-full w-full object-cover" />
+    <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" aria-hidden="true"></div>
+    <div class="container-content relative z-10 flex h-full flex-col justify-end pb-14 text-paper">
+      <p class="eyebrow mb-3 text-paper/80">Experiences</p>
+      <h1 class="max-w-lg font-serif text-h1 font-medium">{d.title}</h1>
+    </div>
+  </div>
+
+  <div class="container-content section">
+    <div class="prose-anjuna max-w-prose">
+      <Content />
+    </div>
+
+    {
+      relatedVillas.length > 0 && (
+        <div class="mt-16">
+          <SectionHeading eyebrow="Stay for it" heading="Villas nearby" />
+          <div class="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {relatedVillas.map((v) => v && <VillaCard villa={v} />)}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</BaseLayout>

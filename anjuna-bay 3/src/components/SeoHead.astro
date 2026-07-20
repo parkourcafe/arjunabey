@@ -1,0 +1,41 @@
+---
+/**
+ * SeoHead — centralised <head> SEO block. Every page passes title/description
+ * and, where relevant, one or more JSON-LD objects built with src/lib/seo.ts.
+ * docs/BUILD.md §9/§13: unique title+description per page, canonical, OG/Twitter,
+ * JSON-LD by page type, noindex where required (e.g. /book).
+ */
+export interface Props {
+  title: string;
+  description: string;
+  canonicalUrl: string;
+  ogImage?: string;
+  noindex?: boolean;
+  jsonLd?: object | object[];
+}
+
+const { title, description, canonicalUrl, ogImage, noindex = false, jsonLd } = Astro.props;
+const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+{ogImage && <meta property="og:image" content={ogImage} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}
+
+{
+  jsonLdBlocks.map((block) => (
+    <script type="application/ld+json" set:html={JSON.stringify(block)} />
+  ))
+}

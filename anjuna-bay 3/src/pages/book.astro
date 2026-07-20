@@ -1,0 +1,54 @@
+---
+/**
+ * Reserve — Guesty booking engine embed. noindex (docs/BUILD.md §9.10).
+ * Falls back to WhatsApp + enquiry when PUBLIC_GUESTY_BOOKING_URL isn't
+ * configured yet, rather than rendering a dead/blank page.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import EnquiryForm from '../components/EnquiryForm.astro';
+import { canonicalFor } from '../lib/seo';
+
+const guestyBaseUrl = import.meta.env.PUBLIC_GUESTY_BOOKING_URL;
+---
+
+<BaseLayout
+  title="Reserve | Anjuna Bay"
+  description="Reserve your stay at Anjuna Bay."
+  canonicalUrl={canonicalFor('/book')}
+  noindex={true}
+>
+  <div class="container-content pb-section pt-32 md:pt-40">
+    <SectionHeading eyebrow="Reserve" heading="Check availability" />
+
+    {
+      guestyBaseUrl ? (
+        <div class="mt-10 aspect-[3/4] w-full border border-hairline md:aspect-[16/9]">
+          <iframe
+            src={guestyBaseUrl}
+            title="Anjuna Bay booking engine"
+            class="h-full w-full"
+            loading="lazy"
+          />
+        </div>
+      ) : (
+        <div class="mt-10 max-w-xl">
+          <p class="text-ink">
+            Live availability isn't connected here yet
+            {/* TODO(guesty-access): swap in the Guesty embed once
+                PUBLIC_GUESTY_BOOKING_URL is configured — docs/BUILD.md §14. */}
+            — message us on WhatsApp and we'll confirm your dates directly, or send an enquiry
+            below.
+          </p>
+          <div class="mt-6">
+            <WhatsAppButton variant="button" />
+          </div>
+          <div class="mt-14">
+            <EnquiryForm />
+          </div>
+        </div>
+      )
+    }
+  </div>
+</BaseLayout>

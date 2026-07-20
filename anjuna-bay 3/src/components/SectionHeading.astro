@@ -1,0 +1,18 @@
+---
+/**
+ * SectionHeading — consistent eyebrow + heading pattern used across pages.
+ */
+export interface Props {
+  eyebrow?: string;
+  heading: string;
+  align?: 'left' | 'center';
+  class?: string;
+}
+
+const { eyebrow, heading, align = 'left', class: className = '' } = Astro.props;
+---
+
+<div class:list={['max-w-2xl', align === 'center' && 'mx-auto text-center', className]}>
+  {eyebrow && <p class="eyebrow mb-3">{eyebrow}</p>}
+  <h2 class="font-serif text-h2 font-medium text-ink">{heading}</h2>
+</div>

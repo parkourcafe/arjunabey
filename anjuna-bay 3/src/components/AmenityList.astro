@@ -1,0 +1,47 @@
+---
+export interface Props {
+  amenities: string[];
+  bedrooms: number;
+  bathrooms?: number;
+  sizeSqm?: number;
+  view: string;
+}
+
+const { amenities, bedrooms, bathrooms, sizeSqm, view } = Astro.props;
+
+const facts = [
+  { label: 'Bedrooms', value: String(bedrooms) },
+  ...(bathrooms ? [{ label: 'Bathrooms', value: String(bathrooms) }] : []),
+  ...(sizeSqm ? [{ label: 'Size', value: `${sizeSqm} m²` }] : []),
+  { label: 'View', value: view },
+];
+---
+
+<div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
+  <div>
+    <p class="eyebrow mb-4">The villa</p>
+    <dl class="grid grid-cols-2 gap-y-3 text-sm">
+      {
+        facts.map((f) => (
+          <>
+            <dt class="text-muted">{f.label}</dt>
+            <dd class="text-ink">{f.value}</dd>
+          </>
+        ))
+      }
+    </dl>
+  </div>
+  <div>
+    <p class="eyebrow mb-4">Amenities</p>
+    <ul class="space-y-1.5 text-sm text-ink">
+      {
+        amenities.map((a) => (
+          <li class="flex items-center gap-2">
+            <span class="h-1 w-1 shrink-0 bg-ocean" aria-hidden="true" />
+            {a}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>

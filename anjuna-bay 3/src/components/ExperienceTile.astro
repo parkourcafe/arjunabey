@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+
+export interface Props {
+  experience: CollectionEntry<'experiences'>;
+}
+
+const { experience } = Astro.props;
+const d = experience.data;
+---
+
+<a href={`/experiences/${experience.slug}`} class="group block">
+  <div class="overflow-hidden">
+    <Image
+      src={d.heroImage}
+      alt={d.title}
+      widths={[500, 900]}
+      sizes="(min-width: 768px) 25vw, 50vw"
+      class="aspect-[4/5] w-full object-cover transition-transform duration-600 ease-elegant group-hover:scale-[1.03]"
+    />
+  </div>
+  <h3 class="mt-4 font-serif text-xl text-ink">{d.title}</h3>
+  <p class="mt-1 text-sm text-muted">{d.excerpt}</p>
+</a>

@@ -1,0 +1,161 @@
+---
+/**
+ * VillaGallery — hero + thumbnail grid with an accessible lightbox (keyboard:
+ * Escape closes, ←/→ navigate, focus is trapped and restored on close).
+ * Photos carry 20/100 of the booking decision (docs/BUILD.md §3) — this is
+ * the first thing a villa page shows.
+ */
+import type { ImageMetadata } from 'astro:assets';
+import { Image } from 'astro:assets';
+
+export interface Props {
+  images: ImageMetadata[];
+  alt: string;
+}
+
+const { images, alt } = Astro.props;
+const id = `gallery-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+{
+  images.length > 0 && (
+    <div class="grid grid-cols-4 grid-rows-2 gap-1.5" data-gallery={id}>
+      <button
+        type="button"
+        class="group relative col-span-4 row-span-1 overflow-hidden sm:col-span-2 sm:row-span-2"
+        data-gallery-open
+        data-index="0"
+        aria-label={`Open ${alt} photo 1 of ${images.length}`}
+      >
+        <Image
+          src={images[0]}
+          alt={`${alt} — photo 1`}
+          widths={[600, 1000, 1400]}
+          sizes="(min-width: 640px) 50vw, 100vw"
+          class="h-full w-full object-cover transition-transform duration-600 ease-elegant group-hover:scale-[1.02]"
+        />
+      </button>
+      {images.slice(1, 5).map((img, i) => (
+        <button
+          type="button"
+          class="group relative hidden overflow-hidden sm:block"
+          data-gallery-open
+          data-index={String(i + 1)}
+          aria-label={`Open ${alt} photo ${i + 2} of ${images.length}`}
+        >
+          <Image
+            src={img}
+            alt={`${alt} — photo ${i + 2}`}
+            widths={[400, 700]}
+            sizes="25vw"
+            class="h-full w-full object-cover transition-transform duration-600 ease-elegant group-hover:scale-[1.02]"
+          />
+        </button>
+      ))}
+    </div>
+  )
+}
+
+{
+  images.length > 0 && (
+    <div
+      data-gallery-lightbox={id}
+      class="fixed inset-0 z-50 hidden items-center justify-center bg-ink/95 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${alt} gallery`}
+    >
+      <button
+        type="button"
+        data-gallery-close
+        class="absolute right-5 top-5 flex h-10 w-10 items-center justify-center text-paper"
+        aria-label="Close gallery"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        data-gallery-prev
+        class="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-paper md:left-6"
+        aria-label="Previous photo"
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M15 6l-6 6 6 6" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        data-gallery-next
+        class="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center text-paper md:right-6"
+        aria-label="Next photo"
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M9 6l6 6-6 6" />
+        </svg>
+      </button>
+      <div class="max-h-[85vh] max-w-5xl">
+        {images.map((img, i) => (
+          <Image
+            src={img}
+            alt={`${alt} — photo ${i + 1}`}
+            widths={[800, 1400, 2000]}
+            sizes="90vw"
+            class="hidden max-h-[85vh] w-auto object-contain"
+            data-gallery-slide={String(i)}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<script define:vars={{ id, total: images.length }}>
+  const grid = document.querySelector(`[data-gallery="${id}"]`);
+  const lightbox = document.querySelector(`[data-gallery-lightbox="${id}"]`);
+  if (grid && lightbox) {
+    const slides = Array.from(lightbox.querySelectorAll('[data-gallery-slide]'));
+    let current = 0;
+    let lastFocused = null;
+
+    function show(i) {
+      current = (i + total) % total;
+      slides.forEach((el, idx) => el.classList.toggle('hidden', idx !== current));
+    }
+
+    function open(i) {
+      lastFocused = document.activeElement;
+      show(i);
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      lightbox.querySelector('[data-gallery-close]')?.focus();
+    }
+
+    function close() {
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      document.body.style.overflow = '';
+      if (lastFocused instanceof HTMLElement) lastFocused.focus();
+    }
+
+    grid.querySelectorAll('[data-gallery-open]').forEach((btn) => {
+      btn.addEventListener('click', () => open(Number(btn.dataset.index)));
+    });
+    lightbox.querySelector('[data-gallery-close]')?.addEventListener('click', close);
+    lightbox.querySelector('[data-gallery-prev]')?.addEventListener('click', () => show(current - 1));
+    lightbox.querySelector('[data-gallery-next]')?.addEventListener('click', () => show(current + 1));
+
+    document.addEventListener('keydown', (e) => {
+      if (lightbox.classList.contains('hidden')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) close();
+    });
+  }
+</script>

@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ExperienceTile from '../../components/ExperienceTile.astro';
+import { canonicalFor } from '../../lib/seo';
+
+const experiences = (await getCollection('experiences')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Experiences | Anjuna Bay"
+  description="Surf, wellness, dining and celebrations at Anjuna Bay — plus a practical guide to getting around Uluwatu."
+  canonicalUrl={canonicalFor('/experiences')}
+>
+  <div class="container-content pb-section pt-32 md:pt-40">
+    <SectionHeading eyebrow="Do" heading="Experiences" />
+    <div class="mt-12 grid grid-cols-2 gap-8 md:grid-cols-4">
+      {experiences.map((exp) => <ExperienceTile experience={exp} />)}
+    </div>
+  </div>
+</BaseLayout>

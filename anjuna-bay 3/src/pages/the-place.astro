@@ -1,0 +1,49 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { canonicalFor, faqPage } from '../lib/seo';
+
+const page = await getEntry('pages', 'the-place');
+const { Content } = await page.render();
+const d = page.data;
+
+const jsonLd = faqPage([
+  {
+    question: 'Is Anjuna Bay walkable to the beach?',
+    answer:
+      "Yes — each villa page states its exact walk-time to Thomas Beach. Most of the estate is a five-to-ten-minute walk.",
+  },
+  {
+    question: 'Is there construction noise nearby?',
+    answer:
+      "Parts of the estate are still being built, typically 8am–5pm. We disclose this honestly on every villa page and can point you to the quietest option for your dates.",
+  },
+]);
+---
+
+<BaseLayout
+  title={d.seo?.title ?? 'The Place | Anjuna Bay'}
+  description={d.seo?.description ?? 'Thomas Beach and the quiet side of the Bukit.'}
+  canonicalUrl={canonicalFor('/the-place')}
+  jsonLd={jsonLd}
+  transparentHeader={true}
+>
+  {
+    d.heroImage && (
+      <div class="relative h-[60vh] min-h-[380px] overflow-hidden">
+        <img src={d.heroImage.src} alt="Thomas Beach, Uluwatu" class="absolute inset-0 h-full w-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" aria-hidden="true" />
+        <div class="container-content relative z-10 flex h-full flex-col justify-end pb-14 text-paper">
+          <p class="eyebrow mb-3 text-paper/80">Where you are</p>
+          <h1 class="max-w-lg font-serif text-h1 font-medium">{d.title}</h1>
+        </div>
+      </div>
+    )
+  }
+
+  <div class="container-content section">
+    <div class="prose-anjuna max-w-prose">
+      <Content />
+    </div>
+  </div>
+</BaseLayout>

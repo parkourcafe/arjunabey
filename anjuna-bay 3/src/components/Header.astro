@@ -1,0 +1,140 @@
+---
+/**
+ * Header — global nav. Reserve + WhatsApp are always visible (CLAUDE.md rule
+ * 3), on desktop and in the mobile drawer. `transparent` lets the homepage
+ * hero show through until the user scrolls (Aman New York reference: nav
+ * sits over the hero video, then condenses to a solid bar — see
+ * Claude_Design_Prompts.md notes / docs/BUILD.md §7).
+ */
+import WhatsAppButton from './WhatsAppButton.astro';
+
+export interface Props {
+  transparent?: boolean;
+}
+
+const { transparent = false } = Astro.props;
+
+const NAV = [
+  { label: 'Villas', href: '/villas' },
+  { label: 'Experiences', href: '/experiences' },
+  { label: 'The Place', href: '/the-place' },
+  { label: 'Offers', href: '/offers' },
+  { label: 'Journal', href: '/journal' },
+  { label: 'About', href: '/about' },
+];
+---
+
+<header
+  id="site-header"
+  data-transparent={transparent ? 'true' : 'false'}
+  class:list={[
+    'fixed inset-x-0 top-0 z-40 transition-colors duration-400 ease-elegant',
+    transparent ? 'bg-transparent' : 'bg-sand/95 backdrop-blur border-b border-hairline',
+  ]}
+>
+  <div class="container-content flex h-20 items-center justify-between">
+    <a href="/" class="font-serif text-xl tracking-tight" data-header-mark>
+      Anjuna Bay
+    </a>
+
+    <nav aria-label="Primary" class="hidden items-center gap-8 lg:flex">
+      {
+        NAV.map((item) => (
+          <a
+            href={item.href}
+            class="text-sm font-medium tracking-wide transition-colors duration-400 ease-elegant"
+            data-header-link
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="hidden items-center gap-3 lg:flex">
+      <WhatsAppButton variant="icon" />
+      <a href="/book" class="btn-primary" data-track="start_booking">Reserve</a>
+    </div>
+
+    <button
+      type="button"
+      id="menu-toggle"
+      class="flex h-10 w-10 items-center justify-center lg:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Open menu"
+      data-header-link
+    >
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" />
+      </svg>
+    </button>
+  </div>
+
+  <div
+    id="mobile-menu"
+    class="hidden border-t border-hairline bg-sand px-6 pb-8 pt-4 lg:hidden"
+  >
+    <nav aria-label="Mobile primary" class="flex flex-col gap-1">
+      {
+        NAV.map((item) => (
+          <a href={item.href} class="border-b border-hairline py-3 text-base text-ink">
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="mt-5 flex flex-col gap-3">
+      <a href="/book" class="btn-primary w-full" data-track="start_booking">Reserve</a>
+      <WhatsAppButton variant="button" class="w-full" />
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Transparent-over-hero state: light text/icons until scrolled or a
+     non-transparent variant is requested. Toggled via the .scrolled class
+     added by the script below. */
+  header[data-transparent='true']:not(.scrolled) [data-header-mark],
+  header[data-transparent='true']:not(.scrolled) [data-header-link] {
+    color: var(--color-paper);
+  }
+  header[data-transparent='true']:not(.scrolled) {
+    background: linear-gradient(to bottom, rgba(20, 18, 15, 0.35), transparent);
+  }
+  header.scrolled {
+    background-color: rgb(243 238 231 / 0.95);
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  [data-header-link] {
+    color: var(--color-ink);
+  }
+  [data-header-link]:hover {
+    color: var(--color-ocean);
+  }
+</style>
+
+<script>
+  const header = document.getElementById('site-header');
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  function onScroll() {
+    if (!header) return;
+    if (window.scrollY > 24) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  menuToggle?.addEventListener('click', () => {
+    const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
+    menuToggle.setAttribute('aria-expanded', String(!expanded));
+    mobileMenu?.classList.toggle('hidden');
+    menuToggle.setAttribute('aria-label', expanded ? 'Open menu' : 'Close menu');
+  });
+</script>

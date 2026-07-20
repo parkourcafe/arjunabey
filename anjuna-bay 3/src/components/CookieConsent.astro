@@ -1,0 +1,120 @@
+---
+/**
+ * CookieConsent — the hard analytics gate (CLAUDE.md, docs/BUILD.md §9).
+ *
+ * RULE: zero non-essential tags fire before explicit consent. This component
+ * is the ONLY place GA4/Meta Pixel script tags are ever injected into the
+ * DOM — they do not exist in any page's static HTML. On load it checks
+ * localStorage for a prior choice; with none, it shows the banner and waits.
+ * Tags are added as `type="text/partytown"` so @astrojs/partytown moves them
+ * off the main thread once they do load (perf budget, docs/BUILD.md §9).
+ *
+ * A "Cookie preferences" link (Footer.astro) calls `window.__anjunaOpenConsent()`
+ * to reopen this banner and change the choice later.
+ */
+const GA4_ID = import.meta.env.PUBLIC_GA4_ID;
+const META_PIXEL_ID = import.meta.env.PUBLIC_META_PIXEL_ID;
+---
+
+<div
+  id="cookie-consent"
+  class="fixed inset-x-0 bottom-0 z-50 hidden border-t border-hairline bg-paper/98 px-6 py-5 shadow-[0_-4px_20px_rgba(28,26,23,0.08)] backdrop-blur md:px-16"
+  role="dialog"
+  aria-label="Cookie preferences"
+  aria-live="polite"
+>
+  <div class="container-content flex flex-col items-start gap-4 !px-0 md:flex-row md:items-center md:justify-between">
+    <p class="max-w-prose text-sm text-ink">
+      We use a small number of cookies to understand how the site is used and to measure the
+      effectiveness of our marketing. Nothing loads until you say yes — see our
+      <a href="/privacy" class="underline">Privacy Notice</a>.
+    </p>
+    <div class="flex shrink-0 gap-3">
+      <button type="button" id="cookie-decline" class="btn-secondary">Decline</button>
+      <button type="button" id="cookie-accept" class="btn-primary">Accept</button>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ GA4_ID, META_PIXEL_ID }}>
+  const STORAGE_KEY = 'anjuna-consent';
+  const banner = document.getElementById('cookie-consent');
+  const acceptBtn = document.getElementById('cookie-accept');
+  const declineBtn = document.getElementById('cookie-decline');
+
+  function injectAnalyticsTags() {
+    // Loaded as text/partytown so @astrojs/partytown proxies execution off
+    // the main thread. Silently no-ops if an ID isn't configured yet
+    // (fresh checkout / local dev) rather than injecting a broken src.
+    if (GA4_ID) {
+      const gtagSrc = document.createElement('script');
+      gtagSrc.type = 'text/partytown';
+      gtagSrc.src = `https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`;
+      document.head.appendChild(gtagSrc);
+
+      const gtagInit = document.createElement('script');
+      gtagInit.type = 'text/partytown';
+      gtagInit.textContent = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${GA4_ID}');
+      `;
+      document.head.appendChild(gtagInit);
+    }
+
+    if (META_PIXEL_ID) {
+      const pixel = document.createElement('script');
+      pixel.type = 'text/partytown';
+      pixel.textContent = `
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+        n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+        document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '${META_PIXEL_ID}');
+        fbq('track', 'PageView');
+      `;
+      document.head.appendChild(pixel);
+    }
+
+    // Flushes any events queued by src/lib/analytics.ts before consent.
+    window.dispatchEvent(new CustomEvent('anjuna:consent-granted'));
+  }
+
+  function hideBanner() {
+    banner?.classList.add('hidden');
+  }
+
+  function showBanner() {
+    banner?.classList.remove('hidden');
+  }
+
+  function applyStoredChoice() {
+    const choice = localStorage.getItem(STORAGE_KEY);
+    if (choice === 'granted') {
+      injectAnalyticsTags();
+      hideBanner();
+    } else if (choice === 'denied') {
+      hideBanner();
+    } else {
+      showBanner();
+    }
+  }
+
+  acceptBtn?.addEventListener('click', () => {
+    localStorage.setItem(STORAGE_KEY, 'granted');
+    injectAnalyticsTags();
+    hideBanner();
+  });
+
+  declineBtn?.addEventListener('click', () => {
+    localStorage.setItem(STORAGE_KEY, 'denied');
+    hideBanner();
+  });
+
+  // Exposed for Footer.astro's "Cookie preferences" link.
+  window.__anjunaOpenConsent = showBanner;
+
+  applyStoredChoice();
+</script>

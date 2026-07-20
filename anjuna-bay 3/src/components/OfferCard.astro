@@ -1,0 +1,19 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  offer: CollectionEntry<'offers'>;
+}
+
+const { offer } = Astro.props;
+const d = offer.data;
+const ctaHref = d.cta === 'Reserve' ? '/book' : '/contact';
+---
+
+<div class="border border-hairline bg-paper p-8">
+  <h3 class="font-serif text-2xl text-ink">{d.title}</h3>
+  <p class="mt-3 text-sm leading-relaxed text-ink">{d.terms}</p>
+  <a href={ctaHref} class="btn-secondary mt-6 inline-flex" data-track="start_booking">
+    {d.cta}
+  </a>
+</div>

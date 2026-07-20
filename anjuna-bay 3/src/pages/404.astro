@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { canonicalFor } from '../lib/seo';
+---
+
+<BaseLayout
+  title="Page not found | Anjuna Bay"
+  description="This page couldn't be found."
+  canonicalUrl={canonicalFor('/404')}
+  noindex={true}
+>
+  <div class="container-content flex min-h-[60vh] flex-col items-start justify-center pt-32 md:pt-40">
+    <p class="eyebrow mb-3">404</p>
+    <h1 class="font-serif text-h1 font-medium text-ink">We couldn't find that page.</h1>
+    <p class="mt-4 max-w-md text-ink">
+      It may have moved, or the link may be out of date. Try the villas, or message us directly.
+    </p>
+    <div class="mt-8 flex gap-4">
+      <a href="/villas" class="btn-primary">See the villas</a>
+      <WhatsAppButton variant="button" />
+    </div>
+  </div>
+</BaseLayout>

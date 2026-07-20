@@ -1,0 +1,149 @@
+---
+/**
+ * Home — cinematic hero, positioning, featured villas, experiences teaser,
+ * The Place teaser, proof, book-direct, journal teaser (docs/BUILD.md §9.1).
+ */
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import VillaCard from '../components/VillaCard.astro';
+import ExperienceTile from '../components/ExperienceTile.astro';
+import JournalCard from '../components/JournalCard.astro';
+import homeHero from '../assets/placeholders/home-hero.jpg';
+import thePlaceHero from '../assets/placeholders/the-place-hero.jpg';
+import { lodgingBusiness, canonicalFor } from '../lib/seo';
+
+const featuredVillas = (await getCollection('villas', (v) => v.data.status === 'live'))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+
+const experiences = (await getCollection('experiences')).sort((a, b) => a.data.order - b.data.order).slice(0, 4);
+const journalPosts = (await getCollection('journal'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 2);
+
+const canonicalUrl = canonicalFor('/');
+---
+
+<BaseLayout
+  title="Anjuna Bay — Cliffside Pool Villas Above Thomas Beach, Uluwatu"
+  description="Cliffside pool villas above Thomas Beach, Uluwatu — the view, the pool and the quiet people come to Uluwatu for, without the Canggu crowds."
+  canonicalUrl={canonicalUrl}
+  jsonLd={lodgingBusiness()}
+  transparentHeader={true}
+>
+  <Hero
+    image={homeHero}
+    imageAlt="Cliffside pool villa at Anjuna Bay, Uluwatu, at sunset"
+    eyebrow="Anjuna Bay · Thomas Beach, Uluwatu"
+    headline="Cliffside pool villas above Thomas Beach."
+    subhead="The Uluwatu you came for — the view, the pool, the quiet. Without the Canggu crowds."
+    primaryCta={{ label: 'Reserve', href: '/book' }}
+    secondaryCta={{ label: 'Explore the villas', href: '/villas' }}
+  />
+
+  <section class="section">
+    <div class="container-content max-w-2xl">
+      <p class="fade-in-up font-serif text-h2 font-medium leading-snug text-ink">
+        Brand-new pool villas a short walk from the sand, on the quiet side of the Bukit — the
+        view and the privacy people come to Uluwatu for.
+      </p>
+    </div>
+  </section>
+
+  {
+    featuredVillas.length > 0 && (
+      <section class="section pt-0">
+        <div class="container-content">
+          <SectionHeading eyebrow="Stay" heading="The villas" />
+          <div class="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredVillas.map((villa) => (
+              <VillaCard villa={villa} />
+            ))}
+          </div>
+          <a href="/villas" class="mt-8 inline-block text-sm underline">
+            View all villas →
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    experiences.length > 0 && (
+      <section class="section bg-paper">
+        <div class="container-content">
+          <SectionHeading eyebrow="Do" heading="Experiences" />
+          <div class="mt-10 grid grid-cols-2 gap-8 md:grid-cols-4">
+            {experiences.map((exp) => (
+              <ExperienceTile experience={exp} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="relative h-[70vh] min-h-[420px] overflow-hidden">
+    <img
+      src={thePlaceHero.src}
+      alt="The clifftop above Thomas Beach, Uluwatu"
+      class="absolute inset-0 h-full w-full object-cover"
+      loading="lazy"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" aria-hidden="true"></div>
+    <div class="container-content relative z-10 flex h-full flex-col justify-end pb-16 text-paper">
+      <p class="eyebrow mb-3 text-paper/80">Where you are</p>
+      <h2 class="max-w-lg font-serif text-h2 font-medium">Five minutes from Thomas Beach, on the quiet side of the Bukit.</h2>
+      <a href="/the-place" class="btn-ghost-on-dark mt-6 w-fit">Discover The Place</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-content grid grid-cols-1 items-center gap-10 md:grid-cols-2">
+      <div>
+        <SectionHeading eyebrow="Trusted" heading="Rated by the people who've stayed" />
+        <p class="mt-5 max-w-md text-ink">
+          Guests rate the villas among the best-reviewed on the Bukit — and the on-ground team,
+          named and reachable, is the reason they come back.
+        </p>
+      </div>
+      <div class="grid grid-cols-2 gap-6">
+        <div class="border border-hairline p-6">
+          <p class="font-serif text-3xl text-ink">4.9★</p>
+          <p class="mt-1 text-sm text-muted">Average guest rating</p>
+        </div>
+        <div class="border border-hairline p-6">
+          <p class="font-serif text-3xl text-ink">9.5</p>
+          <p class="mt-1 text-sm text-muted">Staff score, Booking.com</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-ocean text-paper">
+    <div class="container-content flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+      <div>
+        <p class="eyebrow mb-3 text-paper/70">Book direct</p>
+        <h2 class="max-w-md font-serif text-h2 font-medium">Our best available rate, and a transfer on us.</h2>
+      </div>
+      <a href="/offers" class="btn-ghost-on-dark">See the offer</a>
+    </div>
+  </section>
+
+  {
+    journalPosts.length > 0 && (
+      <section class="section">
+        <div class="container-content">
+          <SectionHeading eyebrow="Read" heading="From the Journal" />
+          <div class="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2">
+            {journalPosts.map((post) => (
+              <JournalCard post={post} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

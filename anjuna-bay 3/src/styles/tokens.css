@@ -1,0 +1,88 @@
+/**
+ * tokens.css — Anjuna Bay design tokens.
+ *
+ * Single source of truth for raw values (fonts, colors, spacing, motion).
+ * Tailwind's theme.extend (tailwind.config.mjs) mirrors these for utility
+ * classes; components that need a raw CSS value (gradients, custom shapes)
+ * read the variables directly. Keep the two in sync when either changes.
+ *
+ * Brand direction: understated luxury, Aman-inspired (specifically studied
+ * against aman.com/hotels/aman-new-york) — warm neutrals dominate, color is
+ * used sparingly, serif display type paired with a quiet sans for body/UI.
+ */
+
+:root {
+  /* ---- Color --------------------------------------------------------- */
+  --color-sand: #f3eee7;      /* base surface, dominant neutral */
+  --color-paper: #faf7f2;     /* card / section surface, lifted off sand */
+  --color-ink: #1c1a17;       /* primary text */
+  --color-muted: #6f6a61;     /* secondary text, captions, meta */
+  --color-ocean: #2b4c53;     /* primary accent — deep muted teal (CTAs, links) */
+  --color-ocean-dark: #1e363b;/* ocean hover/active */
+  --color-clay: #c08a6a;      /* secondary accent — soft sunset clay, sparing use */
+  --color-hairline: #e4ded4;  /* dividers/borders — hairline only, never heavy */
+  --color-overlay-scrim: rgba(20, 18, 15, 0.38); /* hero video/image text-legibility scrim */
+
+  /* ---- Type ------------------------------------------------------------
+   * Production: self-host Fraunces (display) + Inter (body/UI), woff2,
+   * preloaded, font-display: swap. Fraunces is wired up for real below
+   * (public/fonts/, one static weight); Inter still has no licensed file in
+   * the repo, so it renders via the system-ui fallback stack — see the
+   * @font-face block below for the full status and the TODO.
+   */
+  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, Roboto, sans-serif;
+
+  /* ---- Spacing rhythm ---------------------------------------------------
+   * Desktop sections breathe — 96px floor, 128px for major full-width
+   * feature blocks (the "Crown Building heritage"-style moment).
+   */
+  --space-section: 6rem;      /* 96px */
+  --space-section-lg: 8rem;   /* 128px */
+  --space-gutter: 1.5rem;     /* mobile side margin */
+  --space-gutter-lg: 4rem;    /* desktop side margin */
+
+  /* ---- Motion ------------------------------------------------------- */
+  --ease-elegant: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fade: 500ms;
+  --duration-reveal: 700ms;
+
+  /* ---- Misc ----------------------------------------------------------- */
+  --radius: 2px;               /* restraint, not rounded-corner luxury */
+  --shadow-subtle: 0 1px 2px rgba(28, 26, 23, 0.04);
+  --max-content: 1200px;
+}
+
+/* Self-hosted font faces. Do NOT swap this for a Google Fonts CDN <link>:
+   self-hosting keeps the site working with zero third-party network
+   dependency and is faster (see docs/BUILD.md §7).
+
+   Fraunces is real and live: public/fonts/fraunces-latin-600-normal.woff2
+   (SIL OFL-1.1, licence copied alongside it) — a single static weight (600),
+   not the full variable axis docs/BUILD.md describes. Every heading requests
+   font-weight: 500 (global.css), which the CSS font-matching algorithm
+   resolves to this 600 face rather than falling through to Georgia — so
+   headings render in real Fraunces, just at one consistent weight, until a
+   licensed variable file replaces this (see TODO below).
+
+   Inter has NO real file in this repo yet — the rule against fabricating
+   assets applies to fonts too, not just prices/reviews. Do not add an
+   @font-face for it that points at a file that doesn't exist. Body/UI text
+   uses the system-ui/-apple-system/Roboto fallback stack until a real
+   Inter woff2 (or @fontsource/inter) is added.
+   TODO(fonts): source licensed variable/static files for both Fraunces'
+   full weight range and Inter, then extend this block. */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/fraunces-latin-600-normal.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fade: 0ms;
+    --duration-reveal: 0ms;
+  }
+}

@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { canonicalFor } from '../lib/seo';
+---
+
+<BaseLayout
+  title="Privacy Notice | Anjuna Bay"
+  description="How Anjuna Bay collects, uses and protects your data."
+  canonicalUrl={canonicalFor('/privacy')}
+>
+  <div class="container-content section max-w-prose pt-32 md:pt-40">
+    <h1 class="font-serif text-h1 font-medium text-ink">Privacy Notice</h1>
+    <div class="prose-anjuna mt-8">
+      <p>
+        {/* TODO(legal): replace with reviewed copy — docs/BUILD.md §17 (security & privacy)
+            and §22 (open questions). This is a structural placeholder, not legal advice. */}
+        This notice explains what information we collect when you visit this site or make an
+        enquiry, and how we use it.
+      </p>
+      <h2>What we collect</h2>
+      <p>
+        Contact details you submit through our enquiry form (name, email, stay dates, message),
+        and — only once you've accepted cookies — anonymised analytics about how the site is
+        used.
+      </p>
+      <h2>Cookies and consent</h2>
+      <p>
+        We ask before any non-essential cookie is set. You can change your choice at any time via
+        “Cookie Preferences” in the footer.
+      </p>
+      <h2>How to reach us</h2>
+      <p>For any privacy question, message us via the <a href="/contact">contact page</a>.</p>
+    </div>
+  </div>
+</BaseLayout>

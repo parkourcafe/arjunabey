@@ -1,0 +1,17 @@
+---
+/**
+ * GoodToKnow — the honest-disclosure block (CLAUDE.md rule 4). Required on
+ * every villa page and The Place. Calm, factual tone — see
+ * 02_Tone_of_Voice_RU.md §6 for the reference copy this pattern is built from.
+ */
+export interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+---
+
+<div class="border-l-2 border-clay bg-paper px-6 py-5">
+  <p class="eyebrow mb-2 text-clay">Good to know</p>
+  <p class="text-sm leading-relaxed text-ink">{text}</p>
+</div>
