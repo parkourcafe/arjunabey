@@ -1,10 +1,12 @@
 ---
 /**
- * Header — global nav. Reserve + WhatsApp are always visible (CLAUDE.md rule
- * 3), on desktop and in the mobile drawer. `transparent` lets the homepage
- * hero show through until the user scrolls (Aman New York reference: nav
- * sits over the hero video, then condenses to a solid bar — see
- * Claude_Design_Prompts.md notes / docs/BUILD.md §7).
+ * Header — two-tier navigation on the Aman model: a top bar carrying the
+ * centred wordmark with utilities either side, and a section bar beneath it
+ * listing the property's pages. Reserve + WhatsApp are always visible
+ * (CLAUDE.md rule 3), on desktop and in the mobile drawer.
+ *
+ * `transparent` lets the homepage hero show through until the user scrolls,
+ * at which point the bar condenses to a solid surface.
  */
 import WhatsAppButton from './WhatsAppButton.astro';
 
@@ -21,6 +23,7 @@ const NAV = [
   { label: 'Offers', href: '/offers' },
   { label: 'Journal', href: '/journal' },
   { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
 ];
 ---
 
@@ -29,62 +32,75 @@ const NAV = [
   data-transparent={transparent ? 'true' : 'false'}
   class:list={[
     'fixed inset-x-0 top-0 z-40 transition-colors duration-400 ease-elegant',
-    transparent ? 'bg-transparent' : 'bg-sand/95 backdrop-blur border-b border-hairline',
+    transparent ? 'bg-transparent' : 'bg-sand/95 backdrop-blur',
   ]}
 >
-  <div class="container-content flex h-20 items-center justify-between">
-    <a href="/" class="font-serif text-xl tracking-tight" data-header-mark>
-      Anjuna Bay
+  <!-- Tier one: utilities left, wordmark centred, Reserve right -->
+  <div class="container-content relative flex h-16 items-center justify-between md:h-20">
+    <div class="flex items-center gap-4">
+      <button
+        type="button"
+        id="menu-toggle"
+        class="flex items-center gap-2.5 lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Open menu"
+        data-header-link
+      >
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+          <path d="M0 1h20M0 7h20M0 13h20" />
+        </svg>
+        <span class="text-eyebrow uppercase">Menu</span>
+      </button>
+      <span class="hidden text-eyebrow uppercase lg:inline" data-header-link>Uluwatu, Bali</span>
+    </div>
+
+    <a
+      href="/"
+      class="absolute left-1/2 -translate-x-1/2 font-serif text-lg font-light tracking-[0.22em] uppercase no-underline md:text-xl"
+      data-header-mark
+    >
+      Anjuna&nbsp;Bay
     </a>
 
-    <nav aria-label="Primary" class="hidden items-center gap-8 lg:flex">
+    <div class="flex items-center gap-3">
+      <div class="hidden lg:block">
+        <WhatsAppButton variant="icon" />
+      </div>
+      <a href="/book" class="btn-primary !px-5 !py-2.5 md:!px-7 md:!py-3" data-track="start_booking">
+        Reserve
+      </a>
+    </div>
+  </div>
+
+  <!-- Tier two: the property's sections -->
+  <div class="hidden border-t border-hairline/60 lg:block" data-header-rule>
+    <div class="container-content flex h-11 items-center justify-center gap-9">
       {
         NAV.map((item) => (
           <a
             href={item.href}
-            class="text-sm font-medium tracking-wide transition-colors duration-400 ease-elegant"
+            class="text-eyebrow uppercase no-underline transition-colors duration-400 ease-elegant"
             data-header-link
           >
             {item.label}
           </a>
         ))
       }
-    </nav>
-
-    <div class="hidden items-center gap-3 lg:flex">
-      <WhatsAppButton variant="icon" />
-      <a href="/book" class="btn-primary" data-track="start_booking">Reserve</a>
     </div>
-
-    <button
-      type="button"
-      id="menu-toggle"
-      class="flex h-10 w-10 items-center justify-center lg:hidden"
-      aria-expanded="false"
-      aria-controls="mobile-menu"
-      aria-label="Open menu"
-      data-header-link
-    >
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-        <path d="M3 6h18M3 12h18M3 18h18" />
-      </svg>
-    </button>
   </div>
 
-  <div
-    id="mobile-menu"
-    class="hidden border-t border-hairline bg-sand px-6 pb-8 pt-4 lg:hidden"
-  >
-    <nav aria-label="Mobile primary" class="flex flex-col gap-1">
+  <div id="mobile-menu" class="hidden border-t border-hairline bg-sand px-6 pb-8 pt-4 lg:hidden">
+    <nav aria-label="Mobile primary" class="flex flex-col">
       {
         NAV.map((item) => (
-          <a href={item.href} class="border-b border-hairline py-3 text-base text-ink">
+          <a href={item.href} class="border-b border-hairline py-3.5 font-serif text-lg text-ink no-underline">
             {item.label}
           </a>
         ))
       }
     </nav>
-    <div class="mt-5 flex flex-col gap-3">
+    <div class="mt-6 flex flex-col gap-3">
       <a href="/book" class="btn-primary w-full" data-track="start_booking">Reserve</a>
       <WhatsAppButton variant="button" class="w-full" />
     </div>
@@ -92,19 +108,19 @@ const NAV = [
 </header>
 
 <style>
-  /* Transparent-over-hero state: light text/icons until scrolled or a
-     non-transparent variant is requested. Toggled via the .scrolled class
-     added by the script below. */
+  /* Transparent-over-hero state: light text/icons until scrolled. */
   header[data-transparent='true']:not(.scrolled) [data-header-mark],
   header[data-transparent='true']:not(.scrolled) [data-header-link] {
     color: var(--color-paper);
   }
   header[data-transparent='true']:not(.scrolled) {
-    background: linear-gradient(to bottom, rgba(20, 18, 15, 0.35), transparent);
+    background: linear-gradient(to bottom, rgba(20, 18, 15, 0.4), transparent);
   }
-  /* Over the hero the Reserve CTA goes quiet (ghost) — a solid colour block
-     is the loudest thing on the screen otherwise; it returns to the solid
-     primary style once the header condenses on scroll. */
+  header[data-transparent='true']:not(.scrolled) [data-header-rule] {
+    border-top-color: rgb(250 247 242 / 0.25);
+  }
+  /* Over the hero the Reserve CTA goes quiet; a solid block is the loudest
+     thing on the screen otherwise. It returns to solid once condensed. */
   header[data-transparent='true']:not(.scrolled) .btn-primary {
     background: transparent;
     border: 1px solid rgb(250 247 242 / 0.6);
@@ -113,10 +129,11 @@ const NAV = [
     background: rgb(250 247 242 / 0.12);
   }
   header.scrolled {
-    background-color: rgb(243 238 231 / 0.95);
+    background-color: rgb(243 238 231 / 0.96);
     border-bottom: 1px solid var(--color-hairline);
   }
-  [data-header-link] {
+  [data-header-link],
+  [data-header-mark] {
     color: var(--color-ink);
   }
   [data-header-link]:hover {
@@ -131,11 +148,7 @@ const NAV = [
 
   function onScroll() {
     if (!header) return;
-    if (window.scrollY > 24) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
+    header.classList.toggle('scrolled', window.scrollY > 24);
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });

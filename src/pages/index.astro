@@ -1,27 +1,69 @@
 ---
 /**
- * Home — cinematic hero, positioning, featured villas, experiences teaser,
- * The Place teaser, proof, book-direct, journal teaser (docs/BUILD.md §9.1).
+ * Home — built to the Aman property-page architecture (docs/BUILD.md §9.1):
+ * full-bleed hero, a centred prologue naming the place, a staggered gallery
+ * strip, three editorial cards, the accommodation grid, and quiet centred
+ * calls to action. Copy stays short everywhere; the page it links to carries
+ * the detail.
  */
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import SectionHeading from '../components/SectionHeading.astro';
 import VillaCard from '../components/VillaCard.astro';
-import ExperienceTile from '../components/ExperienceTile.astro';
 import JournalCard from '../components/JournalCard.astro';
 import homeHero from '../assets/placeholders/home-hero.jpg';
 import thePlaceHero from '../assets/placeholders/the-place-hero.jpg';
+import expDining from '../assets/placeholders/experience-dining.jpg';
+import expSurf from '../assets/placeholders/experience-surf.jpg';
+import expWellness from '../assets/placeholders/experience-wellness.jpg';
+import expCelebrations from '../assets/placeholders/experience-celebrations.jpg';
+import aboutHero from '../assets/placeholders/about-hero.jpg';
 import { lodgingBusiness, canonicalFor } from '../lib/seo';
 
 const featuredVillas = (await getCollection('villas', (v) => v.data.status === 'live'))
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, 3);
 
-const experiences = (await getCollection('experiences')).sort((a, b) => a.data.order - b.data.order).slice(0, 4);
 const journalPosts = (await getCollection('journal'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 2);
+
+// The staggered strip: alternating vertical offsets are what give the row its
+// hand-composed feel rather than a plain filmstrip.
+const strip = [
+  { image: expDining, alt: 'Breakfast served by a private villa pool', offset: 'md:mt-16' },
+  { image: aboutHero, alt: 'A quiet villa courtyard in late afternoon light', offset: '' },
+  { image: expWellness, alt: 'An open-air spa pavilion in morning light', offset: 'md:mt-24' },
+  { image: expSurf, alt: 'A clean wave peeling along an Uluwatu reef break', offset: 'md:mt-6' },
+];
+
+const cards = [
+  {
+    image: expDining,
+    alt: 'Breakfast served by a private villa pool',
+    eyebrow: 'Book direct',
+    heading: 'Our best rate, and a transfer on us',
+    body: "Reserve with us rather than through an agent and the airport transfer is complimentary. We never undercut the public rate — the value is in what's included.",
+    href: '/offers',
+  },
+  {
+    image: expSurf,
+    alt: 'A clean wave peeling along an Uluwatu reef break',
+    eyebrow: 'Experiences',
+    heading: 'What there is to do',
+    body: 'World-class reef breaks minutes away, in-villa massage and yoga at sunrise, a private chef on request, and the clifftop cafés of the Bukit.',
+    href: '/experiences',
+  },
+  {
+    image: expCelebrations,
+    alt: 'A clifftop table set for a small celebration at dusk',
+    eyebrow: 'Celebrations',
+    heading: 'Small gatherings, arranged with care',
+    body: 'Weddings, birthdays and private dinners on the cliff-front — kept small, kept quiet, and organised by the team who live here.',
+    href: '/contact',
+  },
+];
 
 const canonicalUrl = canonicalFor('/');
 ---
@@ -44,104 +86,167 @@ const canonicalUrl = canonicalFor('/');
     secondaryCta={{ label: 'Explore the villas', href: '/villas' }}
   />
 
+  <!-- Prologue: the place, named and placed, in one centred paragraph -->
   <section class="section">
-    <div class="container-content max-w-2xl">
-      <p class="fade-in-up font-serif text-h2 font-medium leading-snug text-ink">
-        Brand-new pool villas a short walk from the sand, on the quiet side of the Bukit — the
-        view and the privacy people come to Uluwatu for.
-      </p>
+    <div class="container-content">
+      <div class="fade-in-up mx-auto max-w-2xl text-center">
+        <p class="eyebrow mb-6 text-muted">Uluwatu, Bali</p>
+        <h2 class="font-serif text-h1 font-light text-ink">Anjuna Bay</h2>
+        <p class="mt-7 font-serif text-lg leading-relaxed text-ink/85">
+          Brand-new pool villas on the quiet side of the Bukit, a short walk down to Thomas Beach.
+          Each has its own courtyard pool, its own kitchen and its own name — no unit codes. The
+          surf breaks Uluwatu is known for are minutes away; the crowds of Canggu are an hour
+          behind you.
+        </p>
+      </div>
     </div>
   </section>
 
+  <!-- Staggered strip -->
+  <section class="overflow-hidden pb-section">
+    <div class="container-content">
+      <div class="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
+        {
+          strip.map((item) => (
+            <div class:list={['fade-in-up', item.offset]}>
+              <Image
+                src={item.image}
+                alt={item.alt}
+                widths={[320, 560, 800]}
+                sizes="(min-width: 768px) 25vw, 50vw"
+                class="aspect-[3/4] w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Accommodation -->
   {
     featuredVillas.length > 0 && (
-      <section class="section pt-0">
+      <section class="section bg-paper pt-0">
         <div class="container-content">
-          <SectionHeading eyebrow="Stay" heading="The villas" />
-          <div class="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="fade-in-up mx-auto mb-12 max-w-xl text-center md:mb-16">
+            <p class="eyebrow mb-5 text-muted">Accommodation</p>
+            <h2 class="font-serif text-h1 font-light text-ink">The villas</h2>
+            <p class="mt-6 font-serif text-lg leading-relaxed text-ink/85">
+              One, two and three bedrooms — each with a private pool, and each a few minutes'
+              walk from the sand.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
             {featuredVillas.map((villa) => (
               <VillaCard villa={villa} />
             ))}
           </div>
-          <a href="/villas" class="mt-8 inline-block text-sm underline">
-            View all villas →
-          </a>
-        </div>
-      </section>
-    )
-  }
 
-  {
-    experiences.length > 0 && (
-      <section class="section bg-paper">
-        <div class="container-content">
-          <SectionHeading eyebrow="Do" heading="Experiences" />
-          <div class="mt-10 grid grid-cols-2 gap-8 md:grid-cols-4">
-            {experiences.map((exp) => (
-              <ExperienceTile experience={exp} />
-            ))}
+          <div class="mt-14 flex flex-col items-center gap-6">
+            <a href="/villas" class="link-quiet">View all villas</a>
+            <a href="/book" class="link-quiet" data-track="start_booking">
+              Book now
+            </a>
           </div>
         </div>
       </section>
     )
   }
 
-  <section class="relative h-[70vh] min-h-[420px] overflow-hidden">
-    <img
-      src={thePlaceHero.src}
+  <!-- The Place, full bleed -->
+  <section class="relative flex h-[80vh] min-h-[500px] items-end overflow-hidden bg-ink">
+    <Image
+      src={thePlaceHero}
       alt="The clifftop above Thomas Beach, Uluwatu"
+      widths={[768, 1280, 1920, 2400]}
+      sizes="100vw"
       class="absolute inset-0 h-full w-full object-cover"
       loading="lazy"
     />
-    <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" aria-hidden="true"></div>
-    <div class="container-content relative z-10 flex h-full flex-col justify-end pb-16 text-paper">
-      <p class="eyebrow mb-3 text-paper/80">Where you are</p>
-      <h2 class="max-w-lg font-serif text-h2 font-medium text-paper">Five minutes from Thomas Beach, on the quiet side of the Bukit.</h2>
-      <a href="/the-place" class="btn-ghost-on-dark mt-6 w-fit">Discover The Place</a>
+    <div class="absolute inset-0 bg-gradient-to-t from-ink/75 via-ink/10 to-transparent" aria-hidden="true"></div>
+    <div class="container-content relative z-10 pb-16 text-paper md:pb-20">
+      <div class="fade-in-up max-w-xl">
+        <p class="eyebrow mb-5 text-paper/75">Where you are</p>
+        <h2 class="font-serif text-h1 font-light text-paper">
+          Five minutes from Thomas Beach, on the quiet side of the Bukit.
+        </h2>
+        <a href="/the-place" class="link-quiet-on-dark mt-8 inline-block">Discover The Place</a>
+      </div>
     </div>
   </section>
 
+  <!-- Three editorial cards -->
   <section class="section">
-    <div class="container-content grid grid-cols-1 items-center gap-10 md:grid-cols-2">
-      <div>
-        <SectionHeading eyebrow="Trusted" heading="Rated by the people who've stayed" />
-        <p class="mt-5 max-w-md text-ink">
+    <div class="container-content">
+      <div class="grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-3">
+        {
+          cards.map((card) => (
+            <article class="fade-in-up">
+              <a href={card.href} class="group block no-underline">
+                <div class="overflow-hidden">
+                  <Image
+                    src={card.image}
+                    alt={card.alt}
+                    widths={[400, 700, 1000]}
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    class="aspect-[4/3] w-full object-cover transition-transform duration-[1200ms] ease-elegant group-hover:scale-[1.04]"
+                    loading="lazy"
+                  />
+                </div>
+                <p class="eyebrow mb-3 mt-6 text-muted">{card.eyebrow}</p>
+                <h3 class="font-serif text-h3 font-light text-ink">{card.heading}</h3>
+                <p class="mt-3 font-serif leading-relaxed text-muted">{card.body}</p>
+                <span class="link-quiet mt-6 inline-block">Discover more</span>
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Proof -->
+  <section class="section bg-paper">
+    <div class="container-content">
+      <div class="fade-in-up mx-auto max-w-xl text-center">
+        <p class="eyebrow mb-5 text-muted">Trusted</p>
+        <h2 class="font-serif text-h1 font-light text-ink">Rated by the people who've stayed</h2>
+        <p class="mt-6 font-serif text-lg leading-relaxed text-ink/85">
           Guests rate the villas among the best-reviewed on the Bukit — and the on-ground team,
           named and reachable, is the reason they come back.
         </p>
-      </div>
-      <div class="grid grid-cols-2 gap-6">
-        <div class="border border-hairline p-6">
-          <p class="font-serif text-3xl text-ink">4.9★</p>
-          <p class="mt-1 text-sm text-muted">Average guest rating</p>
-        </div>
-        <div class="border border-hairline p-6">
-          <p class="font-serif text-3xl text-ink">9.5</p>
-          <p class="mt-1 text-sm text-muted">Staff score, Booking.com</p>
+        <div class="mt-12 grid grid-cols-2 gap-10">
+          <div>
+            <p class="font-serif text-4xl font-light text-ink">4.9★</p>
+            <p class="eyebrow mt-3 text-muted">Average guest rating</p>
+          </div>
+          <div>
+            <p class="font-serif text-4xl font-light text-ink">9.5</p>
+            <p class="eyebrow mt-3 text-muted">Staff score, Booking.com</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section bg-ocean text-paper">
-    <div class="container-content flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-      <div>
-        <p class="eyebrow mb-3 text-paper/70">Book direct</p>
-        <h2 class="max-w-md font-serif text-h2 font-medium text-paper">Our best available rate, and a transfer on us.</h2>
-      </div>
-      <a href="/offers" class="btn-ghost-on-dark">See the offer</a>
-    </div>
-  </section>
-
+  <!-- Journal -->
   {
     journalPosts.length > 0 && (
       <section class="section">
         <div class="container-content">
-          <SectionHeading eyebrow="Read" heading="From the Journal" />
-          <div class="mt-10 grid grid-cols-1 gap-10 sm:grid-cols-2">
+          <div class="fade-in-up mx-auto mb-12 max-w-xl text-center md:mb-16">
+            <p class="eyebrow mb-5 text-muted">Read</p>
+            <h2 class="font-serif text-h1 font-light text-ink">From the Journal</h2>
+          </div>
+          <div class="grid grid-cols-1 gap-10 sm:grid-cols-2">
             {journalPosts.map((post) => (
               <JournalCard post={post} />
             ))}
+          </div>
+          <div class="mt-14 text-center">
+            <a href="/journal" class="link-quiet">Read the Journal</a>
           </div>
         </div>
       </section>

@@ -55,6 +55,13 @@ const jsonLd = [
   ]),
 ];
 
+// The hero photograph already opens the page full-bleed, so it is dropped
+// from the gallery below rather than shown twice (source sets also repeat it
+// in the first gallery slot, which made it three appearances). Falls back to
+// the hero alone if a villa has no other photography yet.
+const rest = d.gallery.filter((img) => img.src !== d.heroImage.src);
+const galleryImages = rest.length > 0 ? rest : [d.heroImage];
+
 const walkEntries = Object.entries(d.walkTimes);
 const primaryWalk = walkEntries.length > 0 ? Math.min(...walkEntries.map(([, m]) => m)) : null;
 const offPlan = d.status === 'off-plan';
@@ -108,7 +115,7 @@ const offPlan = d.status === 'off-plan';
 
   <article class="pb-24 pt-14 md:pt-20">
     <div class="container-content">
-      <VillaGallery images={[d.heroImage, ...d.gallery]} alt={d.landmarkName} />
+      <VillaGallery images={galleryImages} alt={d.landmarkName} />
 
       <div class="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-3">
         <div class="lg:col-span-2">

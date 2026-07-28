@@ -13,42 +13,42 @@ export interface Props {
   alt: string;
 }
 
-const { images, alt } = Astro.props;
+const { images: rawImages, alt } = Astro.props;
+
+// Never show the same photograph twice. Source sets routinely repeat a frame
+// between a villa's hero and the first gallery slot, and a repeated photo in
+// a gallery reads as a mistake — `src` is content-hashed by astro:assets, so
+// identical files collapse to one entry here regardless of their filenames.
+const seen = new Set<string>();
+const images = rawImages.filter((img) => {
+  if (seen.has(img.src)) return false;
+  seen.add(img.src);
+  return true;
+});
+
 const id = `gallery-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 {
   images.length > 0 && (
-    <div class="grid grid-cols-4 grid-rows-2 gap-1.5" data-gallery={id}>
-      <button
-        type="button"
-        class="group relative col-span-4 row-span-1 overflow-hidden sm:col-span-2 sm:row-span-2"
-        data-gallery-open
-        data-index="0"
-        aria-label={`Open ${alt} photo 1 of ${images.length}`}
-      >
-        <Image
-          src={images[0]}
-          alt={`${alt} — photo 1`}
-          widths={[600, 1000, 1400]}
-          sizes="(min-width: 640px) 50vw, 100vw"
-          class="h-full w-full object-cover transition-transform duration-600 ease-elegant group-hover:scale-[1.02]"
-        />
-      </button>
-      {images.slice(1, 5).map((img, i) => (
+    <div
+      class="grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3"
+      data-gallery={id}
+    >
+      {images.map((img, i) => (
         <button
           type="button"
-          class="group relative hidden overflow-hidden sm:block"
+          class="group relative overflow-hidden bg-ink/5"
           data-gallery-open
-          data-index={String(i + 1)}
-          aria-label={`Open ${alt} photo ${i + 2} of ${images.length}`}
+          data-index={String(i)}
+          aria-label={`Open ${alt} photo ${i + 1} of ${images.length}`}
         >
           <Image
             src={img}
-            alt={`${alt} — photo ${i + 2}`}
-            widths={[400, 700]}
-            sizes="25vw"
-            class="h-full w-full object-cover transition-transform duration-600 ease-elegant group-hover:scale-[1.02]"
+            alt={`${alt} — photo ${i + 1}`}
+            widths={[400, 700, 1000]}
+            sizes="(min-width: 768px) 33vw, 50vw"
+            class="aspect-[4/3] h-full w-full object-cover transition-transform duration-[900ms] ease-elegant group-hover:scale-[1.04]"
           />
         </button>
       ))}

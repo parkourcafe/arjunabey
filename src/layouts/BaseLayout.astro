@@ -10,16 +10,17 @@ import SeoHead from '../components/SeoHead.astro';
 import CookieConsent from '../components/CookieConsent.astro';
 // Self-hosted fonts (SIL OFL, shipped by @fontsource — no third-party CDN).
 // Fraunces: display serif for headings; Inter: body/UI sans.
+import '@fontsource/fraunces/300.css';
 import '@fontsource/fraunces/400.css';
 import '@fontsource/fraunces/400-italic.css';
 import '@fontsource/fraunces/500.css';
-import '@fontsource/fraunces/600.css';
+import '@fontsource/inter/300.css';
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/500.css';
 import '../styles/global.css';
 // Hashed URLs of the two above-the-fold-critical files, preloaded below so the
 // hero headline and first body text never flash a fallback face.
-import frauncesPreload from '@fontsource/fraunces/files/fraunces-latin-500-normal.woff2?url';
+import frauncesPreload from '@fontsource/fraunces/files/fraunces-latin-300-normal.woff2?url';
 import interPreload from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
 
 export interface Props {

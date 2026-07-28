@@ -41,9 +41,12 @@
     line-height: 1.6;
   }
 
+  /* Display type is set light (300) rather than medium. At the sizes this site
+     uses, a heavier serif reads as a headline; a light one reads as a plate in
+     a book — which is the register the brand is aiming at. */
   h1, h2, h3, h4 {
     @apply font-serif text-ink;
-    font-weight: 500;
+    font-weight: 300;
   }
 
   h1 { @apply text-h1; }
@@ -131,6 +134,33 @@
 
   .section {
     @apply py-section md:py-section-lg;
+  }
+
+  /* The only link style used between sections: uppercase, letter-spaced, with
+     a hairline rule that sits under it permanently and brightens on hover.
+     Reads as an invitation rather than a button. */
+  .link-quiet,
+  .link-quiet-on-dark {
+    @apply text-eyebrow uppercase no-underline;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid currentColor;
+    transition: opacity var(--duration-fade) var(--ease-elegant),
+      color var(--duration-fade) var(--ease-elegant);
+  }
+  .link-quiet {
+    color: var(--color-ink);
+    border-bottom-color: rgb(28 26 23 / 0.3);
+  }
+  .link-quiet:hover {
+    color: var(--color-ocean);
+    border-bottom-color: currentColor;
+  }
+  .link-quiet-on-dark {
+    color: var(--color-paper);
+    border-bottom-color: rgb(250 247 242 / 0.45);
+  }
+  .link-quiet-on-dark:hover {
+    border-bottom-color: currentColor;
   }
 
   .fade-in-up {

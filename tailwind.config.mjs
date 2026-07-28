@@ -26,12 +26,14 @@ export default {
         sans: ['"Inter"', 'system-ui', '-apple-system', 'Roboto', 'sans-serif'],
       },
       fontSize: {
-        // Editorial scale — generous display sizes, restrained body.
-        display: ['clamp(2.5rem, 5vw, 4.25rem)', { lineHeight: '1.05', letterSpacing: '-0.01em' }],
-        h1: ['clamp(2rem, 3.5vw, 3rem)', { lineHeight: '1.1', letterSpacing: '-0.01em' }],
-        h2: ['clamp(1.5rem, 2.5vw, 2.25rem)', { lineHeight: '1.15' }],
-        h3: ['1.375rem', { lineHeight: '1.3' }],
-        eyebrow: ['0.75rem', { lineHeight: '1.4', letterSpacing: '0.14em' }],
+        // Editorial scale — generous display sizes, restrained body. Positive
+        // tracking on display type: light serifs need air between letters to
+        // read as composed rather than condensed.
+        display: ['clamp(2.5rem, 5vw, 4.5rem)', { lineHeight: '1.08', letterSpacing: '0.005em' }],
+        h1: ['clamp(2rem, 3.5vw, 3rem)', { lineHeight: '1.15', letterSpacing: '0.005em' }],
+        h2: ['clamp(1.5rem, 2.5vw, 2.25rem)', { lineHeight: '1.2', letterSpacing: '0.01em' }],
+        h3: ['1.375rem', { lineHeight: '1.35', letterSpacing: '0.01em' }],
+        eyebrow: ['0.6875rem', { lineHeight: '1.4', letterSpacing: '0.2em' }],
       },
       maxWidth: {
         content: '1200px',

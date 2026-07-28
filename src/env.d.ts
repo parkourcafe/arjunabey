@@ -11,3 +11,9 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+interface Window {
+  /** Reopens the consent banner — defined by CookieConsent.astro, called by
+   *  the footer's "Cookie Preferences" control. */
+  __anjunaOpenConsent?: () => void;
+}
