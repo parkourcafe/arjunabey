@@ -6,11 +6,13 @@
  * pauses under prefers-reduced-motion (docs/BUILD.md §7).
  */
 import { Image } from 'astro:assets';
-import type { ImageMetadata } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 
 export interface Props {
   image: ImageMetadata;
   imageAlt: string;
+  /** Public path to an mp4/webm loop (e.g. /video/hero.mp4). The image stays as poster + reduced-motion fallback. */
+  video?: string;
   eyebrow?: string;
   headline: string;
   subhead?: string;
@@ -22,6 +24,7 @@ export interface Props {
 const {
   image,
   imageAlt,
+  video,
   eyebrow,
   headline,
   subhead,
@@ -46,6 +49,23 @@ const {
     loading="eager"
     fetchpriority="high"
   />
+  {
+    video && (
+      <video
+        class="hero-video absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 motion-reduce:hidden"
+        muted
+        loop
+        playsinline
+        autoplay
+        preload="metadata"
+        poster={image.src}
+        aria-hidden="true"
+        tabindex="-1"
+      >
+        <source src={video} type="video/mp4" />
+      </video>
+    )
+  }
   <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/15 to-transparent" aria-hidden="true"></div>
 
   <div class="container-content relative z-10 pb-16 pt-32 text-paper md:pb-24">
@@ -70,3 +90,22 @@ const {
     }
   </div>
 </section>
+
+<script>
+  // Hero video: honour prefers-reduced-motion (pause + stay on poster image),
+  // otherwise fade the loop in once it is actually playing.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll<HTMLVideoElement>('.hero-video').forEach((video) => {
+    if (reduceMotion.matches) {
+      video.removeAttribute('autoplay');
+      video.pause();
+      return;
+    }
+    const reveal = () => video.classList.remove('opacity-0');
+    if (!video.paused && video.readyState >= 2) reveal();
+    else video.addEventListener('playing', reveal, { once: true });
+    video.play().catch(() => {
+      /* autoplay blocked — poster image remains */
+    });
+  });
+</script>

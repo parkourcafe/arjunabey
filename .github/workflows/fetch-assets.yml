@@ -1,0 +1,46 @@
+# Temporary utility workflow: fetches generated hero media (Higgsfield CDN is
+# unreachable from the dev container's network) and commits it to the repo.
+# Safe to delete once the assets are in place.
+name: Fetch hero assets
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download poster frame
+        run: |
+          curl -fsSL -o /tmp/hero-frame.png "POSTER_URL_PLACEHOLDER"
+
+      - name: Download hero video
+        run: |
+          curl -fsSL -o /tmp/hero-raw.mp4 "VIDEO_URL_PLACEHOLDER"
+
+      - name: Optimise assets
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg imagemagick
+          mkdir -p public/video src/assets/placeholders
+          # Poster: high-quality JPG for astro:assets (also the video poster)
+          convert /tmp/hero-frame.png -quality 88 src/assets/placeholders/home-hero.jpg
+          # Video: 1080p H.264, silent, web-optimised, ~10s ambient loop
+          ffmpeg -y -i /tmp/hero-raw.mp4 -an -c:v libx264 -preset slow -crf 23 \
+            -vf "scale=1920:1080" -pix_fmt yuv420p -movflags +faststart \
+            public/video/hero.mp4
+          ls -la public/video/ src/assets/placeholders/home-hero.jpg
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/video/hero.mp4 src/assets/placeholders/home-hero.jpg
+          git commit -m "Add generated cinematic hero video and poster frame"
+          git push origin main
