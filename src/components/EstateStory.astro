@@ -8,6 +8,8 @@
  * bookings; a guest who was told finds it unremarkable (CLAUDE.md rule 4).
  */
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import estateImage from '../assets/placeholders/about-hero.jpg';
 import { ESTATE_FACTS, ESTATE_CLUSTERS, ESTATE_AMENITIES } from '../lib/estate';
 
 export interface Props {
@@ -39,9 +41,8 @@ const facts = [
       <p class="eyebrow mb-5 text-muted">The estate</p>
       <h2 class="font-serif text-h1 font-light text-ink">A cliff-front community, still growing</h2>
       <p class="mt-6 font-serif text-lg leading-relaxed text-ink/85">
-        Anjuna Bay is an 8.5-hectare community on the cliffs above Thomas Beach, with its own
-        access down to the sand. We look after the finished cliffside pool villas — the rest of
-        the estate is still taking shape around them, and we would rather you heard that from us.
+        An 8.5-hectare community on the cliffs above Thomas Beach, with its own way down to the
+        sand. We look after the finished villas; the rest is still taking shape around them.
       </p>
     </div>
 
@@ -57,7 +58,24 @@ const facts = [
       }
     </dl>
 
-    <div class="mt-16 grid grid-cols-1 gap-12 border-t border-hairline pt-14 md:grid-cols-2 md:gap-16">
+  </div>
+
+  <!-- A photograph between the figures and the two lists. Without it this
+       section runs heading → paragraph → numbers → list → list, which on a
+       phone is several screens of unbroken text. -->
+  <div class="container-wide mt-14 md:mt-16">
+    <Image
+      src={estateImage}
+      alt="A courtyard on the Anjuna Bay estate in late afternoon light"
+      widths={[768, 1280, 1920]}
+      sizes="100vw"
+      class="aspect-[3/2] w-full object-cover md:aspect-[21/9]"
+      loading="lazy"
+    />
+  </div>
+
+  <div class="container-content">
+    <div class="mt-14 grid grid-cols-1 gap-12 md:mt-16 md:grid-cols-2 md:gap-16">
       <!-- What's here -->
       <div>
         <p class="eyebrow mb-6 text-muted">On the estate</p>

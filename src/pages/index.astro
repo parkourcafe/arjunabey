@@ -24,6 +24,7 @@ import thePlaceHero from '../assets/placeholders/the-place-hero.jpg';
 import expDining from '../assets/placeholders/experience-dining.jpg';
 import expCelebrations from '../assets/placeholders/experience-celebrations.jpg';
 import expAround from '../assets/placeholders/experience-around.jpg';
+import offersImage from '../assets/placeholders/offers-hero.jpg';
 import { lodgingBusiness, canonicalFor } from '../lib/seo';
 
 const featuredVillas = (await getCollection('villas', (v) => v.data.status === 'live'))
@@ -152,6 +153,17 @@ const canonicalUrl = canonicalFor('/');
   </section>
 
   <EstateStory tone="paper" />
+
+  <section class="relative h-[62vh] min-h-[380px] overflow-hidden bg-ink">
+    <Image
+      src={offersImage}
+      alt="A private villa pool at golden hour"
+      widths={[768, 1280, 1920, 2400]}
+      sizes="100vw"
+      class="absolute inset-0 h-full w-full object-cover"
+      loading="lazy"
+    />
+  </section>
 
   <LocationMap
     heading="Thomas Beach, Uluwatu"

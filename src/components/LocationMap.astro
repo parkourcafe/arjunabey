@@ -13,6 +13,9 @@
  * launch — TODO(location) — but the beach itself is correct and is what the
  * walk-times are measured from.
  */
+import { Image } from 'astro:assets';
+import mapBackdrop from '../assets/placeholders/experiences-hero.jpg';
+
 export interface Props {
   /** Rows of "x minutes to y" shown beside the map. */
   walkTimes?: { label: string; minutes: number }[];
@@ -42,8 +45,7 @@ const JOURNEYS = [
       <p class="eyebrow mb-5 text-muted">Location</p>
       <h2 class="font-serif text-h1 font-light text-ink">{heading}</h2>
       <p class="mt-6 font-serif text-lg leading-relaxed text-ink/85">
-        Thomas Beach, Uluwatu — on the quiet southern tip of the Bukit peninsula, a short walk
-        down to the sand.
+        The quiet southern tip of the Bukit peninsula, with the sand a short walk below.
       </p>
     </div>
 
@@ -53,7 +55,20 @@ const JOURNEYS = [
           class="relative aspect-[16/10] w-full overflow-hidden border border-hairline bg-sand"
           data-map
         >
-          <!-- Placeholder: drawn locally, so nothing loads until asked -->
+          <!-- Until the map is asked for, the place itself stands in for it —
+               an empty grey panel is dead weight on the page, and on mobile it
+               lands between two list-heavy blocks where it is worst. Nothing
+               third-party loads either way. -->
+          <Image
+            src={mapBackdrop}
+            alt="The clifftop above Thomas Beach, Uluwatu"
+            widths={[600, 1000, 1400]}
+            sizes="(min-width: 1024px) 66vw, 100vw"
+            class="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+          />
+          <div class="absolute inset-0 bg-ink/45" aria-hidden="true"></div>
+
           <div class="absolute inset-0 flex flex-col items-center justify-center gap-5 px-6 text-center">
             <svg
               width="34"
@@ -62,17 +77,16 @@ const JOURNEYS = [
               fill="none"
               stroke="currentColor"
               stroke-width="1.1"
-              class="text-muted"
+              class="text-paper"
               aria-hidden="true"
             >
               <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" />
               <circle cx="12" cy="10" r="2.4" />
             </svg>
-            <p class="max-w-xs text-sm leading-relaxed text-muted">
-              The map loads from OpenStreetMap only when you ask, so nothing is requested from a
-              third party before then.
+            <p class="max-w-xs text-sm leading-relaxed text-paper/85">
+              The map loads from OpenStreetMap only when you ask it to.
             </p>
-            <button type="button" class="link-quiet" data-map-load>Show the map</button>
+            <button type="button" class="link-quiet-on-dark" data-map-load>Show the map</button>
           </div>
         </div>
 
