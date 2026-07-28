@@ -20,3 +20,8 @@ npm-debug.log*
 .vercel
 .env.local
 .env.*.local
+
+# scratch files from tooling runs
+.shoot-tmp.cjs
+*.tmp.mjs
+*.tmp.cjs
