@@ -16,6 +16,7 @@ const approved = [
 
 const slugify = (value) => value.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-').replaceAll(/^-|-$/g, '');
 const yaml = (value) => JSON.stringify(value);
+const publicFromRate = { 1: 115, 2: 190, 3: 280 };
 const codeMap = new Map(research.map((row) => [row.unit_code, row]));
 const nameMapRows = [];
 
@@ -53,6 +54,7 @@ landmarkName: ${yaml(name)}
 status: "live"
 bedrooms: ${row.bedrooms}
 bathrooms: ${row.bathrooms}
+maximumGuests: ${row.maximum_guests}
 view: "private pool courtyard"
 walkTimes:
   thomasBeach: 3
@@ -61,8 +63,9 @@ amenities:
 ${amenities.map((item) => `  - ${yaml(item)}`).join('\n')}
 includes:
   - "Daily housekeeping"
-ratePublic: null
+ratePublic: ${publicFromRate[row.bedrooms]}
 currency: "USD"
+pricingAdjustmentPercent: 0
 guestyUnitId: null
 rating: ${row.airbnb_rating ?? 'null'}
 reviewCount: ${row.airbnb_review_count ?? 'null'}
@@ -85,8 +88,9 @@ ${name} is a ${row.bedrooms}-bedroom pool villa arranged for ${guestType}. The
 villa pairs a private courtyard pool with an air-conditioned living area, a
 full kitchen and daily housekeeping, within a short walk of Thomas Beach.
 
-Rates and availability are confirmed on request while the direct booking
-connection is being completed.
+Choose your dates to see the seasonal accommodation estimate. Live
+availability, taxes and final booking terms are confirmed by the reservations
+team before payment.
 `;
   await writeFile(join(repo, 'src', 'content', 'villas', `${slug}.mdx`), mdx);
   nameMapRows.push({

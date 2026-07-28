@@ -1,31 +1,29 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import EnquiryForm from '../components/EnquiryForm.astro';
-import WhatsAppButton from '../components/WhatsAppButton.astro';
-import { canonicalFor, faqPage } from '../lib/seo';
-
-const params = Astro.url.searchParams;
-const defaultSegment = params.get('type') === 'investment' ? 'investment' : '';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import WhatsAppButton from "../components/WhatsAppButton.astro";
+import { canonicalFor, faqPage } from "../lib/seo";
 
 const faqs = [
   {
-    question: 'What is your cancellation policy?',
+    question: "What is your cancellation policy?",
     answer:
-      'Each villa lists both a non-refundable rate and a free-cancellation rate side by side — choose whichever suits your plans when you book.',
+      "Cancellation terms are confirmed with the final rate before payment, so you can review them before committing.",
   },
   {
-    question: 'Do you arrange an airport transfer?',
-    answer: 'Yes — a complimentary airport transfer is included when you book directly with us.',
+    question: "Do you arrange an airport transfer?",
+    answer:
+      "Yes. Airport transfers can be arranged on request; the current price is confirmed before booking.",
   },
   {
-    question: 'Is there construction near the villas?',
+    question: "Is there construction near the villas?",
     answer:
       "Parts of the estate are still being built, typically 8am–5pm. Every villa page discloses this honestly, and we'll point you to the quietest option for your dates.",
   },
   {
-    question: 'How do I pay?',
-    answer: 'Payment is handled securely through our booking engine at the time of reservation.',
+    question: "How do I pay?",
+    answer:
+      "After availability is confirmed, the reservations team sends the applicable booking and payment instructions.",
   },
 ];
 ---
@@ -33,22 +31,40 @@ const faqs = [
 <BaseLayout
   title="Contact | Anjuna Bay"
   description="Message us on WhatsApp or send an enquiry — we usually reply within minutes."
-  canonicalUrl={canonicalFor('/contact')}
+  canonicalUrl={canonicalFor("/contact")}
   jsonLd={faqPage(faqs)}
 >
   <div class="container-content pb-section pt-32 md:pt-40">
     <SectionHeading eyebrow="Get in touch" heading="Enquire" />
     <p class="mt-5 max-w-xl text-ink">
-      For a fast reply, message us on WhatsApp. For anything else — including property and
-      investment enquiries — use the form below.
+      For immediate self-service booking, choose a villa and continue to its
+      verified live Airbnb checkout. For questions about your dates or property
+      enquiries, message us on WhatsApp.
     </p>
-    <div class="mt-6">
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href="/book" class="btn-primary">Plan and book a stay</a>
       <WhatsAppButton variant="button" />
     </div>
 
     <div class="mt-14 grid grid-cols-1 gap-16 lg:grid-cols-3">
       <div class="lg:col-span-2">
-        <EnquiryForm defaultSegment={defaultSegment} />
+        <div class="border border-hairline bg-paper p-6 md:p-8">
+          <p class="eyebrow">What to include</p>
+          <h2 class="mt-2 font-serif text-3xl text-ink">
+            We can help you choose well
+          </h2>
+          <p class="mt-4 max-w-xl text-sm leading-relaxed text-muted">
+            Send your preferred dates, number of guests and what matters most —
+            beach access, workspace, a longer stay or the quietest available
+            position.
+          </p>
+          <div class="mt-6">
+            <WhatsAppButton
+              variant="button"
+              label="Start a WhatsApp conversation"
+            />
+          </div>
+        </div>
       </div>
 
       <div>
@@ -58,7 +74,9 @@ const faqs = [
             faqs.map((f) => (
               <div>
                 <dt class="text-sm font-medium text-ink">{f.question}</dt>
-                <dd class="mt-1.5 text-sm leading-relaxed text-muted">{f.answer}</dd>
+                <dd class="mt-1.5 text-sm leading-relaxed text-muted">
+                  {f.answer}
+                </dd>
               </div>
             ))
           }

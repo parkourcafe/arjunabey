@@ -8,7 +8,7 @@
  */
 
 const SITE_NAME = 'Anjuna Bay';
-const SITE_URL = 'https://anjunabay.com'; // TODO: confirm final domain (docs/BUILD.md §14)
+const SITE_URL = import.meta.env.PUBLIC_SITE_URL ?? 'https://arjunabey.vercel.app';
 
 export interface VillaLike {
   landmarkName: string;
@@ -65,7 +65,6 @@ export function vacationRental(villa: VillaLike, canonicalUrl: string) {
             '@type': 'Offer',
             price: villa.ratePublic,
             priceCurrency: villa.currency,
-            availability: 'https://schema.org/InStock',
           },
         }
       : {}),

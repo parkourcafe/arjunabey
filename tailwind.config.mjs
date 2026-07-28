@@ -6,7 +6,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}'],
-  darkMode: false, // brand is intentionally single-mode (warm/light) — no dark theme
   theme: {
     extend: {
       colors: {

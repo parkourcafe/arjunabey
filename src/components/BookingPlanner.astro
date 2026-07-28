@@ -1,0 +1,425 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { airbnbListingUrl } from "../lib/airbnb";
+import { whatsappLink, whatsappNumber } from "../lib/whatsapp";
+import {
+  PRICING_CHECKOUT_MAX,
+  PRICING_LAST_NIGHT,
+  PRICING_START,
+} from "../lib/pricing";
+
+export interface Props {
+  villas: CollectionEntry<"villas">[];
+}
+
+const { villas } = Astro.props;
+const waNumber = whatsappNumber();
+const genericWaHref = whatsappLink();
+---
+
+<section
+  class="border border-hairline bg-paper p-6 md:p-10"
+  data-booking-planner
+  data-whatsapp-number={waNumber ?? ""}
+>
+  <div class="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_0.85fr]">
+    <div>
+      <p class="eyebrow">Your stay</p>
+      <h2 class="mt-2 font-serif text-3xl text-ink">
+        Choose a villa and your dates
+      </h2>
+      <p class="mt-3 max-w-xl text-sm leading-relaxed text-muted">
+        See the accommodation estimate instantly, then continue to the villa's
+        verified Airbnb listing for live availability and secure checkout.
+      </p>
+
+      <form class="mt-8 space-y-5" data-booking-form>
+        <label class="block">
+          <span
+            class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted"
+          >
+            Villa
+          </span>
+          <select
+            name="villa"
+            required
+            class="w-full border border-hairline bg-sand px-4 py-3 text-sm text-ink focus:border-ocean focus:outline-none"
+          >
+            <option value="">Choose a villa</option>
+            {
+              villas.map((villa) => (
+                <option
+                  value={villa.data.landmarkName}
+                  data-bedrooms={villa.data.bedrooms}
+                  data-guests={villa.data.maximumGuests}
+                  data-adjustment={villa.data.pricingAdjustmentPercent}
+                  data-airbnb-url={airbnbListingUrl(villa.slug) ?? ""}
+                >
+                  {villa.data.landmarkName} · {villa.data.bedrooms}-Bedroom Pool
+                  Villa
+                </option>
+              ))
+            }
+          </select>
+        </label>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <label class="block">
+            <span
+              class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted"
+            >
+              Arrival
+            </span>
+            <input
+              type="date"
+              name="checkIn"
+              min={PRICING_START}
+              max={PRICING_LAST_NIGHT}
+              required
+              class="w-full border border-hairline bg-sand px-4 py-3 text-sm text-ink focus:border-ocean focus:outline-none"
+            />
+          </label>
+          <label class="block">
+            <span
+              class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted"
+            >
+              Departure
+            </span>
+            <input
+              type="date"
+              name="checkOut"
+              min={PRICING_START}
+              max={PRICING_CHECKOUT_MAX}
+              required
+              class="w-full border border-hairline bg-sand px-4 py-3 text-sm text-ink focus:border-ocean focus:outline-none"
+            />
+          </label>
+        </div>
+
+        <label class="block">
+          <span
+            class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted"
+          >
+            Guests
+          </span>
+          <select
+            name="guests"
+            disabled
+            class="w-full border border-hairline bg-sand px-4 py-3 text-sm text-ink disabled:opacity-60 focus:border-ocean focus:outline-none"
+          >
+            <option value="">Choose a villa first</option>
+          </select>
+        </label>
+      </form>
+    </div>
+
+    <div
+      class="flex min-h-[300px] flex-col justify-between border-l-0 border-hairline lg:border-l lg:pl-10"
+    >
+      <div>
+        <p class="eyebrow">Stay estimate</p>
+        <div class="mt-8" data-planner-empty>
+          <p class="font-serif text-2xl text-ink">
+            Your dates, clearly priced.
+          </p>
+          <p class="mt-3 text-sm leading-relaxed text-muted">
+            Select a villa and dates to see the nightly total and any
+            length-of-stay saving.
+          </p>
+        </div>
+
+        <p
+          class="mt-8 hidden border-l-2 border-clay pl-3 text-sm text-ink"
+          data-planner-error
+          aria-live="polite"
+        >
+        </p>
+
+        <div class="mt-8 hidden" data-planner-result aria-live="polite">
+          <p class="font-serif text-2xl text-ink" data-planner-villa></p>
+          <p class="mt-1 text-sm text-muted" data-planner-dates></p>
+          <div class="mt-6 space-y-2 text-sm">
+            <div class="flex justify-between gap-4 text-muted">
+              <span data-planner-nights></span>
+              <span data-planner-subtotal></span>
+            </div>
+            <div
+              class="hidden justify-between gap-4 text-ocean"
+              data-planner-discount-row
+            >
+              <span data-planner-discount-label></span>
+              <span data-planner-discount></span>
+            </div>
+            <div
+              class="mt-5 flex items-end justify-between gap-4 border-t border-hairline pt-5"
+            >
+              <span class="text-xs uppercase tracking-[0.12em] text-muted"
+                >Accommodation total</span
+              >
+              <span class="font-serif text-3xl text-ink" data-planner-total
+              ></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <a
+          href="/villas"
+          class="btn-primary w-full"
+          data-planner-cta
+          data-track="start_booking"
+        >
+          Choose a villa first
+        </a>
+        {
+          genericWaHref && (
+            <a
+              href={genericWaHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-3 hidden text-center text-sm text-ocean underline underline-offset-4"
+              data-planner-whatsapp
+              data-track="whatsapp_click"
+            >
+              Ask a question on WhatsApp
+            </a>
+          )
+        }
+        <p class="mt-3 text-center text-xs leading-relaxed text-muted">
+          Airbnb provides live availability, applicable fees, cancellation terms
+          and secure payment.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { airbnbBookingUrl } from "../lib/airbnb";
+  import {
+    PRICING_CHECKOUT_MAX,
+    calculateStayQuote,
+    type SupportedBedrooms,
+  } from "../lib/pricing";
+
+  const DAY_MS = 86_400_000;
+
+  const money = (amount: number) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    }).format(amount);
+
+  const dateLabel = (isoDate: string) =>
+    new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(new Date(`${isoDate}T00:00:00Z`));
+
+  document
+    .querySelectorAll<HTMLElement>("[data-booking-planner]")
+    .forEach((planner) => {
+      const form = planner.querySelector<HTMLFormElement>(
+        "[data-booking-form]",
+      );
+      const villaSelect = form?.elements.namedItem(
+        "villa",
+      ) as HTMLSelectElement | null;
+      const checkIn = form?.elements.namedItem(
+        "checkIn",
+      ) as HTMLInputElement | null;
+      const checkOut = form?.elements.namedItem(
+        "checkOut",
+      ) as HTMLInputElement | null;
+      const guestSelect = form?.elements.namedItem(
+        "guests",
+      ) as HTMLSelectElement | null;
+      const result = planner.querySelector<HTMLElement>(
+        "[data-planner-result]",
+      );
+      const empty = planner.querySelector<HTMLElement>("[data-planner-empty]");
+      const error = planner.querySelector<HTMLElement>("[data-planner-error]");
+      const cta =
+        planner.querySelector<HTMLAnchorElement>("[data-planner-cta]");
+      const whatsappCta = planner.querySelector<HTMLAnchorElement>(
+        "[data-planner-whatsapp]",
+      );
+      const discountRow = planner.querySelector<HTMLElement>(
+        "[data-planner-discount-row]",
+      );
+      const whatsappNumber = planner.dataset.whatsappNumber ?? "";
+
+      function selectedVilla() {
+        return villaSelect?.selectedOptions[0] ?? null;
+      }
+
+      function updateGuests() {
+        if (!guestSelect) return;
+        const option = selectedVilla();
+        const maximumGuests = Number(option?.dataset.guests ?? 0);
+        guestSelect.replaceChildren();
+        if (!maximumGuests) {
+          guestSelect.append(new Option("Choose a villa first", ""));
+          guestSelect.disabled = true;
+          return;
+        }
+        for (let guests = 1; guests <= maximumGuests; guests += 1) {
+          guestSelect.append(
+            new Option(
+              `${guests} guest${guests === 1 ? "" : "s"}`,
+              String(guests),
+            ),
+          );
+        }
+        guestSelect.value = String(maximumGuests);
+        guestSelect.disabled = false;
+      }
+
+      function refresh() {
+        const option = selectedVilla();
+        if (
+          !option?.value ||
+          !checkIn?.value ||
+          !checkOut?.value ||
+          !guestSelect?.value
+        ) {
+          result?.classList.add("hidden");
+          error?.classList.add("hidden");
+          empty?.classList.remove("hidden");
+          if (cta) {
+            cta.href = "/villas";
+            cta.removeAttribute("target");
+            cta.removeAttribute("rel");
+            cta.textContent = "Choose a villa and dates";
+          }
+          whatsappCta?.classList.add("hidden");
+          return;
+        }
+
+        try {
+          const quote = calculateStayQuote({
+            checkIn: checkIn.value,
+            checkOut: checkOut.value,
+            bedrooms: Number(option.dataset.bedrooms) as SupportedBedrooms,
+            adjustmentPercent: Number(option.dataset.adjustment ?? 0),
+          });
+
+          empty?.classList.add("hidden");
+          error?.classList.add("hidden");
+          result?.classList.remove("hidden");
+
+          const villaLabel = planner.querySelector<HTMLElement>(
+            "[data-planner-villa]",
+          );
+          const datesLabel = planner.querySelector<HTMLElement>(
+            "[data-planner-dates]",
+          );
+          const nightsLabel = planner.querySelector<HTMLElement>(
+            "[data-planner-nights]",
+          );
+          const subtotal = planner.querySelector<HTMLElement>(
+            "[data-planner-subtotal]",
+          );
+          const discountLabel = planner.querySelector<HTMLElement>(
+            "[data-planner-discount-label]",
+          );
+          const discount = planner.querySelector<HTMLElement>(
+            "[data-planner-discount]",
+          );
+          const total = planner.querySelector<HTMLElement>(
+            "[data-planner-total]",
+          );
+
+          if (villaLabel) villaLabel.textContent = option.value;
+          if (datesLabel)
+            datesLabel.textContent = `${dateLabel(quote.checkIn)} – ${dateLabel(quote.checkOut)}`;
+          if (nightsLabel)
+            nightsLabel.textContent = `${quote.nights} night${quote.nights === 1 ? "" : "s"} · avg. ${money(quote.averageNightlyRate)}`;
+          if (subtotal) subtotal.textContent = money(quote.subtotal);
+          if (total) total.textContent = money(quote.total);
+
+          if (quote.discountPercent > 0) {
+            discountRow?.classList.remove("hidden");
+            discountRow?.classList.add("flex");
+            if (discountLabel)
+              discountLabel.textContent = `Length-of-stay saving · ${quote.discountPercent}%`;
+            if (discount)
+              discount.textContent = `−${money(quote.discountAmount)}`;
+          } else {
+            discountRow?.classList.add("hidden");
+            discountRow?.classList.remove("flex");
+          }
+
+          const message = [
+            "Hello Anjuna Bay,",
+            `I would like to confirm a stay at ${option.value}.`,
+            `Arrival: ${dateLabel(quote.checkIn)}.`,
+            `Departure: ${dateLabel(quote.checkOut)}.`,
+            `Guests: ${guestSelect.value}.`,
+            `Stay: ${quote.nights} night${quote.nights === 1 ? "" : "s"}.`,
+            `Estimated accommodation total: USD ${quote.total}.`,
+            quote.discountPercent > 0
+              ? `The estimate includes a ${quote.discountPercent}% length-of-stay saving.`
+              : "",
+            "Please confirm availability, taxes, any applicable fees and final booking terms.",
+          ]
+            .filter(Boolean)
+            .join(" ");
+
+          const airbnbUrl = option.dataset.airbnbUrl ?? "";
+          if (cta && airbnbUrl) {
+            cta.href = airbnbBookingUrl(airbnbUrl, {
+              checkIn: quote.checkIn,
+              checkOut: quote.checkOut,
+              guests: Number(guestSelect.value),
+            });
+            cta.target = "_blank";
+            cta.rel = "noopener noreferrer";
+            cta.textContent = "Check live availability on Airbnb";
+          } else if (cta && whatsappNumber) {
+            cta.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+            cta.target = "_blank";
+            cta.rel = "noopener noreferrer";
+            cta.textContent = "Confirm on WhatsApp";
+          }
+
+          if (whatsappCta && whatsappNumber) {
+            whatsappCta.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+            whatsappCta.classList.remove("hidden");
+            whatsappCta.classList.add("block");
+          }
+        } catch (caught) {
+          empty?.classList.add("hidden");
+          result?.classList.add("hidden");
+          if (error) {
+            error.textContent =
+              caught instanceof Error
+                ? caught.message
+                : "Please check your dates.";
+            error.classList.remove("hidden");
+          }
+        }
+      }
+
+      villaSelect?.addEventListener("change", () => {
+        updateGuests();
+        refresh();
+      });
+      checkIn?.addEventListener("change", () => {
+        if (!checkIn.value || !checkOut) return;
+        const earliestDeparture = new Date(`${checkIn.value}T00:00:00Z`);
+        earliestDeparture.setTime(earliestDeparture.getTime() + DAY_MS);
+        const minimum = earliestDeparture.toISOString().slice(0, 10);
+        checkOut.min = minimum;
+        checkOut.max = PRICING_CHECKOUT_MAX;
+        if (checkOut.value && checkOut.value < minimum) checkOut.value = "";
+        refresh();
+      });
+      checkOut?.addEventListener("change", refresh);
+      guestSelect?.addEventListener("change", refresh);
+    });
+</script>

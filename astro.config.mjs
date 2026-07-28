@@ -12,7 +12,7 @@ import vercel from '@astrojs/vercel/serverless';
 // no other change needed.
 
 export default defineConfig({
-  site: 'https://anjunabay.com', // TODO: confirm final domain (docs/BUILD.md §14)
+  site: process.env.PUBLIC_SITE_URL ?? 'https://arjunabey.vercel.app',
   output: 'hybrid', // static pages by default; src/pages/api/enquiry.ts opts into server rendering
   adapter: vercel(),
   integrations: [

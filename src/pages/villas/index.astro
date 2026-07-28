@@ -11,7 +11,6 @@ import { itemList, canonicalFor } from '../../lib/seo';
 // visible rather than hidden. Only 'live' villas are ever bookable
 // (CLAUDE.md rule 7 lives in RateBlock/StickyBookingBar, not in this filter).
 const villas = (await getCollection('villas')).sort((a, b) => a.data.order - b.data.order);
-const liveCount = villas.filter((v) => v.data.status === 'live').length;
 
 // Filter option lists are derived from the actual content, never hardcoded —
 // an option only appears if a villa exists that matches it, so the filter

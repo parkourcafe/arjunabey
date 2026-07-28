@@ -17,3 +17,6 @@ npm-debug.log*
 
 # os
 .DS_Store
+.vercel
+.env.local
+.env.*.local
