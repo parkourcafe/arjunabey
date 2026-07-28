@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import pageHero from '../../assets/placeholders/experiences-hero.jpg';
 import ExperienceTile from '../../components/ExperienceTile.astro';
+import Neighbourhood from '../../components/Neighbourhood.astro';
 import { canonicalFor } from '../../lib/seo';
 
 const experiences = (await getCollection('experiences')).sort((a, b) => a.data.order - b.data.order);
@@ -29,4 +30,5 @@ const experiences = (await getCollection('experiences')).sort((a, b) => a.data.o
       {experiences.map((exp) => <ExperienceTile experience={exp} />)}
     </div>
   </div>
+  <Neighbourhood tone="paper" />
 </BaseLayout>

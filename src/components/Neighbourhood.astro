@@ -1,0 +1,84 @@
+---
+/**
+ * Neighbourhood — what is around the estate, named. Answers the question that
+ * decides whether Uluwatu feels like somewhere to stay or somewhere remote:
+ * where do I eat, where does the day end, and how far is the surf.
+ *
+ * Each group leads with a photograph rather than another list, because three
+ * lists in a row is exactly what this section would otherwise become.
+ * Venues are independent businesses — see lib/neighbourhood.ts for sourcing.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { NEIGHBOURHOOD, GETTING_AROUND_NOTE } from '../lib/neighbourhood';
+import surfImage from '../assets/placeholders/experience-surf.jpg';
+import diningImage from '../assets/placeholders/experience-dining.jpg';
+import sunsetImage from '../assets/placeholders/experience-celebrations.jpg';
+
+export interface Props {
+  tone?: 'sand' | 'paper';
+}
+
+const { tone = 'sand' } = Astro.props;
+
+const IMAGES: Record<string, { src: ImageMetadata; alt: string }> = {
+  surf: { src: surfImage, alt: 'A wave peeling along an Uluwatu reef break' },
+  eat: { src: diningImage, alt: 'Breakfast served beside a villa pool' },
+  sunset: { src: sunsetImage, alt: 'A clifftop table set at dusk above the ocean' },
+};
+---
+
+<section class:list={['section', tone === 'paper' ? 'bg-paper' : 'bg-sand']}>
+  <div class="container-content">
+    <div class="fade-in-up mx-auto max-w-xl text-center">
+      <p class="eyebrow mb-5 text-muted">The neighbourhood</p>
+      <h2 class="font-serif text-h1 font-light text-ink">Life on the Bukit</h2>
+      <p class="mt-6 font-serif text-lg leading-relaxed text-ink/85">
+        Surfers found this coast first and the rest followed — coffee worth the ride, dinner on
+        the cliff, and a sunset everybody stops for.
+      </p>
+    </div>
+  </div>
+
+  <div class="container-wide mt-14 md:mt-16">
+    <div class="grid grid-cols-1 gap-x-10 gap-y-14 md:grid-cols-3 md:gap-x-12">
+      {
+        NEIGHBOURHOOD.map((group) => (
+          <div class="fade-in-up">
+            {IMAGES[group.id] && (
+              <div class="mb-7 overflow-hidden">
+                <Image
+                  src={IMAGES[group.id].src}
+                  alt={IMAGES[group.id].alt}
+                  widths={[400, 700, 1000]}
+                  sizes="(min-width: 768px) 33vw, 100vw"
+                  class="aspect-[4/3] w-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            )}
+
+            <h3 class="font-serif text-h3 font-light text-ink">{group.title}</h3>
+            <p class="mt-2.5 text-sm leading-relaxed text-muted">{group.intro}</p>
+
+            <ul class="mt-6">
+              {group.places.map((place) => (
+                <li class="border-b border-hairline py-3.5 first:border-t">
+                  <div class="flex items-baseline justify-between gap-4">
+                    <span class="text-ink">{place.name}</span>
+                    <span class="shrink-0 text-sm text-muted">{place.distance}</span>
+                  </div>
+                  <p class="mt-0.5 text-sm text-muted">{place.detail}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="mx-auto mt-14 max-w-2xl text-center text-sm leading-relaxed text-muted">
+      {GETTING_AROUND_NOTE}
+    </p>
+  </div>
+</section>
