@@ -1,0 +1,65 @@
+# Temporary utility workflow: fetches generated imagery and the aerial hero
+# film (the media CDN is unreachable from the dev container's network) and
+# commits them. Safe to delete once the assets are in place.
+name: Fetch aerial hero and page imagery
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download
+        run: |
+          set -euo pipefail
+          B=https://d8j0ntlcm91z4.cloudfront.net/user_3EKntK4EDjG8nay4H1dy1TK30mB
+          curl -fsSL -o /tmp/aerial.mp4       "$B/hf_20260728_174234_45c70e4a-2a21-402d-8289-c2a3a27e3153.mp4"
+          curl -fsSL -o /tmp/aerial-frame.png "$B/hf_20260728_174002_3b564906-ec98-44a0-a73e-b543fe732d08.png"
+          curl -fsSL -o /tmp/experiences.png  "$B/hf_20260728_174302_20a8472d-aef0-473c-baa1-588b73fe051b.png"
+          curl -fsSL -o /tmp/offers.png       "$B/hf_20260728_174305_ad7d03a8-c88f-46e2-82ca-48ed2b976863.png"
+          curl -fsSL -o /tmp/journal.png      "$B/hf_20260728_174317_4dba9626-af22-4576-9d4a-6f96e794562b.png"
+          curl -fsSL -o /tmp/contact.png      "$B/hf_20260728_174321_b32a6220-28a9-409a-8b31-d558281251d1.png"
+
+      - name: Encode
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg imagemagick
+          P=src/assets/placeholders
+          mkdir -p "$P" public/video
+
+          # Hero film: silent 1080p H.264 for autoplay, plus an audio-bearing
+          # copy the sound toggle switches to on demand.
+          ffmpeg -y -i /tmp/aerial.mp4 -an -c:v libx264 -preset slow -crf 23 \
+            -vf "scale=1920:1080" -pix_fmt yuv420p -movflags +faststart public/video/hero.mp4
+          ffmpeg -y -i /tmp/aerial.mp4 -c:v libx264 -preset slow -crf 23 \
+            -vf "scale=1920:1080" -pix_fmt yuv420p -c:a aac -b:a 128k \
+            -movflags +faststart public/video/hero-sound.mp4
+
+          # Poster must match the film's first frame or the swap is visible.
+          convert /tmp/aerial-frame.png -quality 88 "$P/home-hero.jpg"
+
+          convert /tmp/experiences.png -quality 88 "$P/experiences-hero.jpg"
+          convert /tmp/offers.png      -quality 88 "$P/offers-hero.jpg"
+          convert /tmp/journal.png     -quality 88 "$P/journal-hero.jpg"
+          convert /tmp/contact.png     -quality 88 "$P/contact-hero.jpg"
+
+          # New frames — drop stale pristine copies so the grading script
+          # re-seeds from these.
+          rm -rf "$P/.originals"
+          ls -la "$P" public/video
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/video src/assets/placeholders
+          git commit -m "Add the aerial hero film and full-bleed page imagery"
+          git push origin main
