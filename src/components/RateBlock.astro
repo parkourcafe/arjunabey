@@ -6,8 +6,8 @@
  * availability. Until Guesty is connected, selected dates, guests and the
  * calculated accommodation total are passed to WhatsApp for confirmation.
  */
-import { bookingLink, hasGuestyBooking } from '../lib/guesty';
-import { whatsappLink, whatsappNumber } from '../lib/whatsapp';
+import { bookingLink, hasGuestyBooking } from "../lib/guesty";
+import { whatsappLink, whatsappNumber } from "../lib/whatsapp";
 import {
   PRICING_CHECKOUT_MAX,
   PRICING_LAST_NIGHT,
@@ -15,8 +15,8 @@ import {
   SEASONS,
   publicFromRate,
   type SupportedBedrooms,
-} from '../lib/pricing';
-import WhatsAppButton from './WhatsAppButton.astro';
+} from "../lib/pricing";
+import WhatsAppButton from "./WhatsAppButton.astro";
 
 export interface Props {
   landmarkName: string;
@@ -24,6 +24,7 @@ export interface Props {
   maximumGuests: number;
   pricingAdjustmentPercent?: number;
   guestyUnitId: string | null;
+  airbnbUrl: string | null;
   ratePublic: number | null;
   freeCancelRate: number | null;
   currency: string;
@@ -37,22 +38,30 @@ const {
   maximumGuests,
   pricingAdjustmentPercent = 0,
   guestyUnitId,
+  airbnbUrl,
   ratePublic,
   currency,
   includes,
   offPlan = false,
 } = Astro.props;
 
-const currencySymbol = currency === 'USD' ? '$' : `${currency} `;
+const currencySymbol = currency === "USD" ? "$" : `${currency} `;
 const fromRate = ratePublic ?? publicFromRate(bedrooms);
 const guestyHref = bookingLink(guestyUnitId);
 const showGuestyCta = hasGuestyBooking(guestyUnitId) && guestyHref;
+const bookingProvider = showGuestyCta
+  ? "guesty"
+  : airbnbUrl
+    ? "airbnb"
+    : "whatsapp";
 const waNumber = whatsappNumber();
 const genericWaHref = whatsappLink({ villa: landmarkName });
 const dateLabel = (isoDate: string) =>
-  new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(
-    new Date(`${isoDate}T00:00:00Z`)
-  );
+  new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    timeZone: "UTC",
+  }).format(new Date(`${isoDate}T00:00:00Z`));
 const rateGuide = SEASONS.map((season) => {
   const rates = season.rates[bedrooms];
   const adjustment = 1 + pricingAdjustmentPercent / 100;
@@ -70,8 +79,8 @@ const rateGuide = SEASONS.map((season) => {
       <p class="eyebrow mb-5 text-clay">Coming soon</p>
       <p class="font-serif text-2xl text-ink">Not yet mandated for booking.</p>
       <p class="mt-4 text-sm leading-relaxed text-muted">
-        {landmarkName} is still completing handover, furnishing and licensing. We'll open it for
-        reservations once a signed owner mandate is confirmed.
+        {landmarkName} is still completing handover, furnishing and licensing.
+        We'll open it for reservations once a signed owner mandate is confirmed.
       </p>
       <div class="mt-6">
         <WhatsAppButton
@@ -91,12 +100,16 @@ const rateGuide = SEASONS.map((season) => {
       data-bedrooms={bedrooms}
       data-adjustment={pricingAdjustmentPercent}
       data-currency={currency}
-      data-whatsapp-number={waNumber ?? ''}
+      data-whatsapp-number={waNumber ?? ""}
+      data-airbnb-url={airbnbUrl ?? ""}
+      data-booking-provider={bookingProvider}
     >
       <div class="flex items-start justify-between gap-5">
         <div>
           <p class="eyebrow">Plan your stay</p>
-          <h2 class="mt-2 font-serif text-2xl text-ink">Check your stay price</h2>
+          <h2 class="mt-2 font-serif text-2xl text-ink">
+            Check your stay price
+          </h2>
         </div>
         <p class="shrink-0 text-right text-sm text-muted">
           From
@@ -146,31 +159,48 @@ const rateGuide = SEASONS.map((season) => {
             name="guests"
             class="w-full border border-hairline bg-sand px-3 py-3 text-sm text-ink focus:border-ocean focus:outline-none"
           >
-            {Array.from({ length: maximumGuests }, (_, index) => index + 1).map((guests) => (
-              <option value={guests} selected={guests === maximumGuests}>
-                {guests} guest{guests === 1 ? '' : 's'}
-              </option>
-            ))}
+            {Array.from({ length: maximumGuests }, (_, index) => index + 1).map(
+              (guests) => (
+                <option value={guests} selected={guests === maximumGuests}>
+                  {guests} guest{guests === 1 ? "" : "s"}
+                </option>
+              ),
+            )}
           </select>
         </label>
       </form>
 
-      <p class="mt-5 hidden border-l-2 border-clay pl-3 text-sm text-ink" data-quote-error aria-live="polite" />
+      <p
+        class="mt-5 hidden border-l-2 border-clay pl-3 text-sm text-ink"
+        data-quote-error
+        aria-live="polite"
+      />
 
-      <div class="mt-6 hidden border-t border-hairline pt-5" data-quote-result aria-live="polite">
+      <div
+        class="mt-6 hidden border-t border-hairline pt-5"
+        data-quote-result
+        aria-live="polite"
+      >
         <div class="space-y-2 text-sm">
           <div class="flex justify-between gap-4 text-muted">
             <span data-quote-nights />
             <span data-quote-subtotal />
           </div>
-          <div class="hidden justify-between gap-4 text-ocean" data-quote-discount-row>
+          <div
+            class="hidden justify-between gap-4 text-ocean"
+            data-quote-discount-row
+          >
             <span data-quote-discount-label />
             <span data-quote-discount />
           </div>
           <div class="mt-4 flex items-end justify-between gap-4 border-t border-hairline pt-4">
             <div>
-              <p class="text-xs uppercase tracking-[0.12em] text-muted">Accommodation total</p>
-              <p class="mt-1 text-xs text-muted">Availability and final charges confirmed before payment</p>
+              <p class="text-xs uppercase tracking-[0.12em] text-muted">
+                Accommodation total
+              </p>
+              <p class="mt-1 text-xs text-muted">
+                Availability and final charges confirmed before payment
+              </p>
             </div>
             <span class="font-serif text-3xl text-ink" data-quote-total />
           </div>
@@ -178,49 +208,70 @@ const rateGuide = SEASONS.map((season) => {
       </div>
 
       <div class="mt-6">
-        {
-          showGuestyCta ? (
-            <a
-              href={guestyHref}
-              class="btn-primary w-full"
-              data-track="start_booking"
-              data-villa={landmarkName}
-              data-quote-cta
-            >
-              Check availability
-            </a>
-          ) : (
-            <a
-              href={genericWaHref ?? '/contact'}
-              target={genericWaHref ? '_blank' : undefined}
-              rel={genericWaHref ? 'noopener noreferrer' : undefined}
-              class="btn-primary w-full"
-              data-track="whatsapp_click"
-              data-villa={landmarkName}
-              data-quote-cta
-            >
-              {genericWaHref ? 'Confirm dates on WhatsApp' : 'Send an enquiry'}
-            </a>
-          )
-        }
+        {showGuestyCta ? (
+          <a
+            href={guestyHref}
+            class="btn-primary w-full"
+            data-track="start_booking"
+            data-villa={landmarkName}
+            data-quote-cta
+          >
+            Check availability
+          </a>
+        ) : airbnbUrl ? (
+          <a
+            href={airbnbUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-primary w-full"
+            data-track="start_booking"
+            data-villa={landmarkName}
+            data-quote-cta
+          >
+            Check live availability on Airbnb
+          </a>
+        ) : (
+          <a
+            href={genericWaHref ?? "/contact"}
+            target={genericWaHref ? "_blank" : undefined}
+            rel={genericWaHref ? "noopener noreferrer" : undefined}
+            class="btn-primary w-full"
+            data-track="whatsapp_click"
+            data-villa={landmarkName}
+            data-quote-cta
+          >
+            {genericWaHref ? "Confirm dates on WhatsApp" : "Send an enquiry"}
+          </a>
+        )}
+        {airbnbUrl && genericWaHref && (
+          <a
+            href={genericWaHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-3 block text-center text-sm text-ocean underline underline-offset-4"
+            data-track="whatsapp_click"
+            data-villa={landmarkName}
+          >
+            Ask a question on WhatsApp
+          </a>
+        )}
         <p class="mt-3 text-center text-xs leading-relaxed text-muted">
-          This calculator shows the accommodation rate. Live availability, taxes and any applicable
-          fees are confirmed with our reservations team.
+          {airbnbUrl
+            ? "Airbnb shows live availability, applicable fees, cancellation terms and secure payment. The estimate above is the Anjuna Bay accommodation rate."
+            : "This calculator shows the accommodation rate. Live availability, taxes and any applicable fees are confirmed with our reservations team."}
         </p>
       </div>
 
-      {
-        includes.length > 0 && (
-          <ul class="mt-6 space-y-1.5 border-t border-hairline pt-5 text-sm text-ink">
-            {includes.map((item) => (
-              <li class="flex items-center gap-2">
-                <span class="h-1 w-1 shrink-0 bg-clay" aria-hidden="true" />
-                {item}
-              </li>
-            ))}
-          </ul>
-        )
-      }
+      {includes.length > 0 && (
+        <ul class="mt-6 space-y-1.5 border-t border-hairline pt-5 text-sm text-ink">
+          {includes.map((item) => (
+            <li class="flex items-center gap-2">
+              <span class="h-1 w-1 shrink-0 bg-clay" aria-hidden="true" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <details class="mt-6 border-t border-hairline pt-5">
         <summary class="cursor-pointer text-sm font-medium text-ocean">
@@ -245,8 +296,14 @@ const rateGuide = SEASONS.map((season) => {
                       {dateLabel(season.start)}–{dateLabel(season.end)}
                     </span>
                   </td>
-                  <td class="py-2.5 text-right">{currencySymbol}{season.weekday}</td>
-                  <td class="py-2.5 text-right">{currencySymbol}{season.weekend}</td>
+                  <td class="py-2.5 text-right">
+                    {currencySymbol}
+                    {season.weekday}
+                  </td>
+                  <td class="py-2.5 text-right">
+                    {currencySymbol}
+                    {season.weekend}
+                  </td>
                   <td class="py-2.5 text-right">{season.minimumStay}n</td>
                 </tr>
               ))}
@@ -259,131 +316,173 @@ const rateGuide = SEASONS.map((season) => {
 }
 
 <script>
+  import { airbnbBookingUrl } from "../lib/airbnb";
   import {
     PRICING_CHECKOUT_MAX,
     calculateStayQuote,
     type SupportedBedrooms,
-  } from '../lib/pricing';
+  } from "../lib/pricing";
 
   const DAY_MS = 86_400_000;
 
   function formatMoney(amount: number, currency: string): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
       currency,
       maximumFractionDigits: 0,
     }).format(amount);
   }
 
   function formatDate(isoDate: string): string {
-    return new Intl.DateTimeFormat('en-GB', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      timeZone: 'UTC',
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
     }).format(new Date(`${isoDate}T00:00:00Z`));
   }
 
-  document.querySelectorAll<HTMLElement>('[data-rate-calculator]').forEach((calculator) => {
-    const form = calculator.querySelector<HTMLFormElement>('[data-quote-form]');
-    const checkIn = form?.elements.namedItem('checkIn') as HTMLInputElement | null;
-    const checkOut = form?.elements.namedItem('checkOut') as HTMLInputElement | null;
-    const guests = form?.elements.namedItem('guests') as HTMLSelectElement | null;
-    const result = calculator.querySelector<HTMLElement>('[data-quote-result]');
-    const error = calculator.querySelector<HTMLElement>('[data-quote-error]');
-    const cta = calculator.querySelector<HTMLAnchorElement>('[data-quote-cta]');
-    const discountRow = calculator.querySelector<HTMLElement>('[data-quote-discount-row]');
-    const villa = calculator.dataset.villa ?? 'Anjuna Bay villa';
-    const bedrooms = Number(calculator.dataset.bedrooms) as SupportedBedrooms;
-    const adjustmentPercent = Number(calculator.dataset.adjustment ?? 0);
-    const currency = calculator.dataset.currency ?? 'USD';
-    const whatsappNumber = calculator.dataset.whatsappNumber ?? '';
+  document
+    .querySelectorAll<HTMLElement>("[data-rate-calculator]")
+    .forEach((calculator) => {
+      const form =
+        calculator.querySelector<HTMLFormElement>("[data-quote-form]");
+      const checkIn = form?.elements.namedItem(
+        "checkIn",
+      ) as HTMLInputElement | null;
+      const checkOut = form?.elements.namedItem(
+        "checkOut",
+      ) as HTMLInputElement | null;
+      const guests = form?.elements.namedItem(
+        "guests",
+      ) as HTMLSelectElement | null;
+      const result = calculator.querySelector<HTMLElement>(
+        "[data-quote-result]",
+      );
+      const error = calculator.querySelector<HTMLElement>("[data-quote-error]");
+      const cta =
+        calculator.querySelector<HTMLAnchorElement>("[data-quote-cta]");
+      const discountRow = calculator.querySelector<HTMLElement>(
+        "[data-quote-discount-row]",
+      );
+      const villa = calculator.dataset.villa ?? "Anjuna Bay villa";
+      const bedrooms = Number(calculator.dataset.bedrooms) as SupportedBedrooms;
+      const adjustmentPercent = Number(calculator.dataset.adjustment ?? 0);
+      const currency = calculator.dataset.currency ?? "USD";
+      const whatsappNumber = calculator.dataset.whatsappNumber ?? "";
+      const airbnbUrl = calculator.dataset.airbnbUrl ?? "";
+      const bookingProvider = calculator.dataset.bookingProvider ?? "whatsapp";
 
-    function hideQuote() {
-      result?.classList.add('hidden');
-      error?.classList.add('hidden');
-    }
-
-    function refreshQuote() {
-      if (!checkIn?.value || !checkOut?.value || !guests) {
-        hideQuote();
-        return;
+      function hideQuote() {
+        result?.classList.add("hidden");
+        error?.classList.add("hidden");
       }
 
-      try {
-        const quote = calculateStayQuote({
-          checkIn: checkIn.value,
-          checkOut: checkOut.value,
-          bedrooms,
-          adjustmentPercent,
-        });
-
-        error?.classList.add('hidden');
-        result?.classList.remove('hidden');
-
-        const nightsLabel = calculator.querySelector<HTMLElement>('[data-quote-nights]');
-        const subtotalLabel = calculator.querySelector<HTMLElement>('[data-quote-subtotal]');
-        const discountLabel = calculator.querySelector<HTMLElement>('[data-quote-discount-label]');
-        const discountValue = calculator.querySelector<HTMLElement>('[data-quote-discount]');
-        const totalLabel = calculator.querySelector<HTMLElement>('[data-quote-total]');
-
-        if (nightsLabel) {
-          nightsLabel.textContent = `${quote.nights} night${quote.nights === 1 ? '' : 's'} · avg. ${formatMoney(quote.averageNightlyRate, currency)}`;
-        }
-        if (subtotalLabel) subtotalLabel.textContent = formatMoney(quote.subtotal, currency);
-        if (totalLabel) totalLabel.textContent = formatMoney(quote.total, currency);
-
-        if (quote.discountPercent > 0) {
-          discountRow?.classList.remove('hidden');
-          discountRow?.classList.add('flex');
-          if (discountLabel) discountLabel.textContent = `Length-of-stay saving · ${quote.discountPercent}%`;
-          if (discountValue) discountValue.textContent = `−${formatMoney(quote.discountAmount, currency)}`;
-        } else {
-          discountRow?.classList.add('hidden');
-          discountRow?.classList.remove('flex');
+      function refreshQuote() {
+        if (!checkIn?.value || !checkOut?.value || !guests) {
+          hideQuote();
+          return;
         }
 
-        if (cta && whatsappNumber) {
-          const message = [
-            'Hello Anjuna Bay,',
-            `I would like to confirm a stay at ${villa}.`,
-            `Arrival: ${formatDate(quote.checkIn)}.`,
-            `Departure: ${formatDate(quote.checkOut)}.`,
-            `Guests: ${guests.value}.`,
-            `Stay: ${quote.nights} night${quote.nights === 1 ? '' : 's'}.`,
-            `Estimated accommodation total: ${currency} ${quote.total}.`,
-            quote.discountPercent > 0
-              ? `The estimate includes a ${quote.discountPercent}% length-of-stay saving.`
-              : '',
-            'Please confirm availability, taxes, any applicable fees and final booking terms.',
-          ]
-            .filter(Boolean)
-            .join(' ');
-          cta.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-          cta.target = '_blank';
-          cta.rel = 'noopener noreferrer';
-          cta.textContent = 'Confirm dates on WhatsApp';
-        }
-      } catch (caught) {
-        result?.classList.add('hidden');
-        if (error) {
-          error.textContent = caught instanceof Error ? caught.message : 'Please check your dates.';
-          error.classList.remove('hidden');
+        try {
+          const quote = calculateStayQuote({
+            checkIn: checkIn.value,
+            checkOut: checkOut.value,
+            bedrooms,
+            adjustmentPercent,
+          });
+
+          error?.classList.add("hidden");
+          result?.classList.remove("hidden");
+
+          const nightsLabel = calculator.querySelector<HTMLElement>(
+            "[data-quote-nights]",
+          );
+          const subtotalLabel = calculator.querySelector<HTMLElement>(
+            "[data-quote-subtotal]",
+          );
+          const discountLabel = calculator.querySelector<HTMLElement>(
+            "[data-quote-discount-label]",
+          );
+          const discountValue = calculator.querySelector<HTMLElement>(
+            "[data-quote-discount]",
+          );
+          const totalLabel =
+            calculator.querySelector<HTMLElement>("[data-quote-total]");
+
+          if (nightsLabel) {
+            nightsLabel.textContent = `${quote.nights} night${quote.nights === 1 ? "" : "s"} · avg. ${formatMoney(quote.averageNightlyRate, currency)}`;
+          }
+          if (subtotalLabel)
+            subtotalLabel.textContent = formatMoney(quote.subtotal, currency);
+          if (totalLabel)
+            totalLabel.textContent = formatMoney(quote.total, currency);
+
+          if (quote.discountPercent > 0) {
+            discountRow?.classList.remove("hidden");
+            discountRow?.classList.add("flex");
+            if (discountLabel)
+              discountLabel.textContent = `Length-of-stay saving · ${quote.discountPercent}%`;
+            if (discountValue)
+              discountValue.textContent = `−${formatMoney(quote.discountAmount, currency)}`;
+          } else {
+            discountRow?.classList.add("hidden");
+            discountRow?.classList.remove("flex");
+          }
+
+          if (cta && bookingProvider === "airbnb" && airbnbUrl) {
+            cta.href = airbnbBookingUrl(airbnbUrl, {
+              checkIn: quote.checkIn,
+              checkOut: quote.checkOut,
+              guests: Number(guests.value),
+            });
+            cta.target = "_blank";
+            cta.rel = "noopener noreferrer";
+            cta.textContent = "Check live availability on Airbnb";
+          } else if (cta && bookingProvider === "whatsapp" && whatsappNumber) {
+            const message = [
+              "Hello Anjuna Bay,",
+              `I would like to confirm a stay at ${villa}.`,
+              `Arrival: ${formatDate(quote.checkIn)}.`,
+              `Departure: ${formatDate(quote.checkOut)}.`,
+              `Guests: ${guests.value}.`,
+              `Stay: ${quote.nights} night${quote.nights === 1 ? "" : "s"}.`,
+              `Estimated accommodation total: ${currency} ${quote.total}.`,
+              quote.discountPercent > 0
+                ? `The estimate includes a ${quote.discountPercent}% length-of-stay saving.`
+                : "",
+              "Please confirm availability, taxes, any applicable fees and final booking terms.",
+            ]
+              .filter(Boolean)
+              .join(" ");
+            cta.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+            cta.target = "_blank";
+            cta.rel = "noopener noreferrer";
+            cta.textContent = "Confirm dates on WhatsApp";
+          }
+        } catch (caught) {
+          result?.classList.add("hidden");
+          if (error) {
+            error.textContent =
+              caught instanceof Error
+                ? caught.message
+                : "Please check your dates.";
+            error.classList.remove("hidden");
+          }
         }
       }
-    }
 
-    checkIn?.addEventListener('change', () => {
-      if (!checkIn.value || !checkOut) return;
-      const earliestDeparture = new Date(`${checkIn.value}T00:00:00Z`);
-      earliestDeparture.setTime(earliestDeparture.getTime() + DAY_MS);
-      const minimum = earliestDeparture.toISOString().slice(0, 10);
-      checkOut.min = minimum;
-      checkOut.max = PRICING_CHECKOUT_MAX;
-      if (checkOut.value && checkOut.value < minimum) checkOut.value = '';
-      refreshQuote();
+      checkIn?.addEventListener("change", () => {
+        if (!checkIn.value || !checkOut) return;
+        const earliestDeparture = new Date(`${checkIn.value}T00:00:00Z`);
+        earliestDeparture.setTime(earliestDeparture.getTime() + DAY_MS);
+        const minimum = earliestDeparture.toISOString().slice(0, 10);
+        checkOut.min = minimum;
+        checkOut.max = PRICING_CHECKOUT_MAX;
+        if (checkOut.value && checkOut.value < minimum) checkOut.value = "";
+        refreshQuote();
+      });
+      checkOut?.addEventListener("change", refreshQuote);
+      guests?.addEventListener("change", refreshQuote);
     });
-    checkOut?.addEventListener('change', refreshQuote);
-    guests?.addEventListener('change', refreshQuote);
-  });
 </script>

@@ -1,26 +1,27 @@
 ---
 /**
  * Reserve — Guesty booking engine embed. noindex (docs/BUILD.md §9.10).
- * Falls back to WhatsApp + enquiry when PUBLIC_GUESTY_BOOKING_URL isn't
- * configured yet, rather than rendering a dead/blank page.
+ * Until the direct Guesty engine is connected, the planner calculates the
+ * stay and hands the guest to the villa's verified Airbnb live checkout.
  */
-import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import BookingPlanner from '../components/BookingPlanner.astro';
-import WhatsAppButton from '../components/WhatsAppButton.astro';
-import { canonicalFor } from '../lib/seo';
-import { getCollection } from 'astro:content';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import BookingPlanner from "../components/BookingPlanner.astro";
+import StayAssistant from "../components/StayAssistant.astro";
+import WhatsAppButton from "../components/WhatsAppButton.astro";
+import { canonicalFor } from "../lib/seo";
+import { getCollection } from "astro:content";
 
 const guestyBaseUrl = import.meta.env.PUBLIC_GUESTY_BOOKING_URL;
-const villas = (await getCollection('villas'))
-  .filter((villa) => villa.data.status === 'live')
+const villas = (await getCollection("villas"))
+  .filter((villa) => villa.data.status === "live")
   .sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout
   title="Reserve | Anjuna Bay"
   description="Reserve your stay at Anjuna Bay."
-  canonicalUrl={canonicalFor('/book')}
+  canonicalUrl={canonicalFor("/book")}
   noindex={true}
 >
   <div class="container-content pb-section pt-32 md:pt-40">
@@ -44,10 +45,13 @@ const villas = (await getCollection('villas'))
           <div class="mt-20 border-t border-hairline pt-12">
             <div>
               <p class="eyebrow">Prefer a conversation</p>
-              <h2 class="mt-2 font-serif text-3xl text-ink">Tell us what would make the stay right</h2>
+              <h2 class="mt-2 font-serif text-3xl text-ink">
+                Tell us what would make the stay right
+              </h2>
               <p class="mt-4 max-w-md text-sm leading-relaxed text-muted">
-                Share your dates, group and what matters most. We can help match you to the right
-                villa before confirming the reservation.
+                Share your dates, group and what matters most. We can help match
+                you to the right villa, while the live Airbnb checkout remains
+                available for immediate booking.
               </p>
               <div class="mt-6">
                 <WhatsAppButton variant="button" />
@@ -58,4 +62,5 @@ const villas = (await getCollection('villas'))
       )
     }
   </div>
+  <StayAssistant />
 </BaseLayout>

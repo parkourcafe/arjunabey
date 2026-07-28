@@ -8,21 +8,26 @@
  * StickyBookingBar switch to a "Coming soon / Register interest" state and
  * never render as bookable — CLAUDE.md rule 7).
  */
-import { getCollection } from 'astro:content';
-import { Image } from 'astro:assets';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import VillaGallery from '../../components/VillaGallery.astro';
-import AmenityList from '../../components/AmenityList.astro';
-import WalkTimeMap from '../../components/WalkTimeMap.astro';
-import RateBlock from '../../components/RateBlock.astro';
-import RatingBadge from '../../components/RatingBadge.astro';
-import GoodToKnow from '../../components/GoodToKnow.astro';
-import StickyBookingBar from '../../components/StickyBookingBar.astro';
-import { vacationRental, breadcrumbList, canonicalFor } from '../../lib/seo';
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import VillaGallery from "../../components/VillaGallery.astro";
+import AmenityList from "../../components/AmenityList.astro";
+import WalkTimeMap from "../../components/WalkTimeMap.astro";
+import RateBlock from "../../components/RateBlock.astro";
+import RatingBadge from "../../components/RatingBadge.astro";
+import GoodToKnow from "../../components/GoodToKnow.astro";
+import StickyBookingBar from "../../components/StickyBookingBar.astro";
+import StayAssistant from "../../components/StayAssistant.astro";
+import { airbnbListingUrl } from "../../lib/airbnb";
+import { vacationRental, breadcrumbList, canonicalFor } from "../../lib/seo";
 
 export async function getStaticPaths() {
-  const villas = await getCollection('villas');
-  return villas.map((villa) => ({ params: { slug: villa.slug }, props: { villa } }));
+  const villas = await getCollection("villas");
+  return villas.map((villa) => ({
+    params: { slug: villa.slug },
+    props: { villa },
+  }));
 }
 
 const { villa } = Astro.props;
@@ -30,7 +35,9 @@ const d = villa.data;
 const { Content } = await villa.render();
 
 const canonicalUrl = canonicalFor(`/villas/${villa.slug}`);
-const title = d.seo?.title ?? `${d.landmarkName} — ${d.bedrooms}-Bedroom Pool Villa | Anjuna Bay`;
+const title =
+  d.seo?.title ??
+  `${d.landmarkName} — ${d.bedrooms}-Bedroom Pool Villa | Anjuna Bay`;
 const description =
   d.seo?.description ??
   `${d.landmarkName} — a ${d.bedrooms}-bedroom cliffside pool villa at Anjuna Bay, a short walk from Thomas Beach, Uluwatu.`;
@@ -46,18 +53,20 @@ const jsonLd = [
       reviewCount: d.reviewCount ?? null,
       heroImageUrl: d.heroImage.src,
     },
-    canonicalUrl
+    canonicalUrl,
   ),
   breadcrumbList([
-    { name: 'Home', url: canonicalFor('/') },
-    { name: 'Villas', url: canonicalFor('/villas') },
+    { name: "Home", url: canonicalFor("/") },
+    { name: "Villas", url: canonicalFor("/villas") },
     { name: d.landmarkName, url: canonicalUrl },
   ]),
 ];
 
 const walkEntries = Object.entries(d.walkTimes);
-const primaryWalk = walkEntries.length > 0 ? Math.min(...walkEntries.map(([, m]) => m)) : null;
-const offPlan = d.status === 'off-plan';
+const primaryWalk =
+  walkEntries.length > 0 ? Math.min(...walkEntries.map(([, m]) => m)) : null;
+const offPlan = d.status === "off-plan";
+const airbnbUrl = airbnbListingUrl(villa.slug);
 ---
 
 <BaseLayout
@@ -70,7 +79,9 @@ const offPlan = d.status === 'off-plan';
 >
   <!-- Full-bleed opener: the villa arrives as a photograph with its name in
        it, the way a hotel presents a suite — the gallery follows below. -->
-  <section class="relative flex h-[78vh] min-h-[520px] items-end overflow-hidden bg-ink">
+  <section
+    class="relative flex h-[78vh] min-h-[520px] items-end overflow-hidden bg-ink"
+  >
     <Image
       src={d.heroImage}
       alt={`${d.landmarkName} — ${d.bedrooms}-bedroom pool villa at Anjuna Bay`}
@@ -86,7 +97,9 @@ const offPlan = d.status === 'off-plan';
     >
     </div>
 
-    <div class="container-content relative z-10 pb-14 pt-32 text-paper md:pb-20">
+    <div
+      class="container-content relative z-10 pb-14 pt-32 text-paper md:pb-20"
+    >
       {
         offPlan && (
           <span class="mb-5 inline-block border border-paper/50 px-3 py-1 text-eyebrow uppercase text-paper">
@@ -95,13 +108,13 @@ const offPlan = d.status === 'off-plan';
         )
       }
       <p class="eyebrow mb-4 text-paper/75">
-        Anjuna Bay{primaryWalk ? ` · ${primaryWalk} min to Thomas Beach` : ''}
+        Anjuna Bay{primaryWalk ? ` · ${primaryWalk} min to Thomas Beach` : ""}
       </p>
       <h1 class="max-w-3xl font-serif text-display font-medium text-paper">
         {d.landmarkName}
       </h1>
       <p class="mt-4 font-serif text-lg italic text-paper/85 md:text-xl">
-        {d.bedrooms}-Bedroom Pool Villa · Sleeps {d.bedrooms * 2}
+        {d.bedrooms}-Bedroom Pool Villa · Sleeps {d.maximumGuests}
       </p>
     </div>
   </section>
@@ -113,7 +126,10 @@ const offPlan = d.status === 'off-plan';
       <div class="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-3">
         <div class="lg:col-span-2">
           <div>
-            <RatingBadge rating={d.rating ?? null} reviewCount={d.reviewCount ?? null} />
+            <RatingBadge
+              rating={d.rating ?? null}
+              reviewCount={d.reviewCount ?? null}
+            />
           </div>
 
           <div class="prose-anjuna mt-6 max-w-prose">
@@ -147,6 +163,7 @@ const offPlan = d.status === 'off-plan';
               maximumGuests={d.maximumGuests}
               pricingAdjustmentPercent={d.pricingAdjustmentPercent}
               guestyUnitId={d.guestyUnitId}
+              airbnbUrl={airbnbUrl}
               ratePublic={d.ratePublic}
               freeCancelRate={d.freeCancelRate ?? null}
               currency={d.currency}
@@ -166,4 +183,5 @@ const offPlan = d.status === 'off-plan';
     currency={d.currency}
     offPlan={offPlan}
   />
+  <StayAssistant />
 </BaseLayout>
