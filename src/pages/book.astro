@@ -6,11 +6,15 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
+import BookingPlanner from '../components/BookingPlanner.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
-import EnquiryForm from '../components/EnquiryForm.astro';
 import { canonicalFor } from '../lib/seo';
+import { getCollection } from 'astro:content';
 
 const guestyBaseUrl = import.meta.env.PUBLIC_GUESTY_BOOKING_URL;
+const villas = (await getCollection('villas'))
+  .filter((villa) => villa.data.status === 'live')
+  .sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout
@@ -33,21 +37,24 @@ const guestyBaseUrl = import.meta.env.PUBLIC_GUESTY_BOOKING_URL;
           />
         </div>
       ) : (
-        <div class="mt-10 max-w-xl">
-          <p class="text-ink">
-            Live availability isn't connected here yet
-            {/* TODO(guesty-access): swap in the Guesty embed once
-                PUBLIC_GUESTY_BOOKING_URL is configured — docs/BUILD.md §14. */}
-            — message us on WhatsApp and we'll confirm your dates directly, or send an enquiry
-            below.
-          </p>
-          <div class="mt-6">
-            <WhatsAppButton variant="button" />
+        <>
+          <div class="mt-10">
+            <BookingPlanner villas={villas} />
           </div>
-          <div class="mt-14">
-            <EnquiryForm />
+          <div class="mt-20 border-t border-hairline pt-12">
+            <div>
+              <p class="eyebrow">Prefer a conversation</p>
+              <h2 class="mt-2 font-serif text-3xl text-ink">Tell us what would make the stay right</h2>
+              <p class="mt-4 max-w-md text-sm leading-relaxed text-muted">
+                Share your dates, group and what matters most. We can help match you to the right
+                villa before confirming the reservation.
+              </p>
+              <div class="mt-6">
+                <WhatsAppButton variant="button" />
+              </div>
+            </div>
           </div>
-        </div>
+        </>
       )
     }
   </div>

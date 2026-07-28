@@ -1,11 +1,10 @@
 ---
 /**
  * Footer — rich, Aman-style footer (docs/BUILD.md §3): page index, villa
- * index by bedroom count, contact + WhatsApp, book-direct block, newsletter,
- * guest social (never @anjunabay — that account sells real estate, CLAUDE.md
- * rule 5), utility links, and exactly one restrained investment-enquiries
- * link. Villa index is derived live from the content collection so it can
- * never drift out of sync with what's actually bookable.
+ * index by bedroom count, contact + WhatsApp, a direct-planning block,
+ * utility links, and exactly one restrained investment-enquiries link.
+ * Villa index is derived live from the content collection so it can never
+ * drift out of sync with what's actually bookable.
  */
 import { getCollection } from 'astro:content';
 import WhatsAppButton from './WhatsAppButton.astro';
@@ -79,40 +78,16 @@ const year = new Date().getUTCFullYear();
     </div>
 
     <div>
-      <p class="eyebrow mb-4">Book direct</p>
+      <p class="eyebrow mb-4">Plan direct</p>
       <p class="text-sm leading-relaxed text-ink">
-        Reserve with us directly for our best available rate and a complimentary airport transfer.
+        Choose a villa, calculate your dates and send the complete request directly to the
+        reservations team.
       </p>
-      <a href="/offers" class="mt-4 inline-block text-sm underline">See the offer →</a>
-
-      <p class="eyebrow mb-3 mt-8">The Journal</p>
-      <form class="flex flex-col gap-2" data-newsletter-form>
-        <label for="footer-email" class="text-sm text-muted">
-          Occasional notes from the estate — no spam.
-        </label>
-        <div class="flex gap-2">
-          <input
-            type="email"
-            id="footer-email"
-            name="email"
-            required
-            placeholder="you@example.com"
-            class="w-full border border-hairline bg-sand px-3 py-2 text-sm text-ink placeholder:text-muted focus:border-ocean focus:outline-none"
-          />
-          <button type="submit" class="btn-secondary shrink-0 !px-4">Subscribe</button>
-        </div>
-        <p class="text-xs text-muted" data-newsletter-status></p>
-      </form>
+      <a href="/book" class="mt-4 inline-block text-sm underline">Plan your stay →</a>
     </div>
 
     <div>
-      <p class="eyebrow mb-4">Follow</p>
-      <ul class="space-y-2 text-sm">
-        {/* Guest brand handles only — never @anjunabay (real estate). TODO: confirm final handles. */}
-        <li><a href="https://instagram.com/" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-        <li><a href="https://tiktok.com/" target="_blank" rel="noopener noreferrer">TikTok</a></li>
-      </ul>
-      <p class="eyebrow mb-4 mt-8">Policies</p>
+      <p class="eyebrow mb-4">Policies</p>
       <ul class="space-y-2 text-sm">
         <li><a href="/privacy">Privacy Notice</a></li>
         <li><a href="/terms">Terms</a></li>
@@ -136,16 +111,3 @@ const year = new Date().getUTCFullYear();
     </div>
   </div>
 </footer>
-
-<script>
-  const form = document.querySelector('[data-newsletter-form]');
-  const status = document.querySelector('[data-newsletter-status]');
-
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    // TODO(newsletter-provider): wire to the chosen double-opt-in provider
-    // (docs/BUILD.md §14 open dependencies). Placeholder acknowledgement only.
-    if (status) status.textContent = "Thanks — check your inbox to confirm.";
-    (form as HTMLFormElement).reset();
-  });
-</script>

@@ -143,6 +143,9 @@ const offPlan = d.status === 'off-plan';
           <div class="lg:sticky lg:top-28">
             <RateBlock
               landmarkName={d.landmarkName}
+              bedrooms={d.bedrooms}
+              maximumGuests={d.maximumGuests}
+              pricingAdjustmentPercent={d.pricingAdjustmentPercent}
               guestyUnitId={d.guestyUnitId}
               ratePublic={d.ratePublic}
               freeCancelRate={d.freeCancelRate ?? null}

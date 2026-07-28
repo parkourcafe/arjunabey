@@ -1,22 +1,18 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import EnquiryForm from '../components/EnquiryForm.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import { canonicalFor, faqPage } from '../lib/seo';
-
-const params = Astro.url.searchParams;
-const defaultSegment = params.get('type') === 'investment' ? 'investment' : '';
 
 const faqs = [
   {
     question: 'What is your cancellation policy?',
     answer:
-      'Each villa lists both a non-refundable rate and a free-cancellation rate side by side — choose whichever suits your plans when you book.',
+      'Cancellation terms are confirmed with the final rate before payment, so you can review them before committing.',
   },
   {
     question: 'Do you arrange an airport transfer?',
-    answer: 'Yes — a complimentary airport transfer is included when you book directly with us.',
+    answer: 'Yes. Airport transfers can be arranged on request; the current price is confirmed before booking.',
   },
   {
     question: 'Is there construction near the villas?',
@@ -25,7 +21,7 @@ const faqs = [
   },
   {
     question: 'How do I pay?',
-    answer: 'Payment is handled securely through our booking engine at the time of reservation.',
+    answer: 'After availability is confirmed, the reservations team sends the applicable booking and payment instructions.',
   },
 ];
 ---
@@ -39,8 +35,8 @@ const faqs = [
   <div class="container-content pb-section pt-32 md:pt-40">
     <SectionHeading eyebrow="Get in touch" heading="Enquire" />
     <p class="mt-5 max-w-xl text-ink">
-      For a fast reply, message us on WhatsApp. For anything else — including property and
-      investment enquiries — use the form below.
+      For reservations, questions about your dates, or property enquiries, message us on WhatsApp.
+      It is the fastest way to reach the team while the direct booking connection is being completed.
     </p>
     <div class="mt-6">
       <WhatsAppButton variant="button" />
@@ -48,7 +44,17 @@ const faqs = [
 
     <div class="mt-14 grid grid-cols-1 gap-16 lg:grid-cols-3">
       <div class="lg:col-span-2">
-        <EnquiryForm defaultSegment={defaultSegment} />
+        <div class="border border-hairline bg-paper p-6 md:p-8">
+          <p class="eyebrow">What to include</p>
+          <h2 class="mt-2 font-serif text-3xl text-ink">We can help you choose well</h2>
+          <p class="mt-4 max-w-xl text-sm leading-relaxed text-muted">
+            Send your preferred dates, number of guests and what matters most — beach access,
+            workspace, a longer stay or the quietest available position.
+          </p>
+          <div class="mt-6">
+            <WhatsAppButton variant="button" label="Start a WhatsApp conversation" />
+          </div>
+        </div>
       </div>
 
       <div>

@@ -27,8 +27,9 @@ const villas = defineCollection({
     z.object({
       landmarkName: z.string(), // "Sunset" — never a unit code ("B10") anywhere guest-facing
       status: z.enum(['live', 'off-plan']).default('off-plan'),
-      bedrooms: z.number().int().positive(),
+      bedrooms: z.union([z.literal(1), z.literal(2), z.literal(3)]),
       bathrooms: z.number().positive().optional(),
+      maximumGuests: z.number().int().positive(),
       view: z.string().default('ocean'),
       sizeSqm: z.number().positive().optional(),
       walkTimes: z.record(z.string(), z.number()).default({}), // { thomasBeach: 5, padangPadang: 12 }
@@ -40,6 +41,7 @@ const villas = defineCollection({
       ratePublic: z.number().positive().nullable().default(null),
       freeCancelRate: z.number().positive().nullable().optional(),
       currency: z.string().default('USD'),
+      pricingAdjustmentPercent: z.number().min(-30).max(30).default(0),
 
       // null → booking CTA falls back to WhatsApp (src/lib/guesty.ts bookingLink()).
       guestyUnitId: z.string().nullable().default(null),

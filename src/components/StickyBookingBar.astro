@@ -20,7 +20,7 @@ const currencySymbol = currency === 'USD' ? '$' : `${currency} `;
 const guestyHref = bookingLink(guestyUnitId);
 const showGuestyCta = hasGuestyBooking(guestyUnitId) && guestyHref;
 const waHref = whatsappLink({ villa: landmarkName });
-const cta = showGuestyCta ? guestyHref : waHref;
+const cta = offPlan ? waHref : showGuestyCta ? guestyHref : '#rate';
 ---
 
 {
@@ -31,6 +31,7 @@ const cta = showGuestyCta ? guestyHref : waHref;
           'Coming soon'
         ) : ratePublic ? (
           <>
+            <span class="mr-1 text-xs text-muted">from</span>
             <span class="font-serif text-lg">
               {currencySymbol}
               {ratePublic}
@@ -42,7 +43,7 @@ const cta = showGuestyCta ? guestyHref : waHref;
         )}
       </p>
       <a href={cta} class="btn-primary" data-track="start_booking" data-villa={landmarkName}>
-        {offPlan ? 'Register interest' : showGuestyCta ? 'Reserve' : 'WhatsApp us'}
+        {offPlan ? 'Register interest' : showGuestyCta ? 'Reserve' : 'Check dates'}
       </a>
     </div>
   )

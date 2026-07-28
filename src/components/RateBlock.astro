@@ -1,43 +1,67 @@
 ---
 /**
- * RateBlock — price, terms, and the primary booking CTA for a villa page.
- * Free-cancel sits beside non-refundable (never hide the flexible option —
- * 01_Promotion_Strategy_RU.md §6). Never renders ratePublic below the OTA
- * price (rate-parity rule, CLAUDE.md #2) — that guarantee lives in content
- * review, not in code, so the villa's frontmatter comment flags it (see
- * src/content/villas/*.mdx TODOs).
+ * RateBlock — six-month stay calculator and booking hand-off.
  *
- * Booking CTA: Guesty link when guestyUnitId + PUBLIC_GUESTY_BOOKING_URL are
- * both configured; otherwise falls back to WhatsApp — never a dead button
- * (CLAUDE.md rule 3 / src/lib/guesty.ts).
+ * The calculator quotes approved public asking rates but never claims live
+ * availability. Until Guesty is connected, selected dates, guests and the
+ * calculated accommodation total are passed to WhatsApp for confirmation.
  */
 import { bookingLink, hasGuestyBooking } from '../lib/guesty';
+import { whatsappLink, whatsappNumber } from '../lib/whatsapp';
+import {
+  PRICING_CHECKOUT_MAX,
+  PRICING_LAST_NIGHT,
+  PRICING_START,
+  SEASONS,
+  publicFromRate,
+  type SupportedBedrooms,
+} from '../lib/pricing';
 import WhatsAppButton from './WhatsAppButton.astro';
 
 export interface Props {
   landmarkName: string;
+  bedrooms: SupportedBedrooms;
+  maximumGuests: number;
+  pricingAdjustmentPercent?: number;
   guestyUnitId: string | null;
   ratePublic: number | null;
   freeCancelRate: number | null;
   currency: string;
   includes: string[];
-  /** Off-plan / unmandated villa — never bookable (CLAUDE.md rule 7). */
   offPlan?: boolean;
 }
 
 const {
   landmarkName,
+  bedrooms,
+  maximumGuests,
+  pricingAdjustmentPercent = 0,
   guestyUnitId,
   ratePublic,
-  freeCancelRate,
   currency,
   includes,
   offPlan = false,
 } = Astro.props;
 
 const currencySymbol = currency === 'USD' ? '$' : `${currency} `;
+const fromRate = ratePublic ?? publicFromRate(bedrooms);
 const guestyHref = bookingLink(guestyUnitId);
 const showGuestyCta = hasGuestyBooking(guestyUnitId) && guestyHref;
+const waNumber = whatsappNumber();
+const genericWaHref = whatsappLink({ villa: landmarkName });
+const dateLabel = (isoDate: string) =>
+  new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(
+    new Date(`${isoDate}T00:00:00Z`)
+  );
+const rateGuide = SEASONS.map((season) => {
+  const rates = season.rates[bedrooms];
+  const adjustment = 1 + pricingAdjustmentPercent / 100;
+  return {
+    ...season,
+    weekday: Math.round(rates.weekday * adjustment),
+    weekend: Math.round(rates.weekend * adjustment),
+  };
+});
 ---
 
 {
@@ -47,8 +71,7 @@ const showGuestyCta = hasGuestyBooking(guestyUnitId) && guestyHref;
       <p class="font-serif text-2xl text-ink">Not yet mandated for booking.</p>
       <p class="mt-4 text-sm leading-relaxed text-muted">
         {landmarkName} is still completing handover, furnishing and licensing. We'll open it for
-        reservations once a signed owner mandate is confirmed — register your interest and we'll
-        tell you first.
+        reservations once a signed owner mandate is confirmed.
       </p>
       <div class="mt-6">
         <WhatsAppButton
@@ -60,70 +83,307 @@ const showGuestyCta = hasGuestyBooking(guestyUnitId) && guestyHref;
       </div>
     </div>
   ) : (
-    <div class="border border-hairline bg-paper p-6 md:p-8" id="rate">
-      <p class="eyebrow mb-5">Rate &amp; terms</p>
+    <section
+      class="border border-hairline bg-paper p-6 md:p-8"
+      id="rate"
+      data-rate-calculator
+      data-villa={landmarkName}
+      data-bedrooms={bedrooms}
+      data-adjustment={pricingAdjustmentPercent}
+      data-currency={currency}
+      data-whatsapp-number={waNumber ?? ''}
+    >
+      <div class="flex items-start justify-between gap-5">
+        <div>
+          <p class="eyebrow">Plan your stay</p>
+          <h2 class="mt-2 font-serif text-2xl text-ink">Check your stay price</h2>
+        </div>
+        <p class="shrink-0 text-right text-sm text-muted">
+          From
+          <span class="block font-serif text-2xl text-ink">
+            {currencySymbol}
+            {fromRate}
+          </span>
+          per night
+        </p>
+      </div>
+
+      <form class="mt-7 space-y-5" data-quote-form>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <label class="block">
+            <span class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted">
+              Arrival
+            </span>
+            <input
+              type="date"
+              name="checkIn"
+              min={PRICING_START}
+              max={PRICING_LAST_NIGHT}
+              required
+              class="w-full border border-hairline bg-sand px-3 py-3 text-sm text-ink focus:border-ocean focus:outline-none"
+            />
+          </label>
+          <label class="block">
+            <span class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted">
+              Departure
+            </span>
+            <input
+              type="date"
+              name="checkOut"
+              min={PRICING_START}
+              max={PRICING_CHECKOUT_MAX}
+              required
+              class="w-full border border-hairline bg-sand px-3 py-3 text-sm text-ink focus:border-ocean focus:outline-none"
+            />
+          </label>
+        </div>
+
+        <label class="block">
+          <span class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted">
+            Guests
+          </span>
+          <select
+            name="guests"
+            class="w-full border border-hairline bg-sand px-3 py-3 text-sm text-ink focus:border-ocean focus:outline-none"
+          >
+            {Array.from({ length: maximumGuests }, (_, index) => index + 1).map((guests) => (
+              <option value={guests} selected={guests === maximumGuests}>
+                {guests} guest{guests === 1 ? '' : 's'}
+              </option>
+            ))}
+          </select>
+        </label>
+      </form>
+
+      <p class="mt-5 hidden border-l-2 border-clay pl-3 text-sm text-ink" data-quote-error aria-live="polite" />
+
+      <div class="mt-6 hidden border-t border-hairline pt-5" data-quote-result aria-live="polite">
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between gap-4 text-muted">
+            <span data-quote-nights />
+            <span data-quote-subtotal />
+          </div>
+          <div class="hidden justify-between gap-4 text-ocean" data-quote-discount-row>
+            <span data-quote-discount-label />
+            <span data-quote-discount />
+          </div>
+          <div class="mt-4 flex items-end justify-between gap-4 border-t border-hairline pt-4">
+            <div>
+              <p class="text-xs uppercase tracking-[0.12em] text-muted">Accommodation total</p>
+              <p class="mt-1 text-xs text-muted">Availability and final charges confirmed before payment</p>
+            </div>
+            <span class="font-serif text-3xl text-ink" data-quote-total />
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        {
+          showGuestyCta ? (
+            <a
+              href={guestyHref}
+              class="btn-primary w-full"
+              data-track="start_booking"
+              data-villa={landmarkName}
+              data-quote-cta
+            >
+              Check availability
+            </a>
+          ) : (
+            <a
+              href={genericWaHref ?? '/contact'}
+              target={genericWaHref ? '_blank' : undefined}
+              rel={genericWaHref ? 'noopener noreferrer' : undefined}
+              class="btn-primary w-full"
+              data-track="whatsapp_click"
+              data-villa={landmarkName}
+              data-quote-cta
+            >
+              {genericWaHref ? 'Confirm dates on WhatsApp' : 'Send an enquiry'}
+            </a>
+          )
+        }
+        <p class="mt-3 text-center text-xs leading-relaxed text-muted">
+          This calculator shows the accommodation rate. Live availability, taxes and any applicable
+          fees are confirmed with our reservations team.
+        </p>
+      </div>
 
       {
-    ratePublic ? (
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div class="border border-hairline p-4">
-          <p class="text-xs text-muted">Non-refundable</p>
-          <p class="mt-1 font-serif text-2xl text-ink">
-            {currencySymbol}
-            {ratePublic}
-            <span class="text-sm font-sans text-muted"> / night</span>
-          </p>
+        includes.length > 0 && (
+          <ul class="mt-6 space-y-1.5 border-t border-hairline pt-5 text-sm text-ink">
+            {includes.map((item) => (
+              <li class="flex items-center gap-2">
+                <span class="h-1 w-1 shrink-0 bg-clay" aria-hidden="true" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        )
+      }
+
+      <details class="mt-6 border-t border-hairline pt-5">
+        <summary class="cursor-pointer text-sm font-medium text-ocean">
+          View seasonal rate guide
+        </summary>
+        <div class="mt-4 overflow-x-auto">
+          <table class="w-full min-w-[360px] text-left text-xs">
+            <thead class="text-muted">
+              <tr>
+                <th class="pb-2 font-medium">Dates</th>
+                <th class="pb-2 text-right font-medium">Sun–Thu</th>
+                <th class="pb-2 text-right font-medium">Fri–Sat</th>
+                <th class="pb-2 text-right font-medium">Min.</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-hairline text-ink">
+              {rateGuide.map((season) => (
+                <tr>
+                  <td class="py-2.5 pr-3">
+                    <span class="block">{season.label}</span>
+                    <span class="text-muted">
+                      {dateLabel(season.start)}–{dateLabel(season.end)}
+                    </span>
+                  </td>
+                  <td class="py-2.5 text-right">{currencySymbol}{season.weekday}</td>
+                  <td class="py-2.5 text-right">{currencySymbol}{season.weekend}</td>
+                  <td class="py-2.5 text-right">{season.minimumStay}n</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        {freeCancelRate && (
-          <div class="border border-ocean/40 p-4">
-            <p class="text-xs text-ocean">Free cancellation</p>
-            <p class="mt-1 font-serif text-2xl text-ink">
-              {currencySymbol}
-              {freeCancelRate}
-              <span class="text-sm font-sans text-muted"> / night</span>
-            </p>
-          </div>
-        )}
-      </div>
-    ) : (
-      <p class="text-sm text-muted">
-        Rates for {landmarkName} are confirmed on enquiry — message us and we'll come back with
-        availability for your dates.
-      </p>
-    )
-  }
-
-  {
-    includes.length > 0 && (
-      <ul class="mt-5 space-y-1.5 text-sm text-ink">
-        {includes.map((item) => (
-          <li class="flex items-center gap-2">
-            <span class="h-1 w-1 shrink-0 bg-clay" aria-hidden="true" />
-            {item}
-          </li>
-        ))}
-      </ul>
-    )
-  }
-
-  <div class="mt-6 flex flex-col gap-3 sm:flex-row">
-    {
-      showGuestyCta ? (
-        <a href={guestyHref} class="btn-primary flex-1" data-track="start_booking" data-villa={landmarkName}>
-          Reserve
-        </a>
-      ) : (
-        <WhatsAppButton villa={landmarkName} variant="button" class="flex-1" />
-      )
-    }
-  </div>
-  {
-    !showGuestyCta && (
-      <p class="mt-3 text-xs text-muted">
-        Availability isn't live here yet — message us on WhatsApp and we'll confirm your dates directly.
-      </p>
-    )
-  }
-    </div>
+      </details>
+    </section>
   )
 }
+
+<script>
+  import {
+    PRICING_CHECKOUT_MAX,
+    calculateStayQuote,
+    type SupportedBedrooms,
+  } from '../lib/pricing';
+
+  const DAY_MS = 86_400_000;
+
+  function formatMoney(amount: number, currency: string): string {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  }
+
+  function formatDate(isoDate: string): string {
+    return new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    }).format(new Date(`${isoDate}T00:00:00Z`));
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-rate-calculator]').forEach((calculator) => {
+    const form = calculator.querySelector<HTMLFormElement>('[data-quote-form]');
+    const checkIn = form?.elements.namedItem('checkIn') as HTMLInputElement | null;
+    const checkOut = form?.elements.namedItem('checkOut') as HTMLInputElement | null;
+    const guests = form?.elements.namedItem('guests') as HTMLSelectElement | null;
+    const result = calculator.querySelector<HTMLElement>('[data-quote-result]');
+    const error = calculator.querySelector<HTMLElement>('[data-quote-error]');
+    const cta = calculator.querySelector<HTMLAnchorElement>('[data-quote-cta]');
+    const discountRow = calculator.querySelector<HTMLElement>('[data-quote-discount-row]');
+    const villa = calculator.dataset.villa ?? 'Anjuna Bay villa';
+    const bedrooms = Number(calculator.dataset.bedrooms) as SupportedBedrooms;
+    const adjustmentPercent = Number(calculator.dataset.adjustment ?? 0);
+    const currency = calculator.dataset.currency ?? 'USD';
+    const whatsappNumber = calculator.dataset.whatsappNumber ?? '';
+
+    function hideQuote() {
+      result?.classList.add('hidden');
+      error?.classList.add('hidden');
+    }
+
+    function refreshQuote() {
+      if (!checkIn?.value || !checkOut?.value || !guests) {
+        hideQuote();
+        return;
+      }
+
+      try {
+        const quote = calculateStayQuote({
+          checkIn: checkIn.value,
+          checkOut: checkOut.value,
+          bedrooms,
+          adjustmentPercent,
+        });
+
+        error?.classList.add('hidden');
+        result?.classList.remove('hidden');
+
+        const nightsLabel = calculator.querySelector<HTMLElement>('[data-quote-nights]');
+        const subtotalLabel = calculator.querySelector<HTMLElement>('[data-quote-subtotal]');
+        const discountLabel = calculator.querySelector<HTMLElement>('[data-quote-discount-label]');
+        const discountValue = calculator.querySelector<HTMLElement>('[data-quote-discount]');
+        const totalLabel = calculator.querySelector<HTMLElement>('[data-quote-total]');
+
+        if (nightsLabel) {
+          nightsLabel.textContent = `${quote.nights} night${quote.nights === 1 ? '' : 's'} · avg. ${formatMoney(quote.averageNightlyRate, currency)}`;
+        }
+        if (subtotalLabel) subtotalLabel.textContent = formatMoney(quote.subtotal, currency);
+        if (totalLabel) totalLabel.textContent = formatMoney(quote.total, currency);
+
+        if (quote.discountPercent > 0) {
+          discountRow?.classList.remove('hidden');
+          discountRow?.classList.add('flex');
+          if (discountLabel) discountLabel.textContent = `Length-of-stay saving · ${quote.discountPercent}%`;
+          if (discountValue) discountValue.textContent = `−${formatMoney(quote.discountAmount, currency)}`;
+        } else {
+          discountRow?.classList.add('hidden');
+          discountRow?.classList.remove('flex');
+        }
+
+        if (cta && whatsappNumber) {
+          const message = [
+            'Hello Anjuna Bay,',
+            `I would like to confirm a stay at ${villa}.`,
+            `Arrival: ${formatDate(quote.checkIn)}.`,
+            `Departure: ${formatDate(quote.checkOut)}.`,
+            `Guests: ${guests.value}.`,
+            `Stay: ${quote.nights} night${quote.nights === 1 ? '' : 's'}.`,
+            `Estimated accommodation total: ${currency} ${quote.total}.`,
+            quote.discountPercent > 0
+              ? `The estimate includes a ${quote.discountPercent}% length-of-stay saving.`
+              : '',
+            'Please confirm availability, taxes, any applicable fees and final booking terms.',
+          ]
+            .filter(Boolean)
+            .join(' ');
+          cta.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+          cta.target = '_blank';
+          cta.rel = 'noopener noreferrer';
+          cta.textContent = 'Confirm dates on WhatsApp';
+        }
+      } catch (caught) {
+        result?.classList.add('hidden');
+        if (error) {
+          error.textContent = caught instanceof Error ? caught.message : 'Please check your dates.';
+          error.classList.remove('hidden');
+        }
+      }
+    }
+
+    checkIn?.addEventListener('change', () => {
+      if (!checkIn.value || !checkOut) return;
+      const earliestDeparture = new Date(`${checkIn.value}T00:00:00Z`);
+      earliestDeparture.setTime(earliestDeparture.getTime() + DAY_MS);
+      const minimum = earliestDeparture.toISOString().slice(0, 10);
+      checkOut.min = minimum;
+      checkOut.max = PRICING_CHECKOUT_MAX;
+      if (checkOut.value && checkOut.value < minimum) checkOut.value = '';
+      refreshQuote();
+    });
+    checkOut?.addEventListener('change', refreshQuote);
+    guests?.addEventListener('change', refreshQuote);
+  });
+</script>
