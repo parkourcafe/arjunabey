@@ -19,11 +19,11 @@ jobs:
 
       - name: Download poster frame
         run: |
-          curl -fsSL -o /tmp/hero-frame.png "POSTER_URL_PLACEHOLDER"
+          curl -fsSL -o /tmp/hero-frame.png "https://d8j0ntlcm91z4.cloudfront.net/user_3EKntK4EDjG8nay4H1dy1TK30mB/hf_20260728_154347_f57a690a-8128-48fc-8ef5-0148f6180cca.png"
 
       - name: Download hero video
         run: |
-          curl -fsSL -o /tmp/hero-raw.mp4 "VIDEO_URL_PLACEHOLDER"
+          curl -fsSL -o /tmp/hero-raw.mp4 "https://d8j0ntlcm91z4.cloudfront.net/user_3EKntK4EDjG8nay4H1dy1TK30mB/hf_20260728_160338_ecd6d14b-7475-4b49-81b3-efdb841164fb.mp4"
 
       - name: Optimise assets
         run: |
