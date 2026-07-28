@@ -1,10 +1,15 @@
 ---
 /**
- * Home — built to the Aman property-page architecture (docs/BUILD.md §9.1):
- * full-bleed hero, a centred prologue naming the place, a staggered gallery
- * strip, three editorial cards, the accommodation grid, and quiet centred
- * calls to action. Copy stays short everywhere; the page it links to carries
- * the detail.
+ * Home — the Aman property-page rhythm adapted to this estate
+ * (docs/BUILD.md §9.1): full-bleed hero, a centred prologue naming the place,
+ * the accommodation grid, a full-bleed location band, three editorial cards,
+ * proof, and the Journal. Copy stays short everywhere; the page it links to
+ * carries the detail.
+ *
+ * Aman's staggered photo strip was tried here and removed: it works on frames
+ * shot as a set, and against villa interiors of varying subject and depth it
+ * reads as a broken grid. The villas themselves now follow the prologue
+ * directly, which is what a guest came to see anyway.
  */
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
@@ -15,10 +20,8 @@ import JournalCard from '../components/JournalCard.astro';
 import homeHero from '../assets/placeholders/home-hero.jpg';
 import thePlaceHero from '../assets/placeholders/the-place-hero.jpg';
 import expDining from '../assets/placeholders/experience-dining.jpg';
-import expSurf from '../assets/placeholders/experience-surf.jpg';
-import expWellness from '../assets/placeholders/experience-wellness.jpg';
 import expCelebrations from '../assets/placeholders/experience-celebrations.jpg';
-import aboutHero from '../assets/placeholders/about-hero.jpg';
+import expAround from '../assets/placeholders/experience-around.jpg';
 import { lodgingBusiness, canonicalFor } from '../lib/seo';
 
 const featuredVillas = (await getCollection('villas', (v) => v.data.status === 'live'))
@@ -28,15 +31,6 @@ const featuredVillas = (await getCollection('villas', (v) => v.data.status === '
 const journalPosts = (await getCollection('journal'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 2);
-
-// The staggered strip: alternating vertical offsets are what give the row its
-// hand-composed feel rather than a plain filmstrip.
-const strip = [
-  { image: expDining, alt: 'Breakfast served by a private villa pool', offset: 'md:mt-16' },
-  { image: aboutHero, alt: 'A quiet villa courtyard in late afternoon light', offset: '' },
-  { image: expWellness, alt: 'An open-air spa pavilion in morning light', offset: 'md:mt-24' },
-  { image: expSurf, alt: 'A clean wave peeling along an Uluwatu reef break', offset: 'md:mt-6' },
-];
 
 const cards = [
   {
@@ -48,8 +42,8 @@ const cards = [
     href: '/offers',
   },
   {
-    image: expSurf,
-    alt: 'A clean wave peeling along an Uluwatu reef break',
+    image: expAround,
+    alt: 'The Uluwatu clifftop coastline at golden hour',
     eyebrow: 'Experiences',
     heading: 'What there is to do',
     body: 'World-class reef breaks minutes away, in-villa massage and yoga at sunrise, a private chef on request, and the clifftop cafés of the Bukit.',
@@ -98,28 +92,6 @@ const canonicalUrl = canonicalFor('/');
           surf breaks Uluwatu is known for are minutes away; the crowds of Canggu are an hour
           behind you.
         </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Staggered strip -->
-  <section class="overflow-hidden pb-section">
-    <div class="container-content">
-      <div class="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-        {
-          strip.map((item) => (
-            <div class:list={['fade-in-up', item.offset]}>
-              <Image
-                src={item.image}
-                alt={item.alt}
-                widths={[320, 560, 800]}
-                sizes="(min-width: 768px) 25vw, 50vw"
-                class="aspect-[3/4] w-full object-cover"
-                loading="lazy"
-              />
-            </div>
-          ))
-        }
       </div>
     </div>
   </section>
