@@ -1,37 +1,22 @@
 ---
 /**
- * Footer — built to the Aman property-page footer (docs/BUILD.md §3): the
- * property named in letter-spaced serif caps beside its address and
- * reservations details, a "Get inspired" newsletter row, then the information
- * and villa indexes. Serif section headings rather than uppercase eyebrows,
- * hairline rules between bands, and a paper surface that separates the footer
- * from the sand page above.
+ * Footer — the header's counterpart: same sand surface, same centred wordmark
+ * in letter-spaced caps, same single row of sections. Compact by design.
+ *
+ * An earlier version indexed all twenty-three villas by bedroom count, which
+ * alone ran to roughly a screen of names and left the footer sprawling. That
+ * index is what /villas is for; the footer's job is to close the page, carry
+ * the essentials (reach us, subscribe, policies) and send the reader back up.
  *
  * Guest social only — never @anjunabay, that account sells real estate
- * (CLAUDE.md rule 5). The villa index is derived live from the content
- * collection so it can never drift out of sync with what's bookable.
+ * (CLAUDE.md rule 5).
  */
-import { getCollection } from 'astro:content';
 import { whatsappLink } from '../lib/whatsapp';
-
-const allVillas = await getCollection('villas');
-const byBedrooms = new Map<number, typeof allVillas>();
-for (const villa of allVillas) {
-  const list = byBedrooms.get(villa.data.bedrooms) ?? [];
-  list.push(villa);
-  byBedrooms.set(villa.data.bedrooms, list);
-}
-const bedroomGroups = [...byBedrooms.entries()]
-  .sort(([a], [b]) => a - b)
-  .map(([bedrooms, villas]) => ({
-    bedrooms,
-    villas: [...villas].sort((a, b) => a.data.landmarkName.localeCompare(b.data.landmarkName)),
-  }));
 
 const year = new Date().getUTCFullYear();
 
-const INFORMATION = [
-  { label: 'The Villas', href: '/villas' },
+const SECTIONS = [
+  { label: 'Villas', href: '/villas' },
   { label: 'Experiences', href: '/experiences' },
   { label: 'The Place', href: '/the-place' },
   { label: 'Offers', href: '/offers' },
@@ -41,7 +26,7 @@ const INFORMATION = [
 ];
 
 const POLICIES = [
-  { label: 'Privacy Notice', href: '/privacy' },
+  { label: 'Privacy', href: '/privacy' },
   { label: 'Terms', href: '/terms' },
   { label: 'Accessibility', href: '/accessibility' },
 ];
@@ -55,144 +40,85 @@ const RESERVATIONS_EMAIL = 'stay@anjunabay.com';
 const whatsapp = whatsappLink();
 ---
 
-<footer class="border-t border-hairline bg-paper">
+<footer class="border-t border-hairline bg-sand">
   <div class="container-content">
-    <!-- Identity + how to reach the estate -->
-    <div class="grid grid-cols-1 gap-10 py-16 md:grid-cols-12 md:gap-8 md:py-20">
-      <div class="md:col-span-3">
-        <a
-          href="/"
-          class="font-serif text-lg font-light uppercase tracking-[0.2em] text-ink no-underline"
-        >
-          Anjuna Bay
-        </a>
-      </div>
+    <!-- Wordmark + sections: the header, mirrored -->
+    <div class="flex flex-col items-center gap-5 pb-7 pt-12 text-center md:pt-14">
+      <a
+        href="/"
+        class="font-serif text-lg font-light uppercase tracking-[0.22em] text-ink no-underline md:text-xl"
+      >
+        Anjuna&nbsp;Bay
+      </a>
 
-      <address class="text-sm not-italic leading-relaxed text-muted md:col-span-3">
-        Thomas Beach<br />
-        Uluwatu, Pecatu<br />
-        Bali, Indonesia
-        <p class="mt-5">
-          Policy: <a href="/terms" class="footer-link">Anjuna Bay Policies</a>
-        </p>
-      </address>
+      <nav aria-label="Footer" class="flex flex-wrap items-center justify-center gap-x-7 gap-y-2.5">
+        {
+          SECTIONS.map((item) => (
+            <a href={item.href} class="footer-link text-eyebrow uppercase">
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+    </div>
 
-      <div class="text-sm leading-relaxed text-muted md:col-span-4">
-        <p>
-          For reservations:{' '}
+    <!-- Reach us / subscribe -->
+    <div
+      class="flex flex-col items-center gap-8 border-t border-hairline py-8 text-center md:flex-row md:items-start md:justify-between md:gap-12 md:text-left"
+    >
+      <div class="text-sm leading-relaxed text-muted">
+        <p class="text-ink">Thomas Beach, Uluwatu, Pecatu · Bali, Indonesia</p>
+        <p class="mt-1.5">
           {
             whatsapp ? (
               <a href={whatsapp} class="footer-link" target="_blank" rel="noopener noreferrer">
-                Message us on WhatsApp
+                WhatsApp
               </a>
             ) : (
               <a href="/contact" class="footer-link">
-                Send an enquiry
+                Enquire
               </a>
             )
           }
+          <span class="px-2 text-muted/50">·</span>
+          <a href={`mailto:${RESERVATIONS_EMAIL}`} class="footer-link">{RESERVATIONS_EMAIL}</a>
+          <span class="px-2 text-muted/50">·</span>
+          <a href="/book" class="footer-link">Plan your stay</a>
         </p>
-        <p class="mt-2">
-          Email: <a href={`mailto:${RESERVATIONS_EMAIL}`} class="footer-link">{RESERVATIONS_EMAIL}</a>
-        </p>
-        <p class="mt-5 text-muted">We usually reply within minutes.</p>
       </div>
 
-      <div class="space-y-3 text-sm md:col-span-2">
-        <p><a href="/book" class="footer-link underline underline-offset-4">Plan your stay</a></p>
-        <p><a href="/the-place" class="footer-link underline underline-offset-4">Getting here</a></p>
-      </div>
-    </div>
-
-    <!-- Newsletter -->
-    <div
-      class="grid grid-cols-1 items-start gap-6 border-t border-hairline py-12 md:grid-cols-12 md:gap-8 md:py-14"
-    >
-      <h2 class="font-serif text-h3 font-light text-ink md:col-span-3">Get inspired</h2>
-      <p class="text-sm leading-relaxed text-muted md:col-span-6">
-        Occasional notes from the estate — new villas, quiet weeks worth knowing about, and what's
-        happening on this side of the Bukit. No spam.
-      </p>
-      <form class="md:col-span-3" data-newsletter-form>
-        <label for="footer-email" class="sr-only">Email address</label>
-        <div class="flex items-center border-b border-ink/25 focus-within:border-ocean">
+      <form class="w-full max-w-sm" data-newsletter-form>
+        <label for="footer-email" class="block text-sm text-muted">
+          Occasional notes from the estate — no spam.
+        </label>
+        <div class="mt-3 flex items-center gap-3 border-b border-ink/25 focus-within:border-ocean">
           <input
             type="email"
             id="footer-email"
             name="email"
             required
             placeholder="Email address"
-            class="w-full bg-transparent pb-2 pr-2 text-sm text-ink placeholder:text-muted/70 focus:outline-none"
+            class="w-full bg-transparent pb-2 text-sm text-ink placeholder:text-muted/70 focus:outline-none"
           />
+          <button
+            type="submit"
+            class="shrink-0 pb-2 text-eyebrow uppercase text-ink transition-colors duration-400 ease-elegant hover:text-ocean"
+          >
+            Sign up
+          </button>
         </div>
-        <button type="submit" class="btn-primary mt-4 w-full !py-2.5 text-sm">Sign up</button>
-        <p class="mt-3 text-xs text-muted" data-newsletter-status role="status"></p>
+        <p class="mt-2 text-xs text-muted" data-newsletter-status role="status"></p>
       </form>
-    </div>
-
-    <!-- Indexes -->
-    <div class="grid grid-cols-1 gap-12 border-t border-hairline py-12 md:grid-cols-12 md:gap-8 md:py-14">
-      <nav aria-label="More information" class="md:col-span-3">
-        <h2 class="mb-5 font-serif text-h3 font-light text-ink">More information</h2>
-        <ul class="space-y-2.5 text-sm">
-          {
-            INFORMATION.map((item) => (
-              <li>
-                <a href={item.href} class="footer-link">
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
-
-      {
-        bedroomGroups.length > 0 && (
-          <nav aria-label="All villas" class="md:col-span-9">
-            <h2 class="mb-5 font-serif text-h3 font-light text-ink">The villas</h2>
-            <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
-              {bedroomGroups.map((group) => (
-                <div>
-                  <p class="eyebrow mb-4 text-muted">{group.bedrooms}-Bedroom</p>
-                  <ul class="space-y-2.5 text-sm">
-                    {group.villas.map((villa) => (
-                      <li>
-                        <a href={`/villas/${villa.slug}`} class="footer-link">
-                          {villa.data.landmarkName}
-                        </a>
-                        {villa.data.status === 'off-plan' && (
-                          <span class="ml-1.5 text-xs text-muted">coming soon</span>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </nav>
-        )
-      }
-    </div>
-
-    <!-- Follow -->
-    <div class="flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-hairline py-8 text-sm">
-      {/* Guest brand handles only — never @anjunabay (real estate). TODO: confirm final handles. */}
-      <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" class="footer-link">
-        Instagram
-      </a>
-      <a href="https://tiktok.com/" target="_blank" rel="noopener noreferrer" class="footer-link">
-        TikTok
-      </a>
     </div>
   </div>
 
+  <!-- Legal -->
   <div class="border-t border-hairline">
     <div
-      class="container-content flex flex-col items-center gap-4 py-7 text-xs text-muted md:flex-row md:justify-between"
+      class="container-content flex flex-col items-center gap-3 py-5 text-xs text-muted md:flex-row md:justify-between"
     >
       <p class="order-2 md:order-1">&copy; {year} Anjuna Bay. Independent villa operation.</p>
-      <ul class="order-1 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:order-2">
+      <ul class="order-1 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 md:order-2">
         {
           POLICIES.map((item) => (
             <li>
@@ -203,7 +129,13 @@ const whatsapp = whatsappLink();
           ))
         }
         <li>
-          <button type="button" class="footer-link" data-open-consent>Cookie Preferences</button>
+          <button type="button" class="footer-link" data-open-consent>Cookies</button>
+        </li>
+        {/* Guest brand handles only — never @anjunabay (real estate). TODO: confirm handles. */}
+        <li>
+          <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" class="footer-link">
+            Instagram
+          </a>
         </li>
         <li>
           <a href="/contact?type=investment" class="footer-link">Property enquiries</a>
