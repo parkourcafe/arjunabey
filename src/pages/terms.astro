@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageIntro from '../components/PageIntro.astro';
+import pageImage from '../assets/placeholders/legal-hero.jpg';
 import { canonicalFor } from '../lib/seo';
 ---
 
@@ -10,6 +11,8 @@ import { canonicalFor } from '../lib/seo';
   canonicalUrl={canonicalFor('/terms')}
 >
   <PageIntro
+    image={pageImage}
+    imageAlt='A sunlit limestone wall and still water in a villa courtyard'
     eyebrow='Legal'
     heading='Terms'
     lede='How rates, availability and cancellation are confirmed before you pay.'

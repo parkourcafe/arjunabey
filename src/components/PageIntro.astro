@@ -1,20 +1,50 @@
 ---
 /**
- * PageIntro — the opener for pages that carry no photograph (legal, 404, and
- * anything else that is purely text). Same centred composition, eyebrow and
- * light serif display as the photographic Hero, so a visitor moving between
- * them never leaves the same design system; only the picture is absent.
+ * PageIntro — the opener for pages whose subject is text rather than a place:
+ * legal notices, 404, and anything similar.
+ *
+ * It still leads with a photograph, because every page on this site does; the
+ * band is simply shorter and the type sits beneath it rather than inside it,
+ * so a privacy notice never pretends to be a villa. Falls back to a plain
+ * centred title when no image is passed.
  */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
 export interface Props {
   eyebrow?: string;
   heading: string;
   lede?: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
 }
 
-const { eyebrow, heading, lede } = Astro.props;
+const { eyebrow, heading, lede, image, imageAlt = '' } = Astro.props;
 ---
 
-<section class="border-b border-hairline bg-paper pb-14 pt-32 md:pb-16 md:pt-40">
+{
+  image && (
+    <div class="relative h-[42vh] min-h-[280px] overflow-hidden bg-ink md:h-[48vh]">
+      <Image
+        src={image}
+        alt={imageAlt}
+        widths={[768, 1280, 1920]}
+        sizes="100vw"
+        class="absolute inset-0 h-full w-full object-cover"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <div class="absolute inset-0 bg-ink/25" aria-hidden="true" />
+    </div>
+  )
+}
+
+<section
+  class:list={[
+    'border-b border-hairline bg-paper pb-14 md:pb-16',
+    image ? 'pt-14 md:pt-16' : 'pt-32 md:pt-40',
+  ]}
+>
   <div class="container-content">
     <div class="mx-auto max-w-2xl text-center">
       {eyebrow && <p class="eyebrow mb-5 text-muted">{eyebrow}</p>}

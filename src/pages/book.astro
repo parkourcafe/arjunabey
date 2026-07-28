@@ -5,7 +5,8 @@
  * stay and hands the guest to the villa's verified Airbnb live checkout.
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
-import SectionHeading from "../components/SectionHeading.astro";
+import Hero from "../components/Hero.astro";
+import bookHero from "../assets/placeholders/book-hero.jpg";
 import BookingPlanner from "../components/BookingPlanner.astro";
 import StayAssistant from "../components/StayAssistant.astro";
 import WhatsAppButton from "../components/WhatsAppButton.astro";
@@ -23,9 +24,18 @@ const villas = (await getCollection("villas"))
   description="Reserve your stay at Anjuna Bay."
   canonicalUrl={canonicalFor("/book")}
   noindex={true}
+  transparentHeader={true}
 >
-  <div class="container-content pb-section pt-32 md:pt-40">
-    <SectionHeading eyebrow="Reserve" heading="Check availability" level={1} />
+  <Hero
+    image={bookHero}
+    imageAlt="A villa bedroom at Anjuna Bay in golden-hour light"
+    eyebrow="Reserve"
+    headline="Check availability"
+    subhead="Choose your villa and dates, and we will come back with the final rate and terms."
+    height="tall"
+  />
+
+  <div class="container-content pb-section pt-14 md:pt-20">
 
     {
       guestyBaseUrl ? (
