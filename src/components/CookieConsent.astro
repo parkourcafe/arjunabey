@@ -47,7 +47,7 @@ const META_PIXEL_ID = import.meta.env.PUBLIC_META_PIXEL_ID;
   </div>
 </div>
 
-<script define:vars={{ GA4_ID, META_PIXEL_ID }}>
+<script is:inline define:vars={{ GA4_ID, META_PIXEL_ID }}>
   const STORAGE_KEY = 'anjuna-consent';
   const banner = document.getElementById('cookie-consent');
   const acceptBtn = document.getElementById('cookie-accept');

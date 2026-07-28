@@ -116,7 +116,7 @@ const JOURNEYS = [
   </div>
 </section>
 
-<script define:vars={{ EMBED }}>
+<script is:inline define:vars={{ EMBED }}>
   document.querySelector('[data-map-load]')?.addEventListener('click', () => {
     const frame = document.querySelector('[data-map]');
     if (!frame) return;
