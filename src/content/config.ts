@@ -28,7 +28,7 @@ const villas = defineCollection({
       landmarkName: z.string(), // "Sunset" — never a unit code ("B10") anywhere guest-facing
       status: z.enum(['live', 'off-plan']).default('off-plan'),
       bedrooms: z.number().int().positive(),
-      bathrooms: z.number().int().positive().optional(),
+      bathrooms: z.number().positive().optional(),
       view: z.string().default('ocean'),
       sizeSqm: z.number().positive().optional(),
       walkTimes: z.record(z.string(), z.number()).default({}), // { thomasBeach: 5, padangPadang: 12 }
