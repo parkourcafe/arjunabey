@@ -1,7 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import SectionHeading from '../../components/SectionHeading.astro';
+import Hero from '../../components/Hero.astro';
+import pageHero from '../../assets/placeholders/offers-hero.jpg';
 import OfferCard from '../../components/OfferCard.astro';
 import { canonicalFor } from '../../lib/seo';
 
@@ -14,9 +15,18 @@ const offers = (await getCollection('offers', (o) => o.data.active)).sort((a, b)
   title="Offers | Anjuna Bay"
   description="Book direct for clear seasonal rates and length-of-stay savings near Thomas Beach."
   canonicalUrl={canonicalFor('/offers')}
+  transparentHeader={true}
 >
-  <div class="container-content pb-section pt-32 md:pt-40">
-    <SectionHeading eyebrow="Offers" heading="A few things we keep for direct guests" />
+  <Hero
+    image={pageHero}
+    imageAlt='A private villa pool at golden hour'
+    eyebrow='Offers'
+    headline='A few things we keep for direct guests'
+    subhead='Our best available rate, a complimentary airport transfer, and a longer-stay rate for those who settle in.'
+    height='tall'
+  />
+
+  <div class="container-content pb-section pt-16 md:pt-20">
     <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
       {offers.map((offer) => <OfferCard offer={offer} />)}
     </div>

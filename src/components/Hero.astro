@@ -13,6 +13,10 @@ export interface Props {
   imageAlt: string;
   /** Public path to an mp4/webm loop (e.g. /video/hero.mp4). The image stays as poster + reduced-motion fallback. */
   video?: string;
+  /** Same film carrying its audio track. Browsers only autoplay muted, so the
+   *  silent cut plays by default and this one is swapped in when the visitor
+   *  asks for sound. Omit to hide the control entirely. */
+  videoWithSound?: string;
   eyebrow?: string;
   headline: string;
   subhead?: string;
@@ -25,6 +29,7 @@ const {
   image,
   imageAlt,
   video,
+  videoWithSound,
   eyebrow,
   headline,
   subhead,
@@ -67,6 +72,28 @@ const {
     )
   }
   <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/15 to-transparent" aria-hidden="true"></div>
+
+  {
+    video && videoWithSound && (
+      <button
+        type="button"
+        class="absolute bottom-6 right-6 z-20 hidden h-11 w-11 items-center justify-center rounded-full border border-paper/50 text-paper transition-colors duration-400 ease-elegant hover:bg-paper/10 md:flex"
+        data-sound-toggle
+        data-sound-src={videoWithSound}
+        aria-pressed="false"
+        aria-label="Play with sound"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true" data-icon-muted>
+          <path d="M11 5 6 9H3v6h3l5 4V5Z" />
+          <path d="m17 9 4 6M21 9l-4 6" />
+        </svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true" class="hidden" data-icon-sound>
+          <path d="M11 5 6 9H3v6h3l5 4V5Z" />
+          <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
+        </svg>
+      </button>
+    )
+  }
 
   <div class="container-content relative z-10 pb-16 pt-32 text-paper md:pb-24">
     {eyebrow && <p class="eyebrow mb-4 text-paper/80">{eyebrow}</p>}
@@ -125,4 +152,36 @@ const {
       /* autoplay blocked — poster image remains */
     });
   });
+
+  // Sound toggle: browsers only autoplay muted, so the silent cut runs by
+  // default and the audio-bearing file is swapped in on the first click,
+  // resuming at the same point so the picture does not jump.
+  const toggle = document.querySelector<HTMLButtonElement>('[data-sound-toggle]');
+  const heroVideo = document.querySelector<HTMLVideoElement>('.hero-video');
+  if (toggle && heroVideo && !reduceMotion.matches) {
+    const soundSrc = toggle.dataset.soundSrc;
+    let swapped = false;
+
+    toggle.addEventListener('click', () => {
+      const turningOn = toggle.getAttribute('aria-pressed') !== 'true';
+
+      if (turningOn && !swapped && soundSrc) {
+        const at = heroVideo.currentTime;
+        heroVideo.querySelector('source')?.remove();
+        heroVideo.src = soundSrc;
+        heroVideo.currentTime = at;
+        swapped = true;
+      }
+
+      heroVideo.muted = !turningOn;
+      heroVideo.play().catch(() => {
+        /* blocked — leave the control as it was */
+      });
+
+      toggle.setAttribute('aria-pressed', String(turningOn));
+      toggle.setAttribute('aria-label', turningOn ? 'Mute' : 'Play with sound');
+      toggle.querySelector('[data-icon-muted]')?.classList.toggle('hidden', turningOn);
+      toggle.querySelector('[data-icon-sound]')?.classList.toggle('hidden', !turningOn);
+    });
+  }
 </script>

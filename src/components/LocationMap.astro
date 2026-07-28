@@ -1,0 +1,131 @@
+---
+/**
+ * LocationMap — where the estate is, shown properly.
+ *
+ * Privacy: an embedded map is a third-party request that can profile the
+ * visitor, and this site loads nothing non-essential before consent
+ * (CLAUDE.md, analytics gate). So the map is click-to-load: until the visitor
+ * asks for it, only a locally-drawn placeholder is on the page and no request
+ * leaves the browser. OpenStreetMap is used rather than Google — no API key,
+ * no account, and far less tracking.
+ *
+ * Coordinates are Thomas Beach, Uluwatu. Confirm the exact estate pin before
+ * launch — TODO(location) — but the beach itself is correct and is what the
+ * walk-times are measured from.
+ */
+export interface Props {
+  /** Rows of "x minutes to y" shown beside the map. */
+  walkTimes?: { label: string; minutes: number }[];
+  heading?: string;
+  tone?: 'sand' | 'paper';
+}
+
+const { walkTimes = [], heading = 'Where you are', tone = 'paper' } = Astro.props;
+
+// TODO(location): confirm the estate's exact pin; this is Thomas Beach.
+const LAT = -8.8203;
+const LON = 115.0876;
+const ZOOM_BBOX = [LON - 0.014, LAT - 0.008, LON + 0.014, LAT + 0.008].join('%2C');
+const EMBED = `https://www.openstreetmap.org/export/embed.html?bbox=${ZOOM_BBOX}&layer=mapnik&marker=${LAT}%2C${LON}`;
+const DIRECTIONS = `https://www.openstreetmap.org/?mlat=${LAT}&mlon=${LON}#map=15/${LAT}/${LON}`;
+
+const JOURNEYS = [
+  { label: 'Ngurah Rai International Airport', detail: '45–60 minutes by car' },
+  { label: 'Uluwatu Temple', detail: '15 minutes by car' },
+  { label: 'Padang Padang Beach', detail: '10 minutes by car' },
+];
+---
+
+<section class:list={['section', tone === 'paper' ? 'bg-paper' : 'bg-sand']}>
+  <div class="container-content">
+    <div class="fade-in-up mx-auto mb-12 max-w-xl text-center md:mb-14">
+      <p class="eyebrow mb-5 text-muted">Location</p>
+      <h2 class="font-serif text-h1 font-light text-ink">{heading}</h2>
+      <p class="mt-6 font-serif text-lg leading-relaxed text-ink/85">
+        Thomas Beach, Uluwatu — on the quiet southern tip of the Bukit peninsula, a short walk
+        down to the sand.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-10 lg:grid-cols-3 lg:gap-12">
+      <div class="lg:col-span-2">
+        <div
+          class="relative aspect-[16/10] w-full overflow-hidden border border-hairline bg-sand"
+          data-map
+        >
+          <!-- Placeholder: drawn locally, so nothing loads until asked -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-5 px-6 text-center">
+            <svg
+              width="34"
+              height="34"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.1"
+              class="text-muted"
+              aria-hidden="true"
+            >
+              <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" />
+              <circle cx="12" cy="10" r="2.4" />
+            </svg>
+            <p class="max-w-xs text-sm leading-relaxed text-muted">
+              The map loads from OpenStreetMap only when you ask, so nothing is requested from a
+              third party before then.
+            </p>
+            <button type="button" class="link-quiet" data-map-load>Show the map</button>
+          </div>
+        </div>
+
+        <p class="mt-4 text-sm">
+          <a href={DIRECTIONS} target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">
+            Open directions
+          </a>
+        </p>
+      </div>
+
+      <div>
+        {
+          walkTimes.length > 0 && (
+            <>
+              <p class="eyebrow mb-5 text-muted">On foot</p>
+              <ul class="mb-10 space-y-3.5">
+                {walkTimes.map((row) => (
+                  <li class="flex items-baseline justify-between gap-4 border-b border-hairline pb-3.5 text-sm">
+                    <span class="text-ink">{row.label}</span>
+                    <span class="shrink-0 text-muted">{row.minutes} min walk</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        }
+
+        <p class="eyebrow mb-5 text-muted">By car</p>
+        <ul class="space-y-3.5">
+          {
+            JOURNEYS.map((row) => (
+              <li class="flex items-baseline justify-between gap-4 border-b border-hairline pb-3.5 text-sm">
+                <span class="text-ink">{row.label}</span>
+                <span class="shrink-0 text-muted">{row.detail}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ EMBED }}>
+  document.querySelector('[data-map-load]')?.addEventListener('click', () => {
+    const frame = document.querySelector('[data-map]');
+    if (!frame) return;
+    const iframe = document.createElement('iframe');
+    iframe.src = EMBED;
+    iframe.title = 'Map showing Anjuna Bay at Thomas Beach, Uluwatu';
+    iframe.loading = 'lazy';
+    iframe.referrerPolicy = 'no-referrer';
+    iframe.className = 'absolute inset-0 h-full w-full border-0';
+    frame.replaceChildren(iframe);
+  });
+</script>

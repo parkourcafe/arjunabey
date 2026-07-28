@@ -1,7 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import SectionHeading from '../../components/SectionHeading.astro';
+import Hero from '../../components/Hero.astro';
+import pageHero from '../../assets/placeholders/journal-hero.jpg';
 import JournalCard from '../../components/JournalCard.astro';
 import { canonicalFor } from '../../lib/seo';
 
@@ -12,9 +13,18 @@ const posts = (await getCollection('journal')).sort((a, b) => b.data.date.valueO
   title="Journal | Anjuna Bay"
   description="Notes on staying in Uluwatu — surf, honeymoons, and getting around, from the team at Anjuna Bay."
   canonicalUrl={canonicalFor('/journal')}
+  transparentHeader={true}
 >
-  <div class="container-content pb-section pt-32 md:pt-40">
-    <SectionHeading eyebrow="Read" heading="The Journal" />
+  <Hero
+    image={pageHero}
+    imageAlt='A Balinese sea temple on the headland at dusk'
+    eyebrow='Read'
+    headline='The Journal'
+    subhead='Occasional notes from the estate — where to stay, when to come, and what is nearby.'
+    height='tall'
+  />
+
+  <div class="container-content pb-section pt-16 md:pt-20">
     <div class="mt-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
       {posts.map((post) => <JournalCard post={post} />)}
     </div>

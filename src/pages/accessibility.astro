@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
 import { canonicalFor } from '../lib/seo';
 ---
 
@@ -8,9 +9,14 @@ import { canonicalFor } from '../lib/seo';
   description="Our accessibility commitment for this website."
   canonicalUrl={canonicalFor('/accessibility')}
 >
-  <div class="container-content section max-w-prose pt-32 md:pt-40">
-    <h1 class="font-serif text-h1 font-medium text-ink">Accessibility</h1>
-    <div class="prose-anjuna mt-8">
+  <PageIntro
+    eyebrow='Legal'
+    heading='Accessibility'
+    lede='How this site is built to be usable by everyone, and how to tell us when it is not.'
+  />
+
+  <div class="container-content section max-w-prose">
+        <div class="prose-anjuna">
       <p>
         This site is built to WCAG 2.2 AA: keyboard-navigable menus and galleries, visible focus
         states, sufficient colour contrast, descriptive alt text, and support for reduced-motion

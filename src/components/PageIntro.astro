@@ -1,0 +1,25 @@
+---
+/**
+ * PageIntro — the opener for pages that carry no photograph (legal, 404, and
+ * anything else that is purely text). Same centred composition, eyebrow and
+ * light serif display as the photographic Hero, so a visitor moving between
+ * them never leaves the same design system; only the picture is absent.
+ */
+export interface Props {
+  eyebrow?: string;
+  heading: string;
+  lede?: string;
+}
+
+const { eyebrow, heading, lede } = Astro.props;
+---
+
+<section class="border-b border-hairline bg-paper pb-14 pt-32 md:pb-16 md:pt-40">
+  <div class="container-content">
+    <div class="mx-auto max-w-2xl text-center">
+      {eyebrow && <p class="eyebrow mb-5 text-muted">{eyebrow}</p>}
+      <h1 class="font-serif text-h1 font-light text-ink">{heading}</h1>
+      {lede && <p class="mt-6 font-serif text-lg leading-relaxed text-ink/85">{lede}</p>}
+    </div>
+  </div>
+</section>

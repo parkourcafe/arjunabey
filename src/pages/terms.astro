@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
 import { canonicalFor } from '../lib/seo';
 ---
 
@@ -8,9 +9,14 @@ import { canonicalFor } from '../lib/seo';
   description="Booking terms for Anjuna Bay villas."
   canonicalUrl={canonicalFor('/terms')}
 >
-  <div class="container-content section max-w-prose pt-32 md:pt-40">
-    <h1 class="font-serif text-h1 font-medium text-ink">Terms</h1>
-    <div class="prose-anjuna mt-8">
+  <PageIntro
+    eyebrow='Legal'
+    heading='Terms'
+    lede='How rates, availability and cancellation are confirmed before you pay.'
+  />
+
+  <div class="container-content section max-w-prose">
+        <div class="prose-anjuna">
       <p>
         {/* TODO(legal): replace with reviewed booking terms once confirmed with the
             operator/legal counsel — docs/BUILD.md §22. Structural placeholder only. */}

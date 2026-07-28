@@ -2,6 +2,7 @@
 import { getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
+import LocationMap from '../components/LocationMap.astro';
 import { canonicalFor, faqPage } from '../lib/seo';
 
 const page = await getEntry('pages', 'the-place');
@@ -47,4 +48,12 @@ const jsonLd = faqPage([
       <Content />
     </div>
   </div>
+
+  <LocationMap
+    heading="Getting here"
+    walkTimes={[
+      { label: 'Thomas Beach', minutes: 3 },
+      { label: 'Padang Padang', minutes: 12 },
+    ]}
+  />
 </BaseLayout>

@@ -17,6 +17,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import VillaCard from '../components/VillaCard.astro';
 import JournalCard from '../components/JournalCard.astro';
+import LocationMap from '../components/LocationMap.astro';
 import homeHero from '../assets/placeholders/home-hero.jpg';
 import thePlaceHero from '../assets/placeholders/the-place-hero.jpg';
 import expDining from '../assets/placeholders/experience-dining.jpg';
@@ -72,6 +73,7 @@ const canonicalUrl = canonicalFor('/');
   <Hero
     image={homeHero}
     video="/video/hero.mp4"
+    videoWithSound="/video/hero-sound.mp4"
     imageAlt="Cliffside pool villa at Anjuna Bay, Uluwatu, at sunset"
     eyebrow="Thomas Beach · Uluwatu"
     headline="Cliffside pool villas above Thomas Beach."
@@ -148,6 +150,15 @@ const canonicalUrl = canonicalFor('/');
       </div>
     </div>
   </section>
+
+  <LocationMap
+    heading="Thomas Beach, Uluwatu"
+    walkTimes={[
+      { label: 'Thomas Beach', minutes: 3 },
+      { label: 'Padang Padang', minutes: 12 },
+    ]}
+    tone="sand"
+  />
 
   <!-- Three editorial cards -->
   <section class="section">
