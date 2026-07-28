@@ -131,6 +131,14 @@ const airbnbUrl = airbnbListingUrl(villa.slug);
     <div class="container-content">
       <VillaGallery images={galleryImages} alt={d.landmarkName} />
 
+      {
+        d.photographyNote && (
+          <p class="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
+            {d.photographyNote}
+          </p>
+        )
+      }
+
       <div class="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-3">
         <div class="lg:col-span-2">
           <div>

@@ -55,6 +55,14 @@ const villas = defineCollection({
 
       heroImage: image(),
       gallery: z.array(image()).default([]),
+      /**
+       * Set where the photographs are of another villa of the same type. Four
+       * of the 2-bedroom villas share one photo set, so without this a guest
+       * books from pictures of a villa they will not be staying in — which is
+       * the review that costs the next ten bookings (CLAUDE.md rule 4).
+       * Remove it per villa as real photography arrives.
+       */
+      photographyNote: z.string().nullable().optional(),
       video: z.string().url().nullable().optional(),
 
       order: z.number().default(0), // manual sort weight for the collection grid
