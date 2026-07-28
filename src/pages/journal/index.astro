@@ -4,15 +4,21 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import pageHero from '../../assets/placeholders/journal-hero.jpg';
 import JournalCard from '../../components/JournalCard.astro';
-import { canonicalFor } from '../../lib/seo';
+import { canonicalFor, breadcrumbList } from '../../lib/seo';
 
 const posts = (await getCollection('journal')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const jsonLd = breadcrumbList([
+  { name: 'Home', url: canonicalFor('/') },
+  { name: 'Journal', url: canonicalFor('/journal') },
+]);
 ---
 
 <BaseLayout
-  title="Journal | Anjuna Bay"
+  title="The Journal — Where to Stay in Uluwatu | Anjuna Bay"
   description="Notes on staying in Uluwatu — surf, honeymoons, and getting around, from the team at Anjuna Bay."
   canonicalUrl={canonicalFor('/journal')}
+  jsonLd={jsonLd}
   transparentHeader={true}
 >
   <Hero

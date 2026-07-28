@@ -3,17 +3,23 @@ import { getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import EstateStory from '../components/EstateStory.astro';
-import { canonicalFor } from '../lib/seo';
+import { canonicalFor, breadcrumbList } from '../lib/seo';
 
 const page = await getEntry('pages', 'about');
 const { Content } = await page.render();
 const d = page.data;
+
+const jsonLd = breadcrumbList([
+  { name: 'Home', url: canonicalFor('/') },
+  { name: 'About', url: canonicalFor('/about') },
+]);
 ---
 
 <BaseLayout
-  title={d.seo?.title ?? 'About | Anjuna Bay'}
-  description={d.seo?.description ?? 'The story of Anjuna Bay.'}
+  title={d.seo?.title ?? 'About the Estate — Cliffside Pool Villas, Uluwatu | Anjuna Bay'}
+  description={d.seo?.description ?? 'Who looks after the cliffside pool villas at Anjuna Bay above Thomas Beach, how the estate is being built, and what we tell guests before they book.'}
   canonicalUrl={canonicalFor('/about')}
+  jsonLd={jsonLd}
   transparentHeader={true}
 >
   {

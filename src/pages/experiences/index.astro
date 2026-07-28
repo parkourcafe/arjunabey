@@ -5,15 +5,21 @@ import Hero from '../../components/Hero.astro';
 import pageHero from '../../assets/placeholders/experiences-hero.jpg';
 import ExperienceTile from '../../components/ExperienceTile.astro';
 import Neighbourhood from '../../components/Neighbourhood.astro';
-import { canonicalFor } from '../../lib/seo';
+import { canonicalFor, breadcrumbList } from '../../lib/seo';
 
 const experiences = (await getCollection('experiences')).sort((a, b) => a.data.order - b.data.order);
+
+const jsonLd = breadcrumbList([
+  { name: 'Home', url: canonicalFor('/') },
+  { name: 'Experiences', url: canonicalFor('/experiences') },
+]);
 ---
 
 <BaseLayout
-  title="Experiences | Anjuna Bay"
+  title="Experiences — Surf, Wellness and Dining in Uluwatu | Anjuna Bay"
   description="Surf, wellness, dining and celebrations at Anjuna Bay — plus a practical guide to getting around Uluwatu."
   canonicalUrl={canonicalFor('/experiences')}
+  jsonLd={jsonLd}
   transparentHeader={true}
 >
   <Hero

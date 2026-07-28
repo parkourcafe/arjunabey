@@ -4,17 +4,23 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Hero from '../../components/Hero.astro';
 import pageHero from '../../assets/placeholders/offers-hero.jpg';
 import OfferCard from '../../components/OfferCard.astro';
-import { canonicalFor } from '../../lib/seo';
+import { canonicalFor, breadcrumbList } from '../../lib/seo';
 
 const offers = (await getCollection('offers', (o) => o.data.active)).sort((a, b) =>
   a.data.title.localeCompare(b.data.title)
 );
+
+const jsonLd = breadcrumbList([
+  { name: 'Home', url: canonicalFor('/') },
+  { name: 'Offers', url: canonicalFor('/offers') },
+]);
 ---
 
 <BaseLayout
-  title="Offers | Anjuna Bay"
+  title="Book Direct Offers — Cliffside Pool Villas | Anjuna Bay"
   description="Book direct for clear seasonal rates and length-of-stay savings near Thomas Beach."
   canonicalUrl={canonicalFor('/offers')}
+  jsonLd={jsonLd}
   transparentHeader={true}
 >
   <Hero

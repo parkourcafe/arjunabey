@@ -5,6 +5,9 @@
  * docs/BUILD.md §9/§13: unique title+description per page, canonical, OG/Twitter,
  * JSON-LD by page type, noindex where required (e.g. /book).
  */
+import { getImage } from 'astro:assets';
+import defaultOgSource from '../assets/placeholders/home-hero.jpg';
+
 export interface Props {
   title: string;
   description: string;
@@ -16,6 +19,22 @@ export interface Props {
 
 const { title, description, canonicalUrl, ogImage, noindex = false, jsonLd } = Astro.props;
 const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+
+// Every page needs a share image: this brand gets passed around on WhatsApp
+// and Instagram, and a link with no preview looks broken next to one that has
+// it. Pages may override with `ogImage`; otherwise the estate's own hero
+// stands in, rendered to the 1200×630 the scrapers expect.
+const fallbackOg = await getImage({
+  src: defaultOgSource,
+  width: 1200,
+  height: 630,
+  format: 'jpg',
+});
+
+// Scrapers do not resolve relative paths — the URL has to be absolute, and
+// Astro.site is the only place the production origin is defined.
+const origin = Astro.site ?? new URL(canonicalUrl);
+const shareImage = new URL(ogImage ?? fallbackOg.src, origin).href;
 ---
 
 <title>{title}</title>
@@ -27,12 +46,15 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalUrl} />
-{ogImage && <meta property="og:image" content={ogImage} />}
+<meta property="og:image" content={shareImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Anjuna Bay" />
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-{ogImage && <meta name="twitter:image" content={ogImage} />}
+<meta name="twitter:image" content={shareImage} />
 
 {
   jsonLdBlocks.map((block) => (
