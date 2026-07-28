@@ -243,21 +243,21 @@ const rateGuide = SEASONS.map((season) => {
             {genericWaHref ? "Confirm dates on WhatsApp" : "Send an enquiry"}
           </a>
         )}
-        {airbnbUrl && genericWaHref && (
+        {airbnbUrl && (
           <a
-            href={genericWaHref}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={genericWaHref ?? "/contact"}
+            target={genericWaHref ? "_blank" : undefined}
+            rel={genericWaHref ? "noopener noreferrer" : undefined}
             class="mt-3 block text-center text-sm text-ocean underline underline-offset-4"
-            data-track="whatsapp_click"
+            data-track={genericWaHref ? "whatsapp_click" : "enquiry_click"}
             data-villa={landmarkName}
           >
-            Ask a question on WhatsApp
+            {genericWaHref ? "Book direct — message us" : "Book direct — send an enquiry"}
           </a>
         )}
         <p class="mt-3 text-center text-xs leading-relaxed text-muted">
           {airbnbUrl
-            ? "Airbnb shows live availability, applicable fees, cancellation terms and secure payment. The estimate above is the Anjuna Bay accommodation rate."
+            ? "That button opens Airbnb, where live availability sits while our own booking is connected. Book with us instead and the airport transfer is included."
             : "This calculator shows the accommodation rate. Live availability, taxes and any applicable fees are confirmed with our reservations team."}
         </p>
       </div>
