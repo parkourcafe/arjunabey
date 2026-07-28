@@ -170,8 +170,13 @@ const id = `gallery-${Math.random().toString(36).slice(2, 8)}`;
       if (counter) counter.textContent = `${current + 1} / ${total}`;
     }
 
-    function open(i) {
-      lastFocused = document.activeElement;
+    function open(i, trigger) {
+      // Prefer the tile that opened the lightbox. document.activeElement is
+      // not reliable here — a mouse click can leave focus on <body>, and then
+      // Escape drops the guest back at the top of the page instead of the
+      // photograph they were looking at.
+      lastFocused =
+        trigger instanceof HTMLElement ? trigger : document.activeElement;
       show(i);
       lightbox.classList.remove("hidden");
       lightbox.classList.add("flex");
@@ -187,7 +192,7 @@ const id = `gallery-${Math.random().toString(36).slice(2, 8)}`;
     }
 
     grid.querySelectorAll("[data-gallery-open]").forEach((btn) => {
-      btn.addEventListener("click", () => open(Number(btn.dataset.index)));
+      btn.addEventListener("click", () => open(Number(btn.dataset.index), btn));
     });
     lightbox
       .querySelector("[data-gallery-close]")
@@ -229,8 +234,13 @@ const id = `gallery-${Math.random().toString(36).slice(2, 8)}`;
       }
     });
 
+    // The stage covers the backdrop, so a click on the dark area never
+    // reached the lightbox element itself. Close on anything that is not the
+    // photograph or a control.
     lightbox.addEventListener("click", (e) => {
-      if (e.target === lightbox) close();
+      const t = e.target;
+      if (!t || t.closest("button") || t.tagName === "IMG" || t.tagName === "PICTURE") return;
+      close();
     });
   }
 </script>

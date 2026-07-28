@@ -93,12 +93,30 @@ const META_PIXEL_ID = import.meta.env.PUBLIC_META_PIXEL_ID;
     window.dispatchEvent(new CustomEvent('anjuna:consent-granted'));
   }
 
+  // The banner is fixed to the bottom, so on a phone it sat directly over the
+  // hero's Reserve and Explore buttons — unclickable on every first visit,
+  // which is the only visit that matters in a demo. Reserve the space it
+  // occupies while it is up, and give it back when it goes.
+  function reserveSpace() {
+    if (!banner) return;
+    const height = banner.offsetHeight + 'px';
+    // Body padding handles ordinary page flow. The hero is sized in svh, so
+    // padding below it moves nothing — it reads the variable instead and
+    // lifts its own buttons clear while the banner is up.
+    document.body.style.paddingBottom = height;
+    document.documentElement.style.setProperty('--consent-height', height);
+  }
+
   function hideBanner() {
     banner?.classList.add('hidden');
+    document.body.style.paddingBottom = '';
+    document.documentElement.style.setProperty('--consent-height', '0px');
   }
 
   function showBanner() {
     banner?.classList.remove('hidden');
+    reserveSpace();
+    window.addEventListener('resize', reserveSpace, { passive: true });
   }
 
   function applyStoredChoice() {

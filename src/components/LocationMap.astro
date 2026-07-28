@@ -52,6 +52,7 @@ const JOURNEYS = [
     <div class="grid grid-cols-1 gap-10 lg:grid-cols-3 lg:gap-12">
       <div class="lg:col-span-2">
         <div
+          id="location-map-frame"
           class="relative aspect-[16/10] w-full overflow-hidden border border-hairline bg-sand"
           data-map
         >
@@ -69,7 +70,7 @@ const JOURNEYS = [
           />
           <div class="absolute inset-0 bg-ink/45" aria-hidden="true"></div>
 
-          <div class="absolute inset-0 flex flex-col items-center justify-center gap-5 px-6 text-center">
+          <div class="absolute inset-0 flex flex-col items-center justify-center gap-5 px-6 text-center" data-map-placeholder>
             <svg
               width="34"
               height="34"
@@ -86,15 +87,23 @@ const JOURNEYS = [
             <p class="max-w-xs text-sm leading-relaxed text-paper/85">
               The map loads from OpenStreetMap only when you ask it to.
             </p>
-            <button type="button" class="link-quiet-on-dark" data-map-load>Show the map</button>
           </div>
         </div>
 
-        <p class="mt-4 text-sm">
+        <div class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
+          <button
+            type="button"
+            class="link-quiet"
+            data-map-load
+            aria-expanded="false"
+            aria-controls="location-map-frame"
+          >
+            Show the map
+          </button>
           <a href={DIRECTIONS} target="_blank" rel="noopener noreferrer" class="underline underline-offset-4">
             Open directions
           </a>
-        </p>
+        </div>
       </div>
 
       <div>
@@ -131,15 +140,30 @@ const JOURNEYS = [
 </section>
 
 <script is:inline define:vars={{ EMBED }}>
-  document.querySelector('[data-map-load]')?.addEventListener('click', () => {
-    const frame = document.querySelector('[data-map]');
-    if (!frame) return;
-    const iframe = document.createElement('iframe');
-    iframe.src = EMBED;
-    iframe.title = 'Map showing Anjuna Bay at Thomas Beach, Uluwatu';
-    iframe.loading = 'lazy';
-    iframe.referrerPolicy = 'no-referrer';
-    iframe.className = 'absolute inset-0 h-full w-full border-0';
-    frame.replaceChildren(iframe);
+  const mapButton = document.querySelector('[data-map-load]');
+  const mapFrame = document.querySelector('[data-map]');
+  let mapIframe = null;
+
+  // The control sits below the frame rather than inside it, so it survives the
+  // map appearing and the guest can put the map away again. The iframe is
+  // built once on first request — nothing third-party loads before that — and
+  // afterwards only hidden, not torn down and refetched.
+  mapButton?.addEventListener('click', () => {
+    if (!mapFrame) return;
+    const showing = mapButton.getAttribute('aria-expanded') === 'true';
+
+    if (!showing && !mapIframe) {
+      mapIframe = document.createElement('iframe');
+      mapIframe.src = EMBED;
+      mapIframe.title = 'Map showing Anjuna Bay at Thomas Beach, Uluwatu';
+      mapIframe.loading = 'lazy';
+      mapIframe.referrerPolicy = 'no-referrer';
+      mapIframe.className = 'absolute inset-0 h-full w-full border-0';
+      mapFrame.append(mapIframe);
+    }
+
+    mapIframe?.classList.toggle('hidden', showing);
+    mapButton.setAttribute('aria-expanded', String(!showing));
+    mapButton.textContent = showing ? 'Show the map' : 'Hide the map';
   });
 </script>

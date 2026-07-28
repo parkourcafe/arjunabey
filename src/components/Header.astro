@@ -41,7 +41,7 @@ const NAV = [
       <button
         type="button"
         id="menu-toggle"
-        class="flex items-center gap-2.5 lg:hidden"
+        class="flex min-h-[44px] items-center gap-2.5 lg:hidden"
         aria-expanded="false"
         aria-controls="mobile-menu"
         aria-label="Open menu"
@@ -74,7 +74,7 @@ const NAV = [
   </div>
 
   <!-- Tier two: the property's sections -->
-  <div class="hidden border-t border-hairline/60 lg:block" data-header-rule>
+  <div class="hidden lg:block" data-header-rule>
     <div class="container-content flex h-11 items-center justify-center gap-9">
       {
         NAV.map((item) => (
@@ -126,8 +126,13 @@ const NAV = [
       transparent 100%
     );
   }
+  /* The rule between the two tiers belongs on the solid bar only: over the
+     hero it read as a hairline scratched across the photograph. */
+  [data-header-rule] {
+    border-top: 1px solid var(--color-hairline);
+  }
   header[data-transparent='true']:not(.scrolled) [data-header-rule] {
-    border-top-color: rgb(250 247 242 / 0.25);
+    border-top-color: transparent;
   }
   /* Over the hero the Reserve CTA goes quiet; a solid block is the loudest
      thing on the screen otherwise. It returns to solid once condensed. */
@@ -164,10 +169,31 @@ const NAV = [
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
+  function setMenu(open: boolean) {
+    if (!menuToggle || !mobileMenu) return;
+    menuToggle.setAttribute('aria-expanded', String(open));
+    menuToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    mobileMenu.classList.toggle('hidden', !open);
+    // Without this the page scrolls behind the open panel.
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
   menuToggle?.addEventListener('click', () => {
-    const expanded = menuToggle.getAttribute('aria-expanded') === 'true';
-    menuToggle.setAttribute('aria-expanded', String(!expanded));
-    mobileMenu?.classList.toggle('hidden');
-    menuToggle.setAttribute('aria-label', expanded ? 'Open menu' : 'Close menu');
+    setMenu(menuToggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  // A panel that only closes from the control that opened it is a trap on a
+  // phone: Escape and a tap outside are what people actually reach for.
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menuToggle?.getAttribute('aria-expanded') === 'true') {
+      setMenu(false);
+      menuToggle.focus();
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (menuToggle?.getAttribute('aria-expanded') !== 'true') return;
+    const target = e.target as Node;
+    if (!mobileMenu?.contains(target) && !menuToggle.contains(target)) setMenu(false);
   });
 </script>

@@ -81,6 +81,19 @@ const { defaultSegment = '' } = Astro.props;
   const status = document.querySelector('[data-enquiry-status]');
   const submitBtn = document.querySelector('[data-enquiry-submit]');
 
+  // The page is prerendered, so ?type= has to be honoured here rather than at
+  // build time. Links like the footer's property-enquiry one otherwise land on
+  // a form that gives no sign it knew what the guest clicked.
+  const requestedSegment = new URLSearchParams(location.search).get('type');
+  const segment = form?.querySelector('#segment');
+  if (
+    requestedSegment &&
+    segment instanceof HTMLSelectElement &&
+    Array.from(segment.options).some((o) => o.value === requestedSegment)
+  ) {
+    segment.value = requestedSegment;
+  }
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!(form instanceof HTMLFormElement) || !status || !(submitBtn instanceof HTMLButtonElement)) return;

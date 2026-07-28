@@ -149,10 +149,23 @@
   .link-quiet,
   .link-quiet-on-dark {
     @apply text-eyebrow uppercase no-underline;
+    position: relative;
+    display: inline-block;
     padding-bottom: 0.4rem;
     border-bottom: 1px solid currentColor;
     transition: opacity var(--duration-fade) var(--ease-elegant),
       color var(--duration-fade) var(--ease-elegant);
+  }
+  /* Eyebrow type plus the rule comes to roughly 21px — under the 24px WCAG
+     2.2 (2.5.8) asks for. The overlay buys the missing height without moving
+     the underline, which is doing real work in this layout. */
+  .link-quiet::after,
+  .link-quiet-on-dark::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto 0;
+    height: 24px;
+    transform: translateY(-50%);
   }
   .link-quiet {
     color: var(--color-ink);

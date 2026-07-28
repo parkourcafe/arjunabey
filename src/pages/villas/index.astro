@@ -63,7 +63,7 @@ const jsonLd = itemList(
               ))}
             </select>
           </div>
-          <div>
+          <div class:list={[viewOptions.length < 2 && 'hidden']}>
             <label for="filter-view" class="eyebrow mb-2.5 block">
               View
             </label>
@@ -77,7 +77,7 @@ const jsonLd = itemList(
               ))}
             </select>
           </div>
-          <p class="ml-auto pb-2 text-sm text-muted" data-filter-count />
+          <p class="ml-auto pb-2 text-sm text-muted" data-filter-count aria-live="polite" role="status" />
         </div>
       )
     }

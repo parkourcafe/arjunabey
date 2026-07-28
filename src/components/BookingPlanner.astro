@@ -131,6 +131,7 @@ const genericWaHref = whatsappLink();
         <p
           class="mt-8 hidden border-l-2 border-clay pl-3 text-sm text-ink"
           data-planner-error
+          role="status"
           aria-live="polite"
         >
         </p>
@@ -279,6 +280,23 @@ const genericWaHref = whatsappLink();
         guestSelect.disabled = false;
       }
 
+      /**
+       * Whenever there is no valid quote the CTA has to stop pointing at a
+       * checkout. Leaving the previous link in place sent the guest to Airbnb
+       * with dates the form no longer showed — they would have booked one stay
+       * while reading another.
+       */
+      function resetCta(label: string) {
+        if (cta) {
+          cta.href = "/villas";
+          cta.removeAttribute("target");
+          cta.removeAttribute("rel");
+          cta.textContent = label;
+        }
+        whatsappCta?.classList.add("hidden");
+        whatsappCta?.classList.remove("block");
+      }
+
       function refresh() {
         const option = selectedVilla();
         if (
@@ -290,13 +308,7 @@ const genericWaHref = whatsappLink();
           result?.classList.add("hidden");
           error?.classList.add("hidden");
           empty?.classList.remove("hidden");
-          if (cta) {
-            cta.href = "/villas";
-            cta.removeAttribute("target");
-            cta.removeAttribute("rel");
-            cta.textContent = "Choose a villa and dates";
-          }
-          whatsappCta?.classList.add("hidden");
+          resetCta("Choose a villa and dates");
           return;
         }
 
@@ -402,6 +414,7 @@ const genericWaHref = whatsappLink();
                 : "Please check your dates.";
             error.classList.remove("hidden");
           }
+          resetCta("See all villas");
         }
       }
 

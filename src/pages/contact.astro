@@ -4,6 +4,7 @@ import Hero from "../components/Hero.astro";
 import pageHero from "../assets/placeholders/contact-hero.jpg";
 import SectionHeading from "../components/SectionHeading.astro";
 import WhatsAppButton from "../components/WhatsAppButton.astro";
+import EnquiryForm from "../components/EnquiryForm.astro";
 import { canonicalFor, faqPage } from "../lib/seo";
 import { OPERATOR } from "../lib/operator";
 import { whatsappLink, whatsappNumber } from "../lib/whatsapp";
@@ -80,6 +81,10 @@ const faqs = [
               variant="button"
               label="Start a WhatsApp conversation"
             />
+          </div>
+
+          <div class="mt-10 border-t border-hairline pt-8">
+            <EnquiryForm />
           </div>
 
           <dl class="mt-8 grid grid-cols-1 gap-5 border-t border-hairline pt-6 text-sm sm:grid-cols-2">

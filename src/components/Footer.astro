@@ -154,6 +154,12 @@ const whatsapp = whatsappLink();
     color: var(--color-ink);
     text-decoration: none;
     transition: color var(--duration-fade) var(--ease-elegant);
+    /* The eyebrow type here renders around 15px tall. WCAG 2.2 AA (2.5.8)
+       wants 24px of target, so the padding does the work the type size
+       cannot — without it these are a miss-and-retry on a phone. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
   }
   .footer-link:hover {
     color: var(--color-ocean);

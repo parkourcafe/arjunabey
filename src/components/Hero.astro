@@ -80,9 +80,12 @@ const {
 
   {
     video && hasSound && (
+      /* Visible on every size. It used to be desktop-only, which hid the
+         film's own audio from the majority of the traffic. On a phone it
+         takes the left corner — the assistant bubble owns bottom-right. */
       <button
         type="button"
-        class="absolute bottom-6 right-6 z-20 hidden h-11 w-11 items-center justify-center rounded-full border border-paper/50 text-paper transition-colors duration-400 ease-elegant hover:bg-paper/10 md:flex"
+        class="absolute bottom-[calc(1.5rem_+_var(--consent-height,0px))] left-5 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-paper/50 text-paper transition-colors duration-400 ease-elegant hover:bg-paper/10 md:left-auto md:right-6"
         data-sound-toggle
         aria-pressed="false"
         aria-label="Play with sound"
@@ -99,7 +102,7 @@ const {
     )
   }
 
-  <div class="container-content relative z-10 pb-16 pt-32 text-paper md:pb-24">
+  <div class="container-content relative z-10 pb-[calc(4rem_+_var(--consent-height,0px))] pt-32 text-paper md:pb-[calc(6rem_+_var(--consent-height,0px))]">
     {eyebrow && <p class="eyebrow mb-4 text-paper/80">{eyebrow}</p>}
     <h1 class="max-w-4xl text-display font-serif font-light text-paper">{headline}</h1>
     {subhead && <p class="mt-5 max-w-xl font-serif text-lg italic text-paper/90 md:text-xl">{subhead}</p>}
