@@ -1,6 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
 import { canonicalFor, faqPage } from '../lib/seo';
 
 const page = await getEntry('pages', 'the-place');
@@ -30,18 +31,18 @@ const jsonLd = faqPage([
 >
   {
     d.heroImage && (
-      <div class="relative h-[60vh] min-h-[380px] overflow-hidden">
-        <img src={d.heroImage.src} alt="Thomas Beach, Uluwatu" class="absolute inset-0 h-full w-full object-cover" />
-        <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/10 to-transparent" aria-hidden="true" />
-        <div class="container-content relative z-10 flex h-full flex-col justify-end pb-14 text-paper">
-          <p class="eyebrow mb-3 text-paper/80">Where you are</p>
-          <h1 class="max-w-lg font-serif text-h1 font-medium">{d.title}</h1>
-        </div>
-      </div>
+      <Hero
+        image={d.heroImage}
+        imageAlt="The clifftop above Thomas Beach, Uluwatu"
+        eyebrow="Where you are"
+        headline={d.title}
+        subhead="Thomas Beach sits below the estate — a short walk down, and the quiet side of the Bukit all around it."
+        height="tall"
+      />
     )
   }
 
-  <div class="container-content section">
+  <div class="container-content section pt-16 md:pt-20">
     <div class="prose-anjuna max-w-prose">
       <Content />
     </div>
