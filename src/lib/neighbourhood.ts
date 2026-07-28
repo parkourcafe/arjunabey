@@ -38,7 +38,7 @@ export const NEIGHBOURHOOD: NeighbourhoodGroup[] = [
       'The reason the Bukit was settled in the first place. Thomas Beach is the walk; the rest are a short ride along the cliff road.',
     places: [
       { name: 'Thomas Beach', detail: 'Sand and a mellow beach break', distance: '3 min walk' },
-      { name: 'Padang Padang', detail: 'The barrelling right, and the cove above it', distance: '12 min walk' },
+      { name: 'Padang Padang', detail: 'The barrelling right, and the cove above it', distance: '5 min walk' },
       { name: 'Bingin', detail: 'Reef, low tide, and the stairs down', distance: 'A short ride' },
       { name: 'Impossibles', detail: 'Long walls on the right swell', distance: 'A short ride' },
       { name: 'Uluwatu', detail: 'The break the peninsula is named for', distance: 'A short ride' },

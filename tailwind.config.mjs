@@ -8,6 +8,11 @@ export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}'],
   theme: {
     extend: {
+      screens: {
+        // 320px phones are still in use; below this the header drops its
+        // 'Menu' label so the wordmark keeps its clearance.
+        xs: '360px',
+      },
       colors: {
         sand: '#f3eee7', // base surface — the dominant neutral
         paper: '#faf7f2', // card/section surface, slightly lifted off sand
