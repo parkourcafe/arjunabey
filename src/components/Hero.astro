@@ -52,7 +52,7 @@ const {
   {
     video && (
       <video
-        class="hero-video absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 motion-reduce:hidden"
+        class="hero-video hero-slow-zoom absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 motion-reduce:hidden"
         muted
         loop
         playsinline
@@ -90,6 +90,23 @@ const {
     }
   </div>
 </section>
+
+<style>
+  /* Barely-perceptible slow push-in on the video loop — the global
+     prefers-reduced-motion rule zeroes animation durations, so this
+     never plays for users who opt out of motion. */
+  .hero-slow-zoom {
+    animation: hero-zoom 28s linear infinite alternate;
+  }
+  @keyframes hero-zoom {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.06);
+    }
+  }
+</style>
 
 <script>
   // Hero video: honour prefers-reduced-motion (pause + stay on poster image),

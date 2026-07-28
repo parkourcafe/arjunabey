@@ -3,11 +3,14 @@
  * Component-specific styles live with the component (scoped <style> in .astro
  * files) or as Tailwind utilities. This file only sets the document baseline.
  */
+/* @import must precede every other statement (CSS spec) — placed after the
+   @tailwind directives it gets silently dropped from the production bundle,
+   taking the Fraunces @font-face and every design token with it. */
+@import './tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import './tokens.css';
 
 @layer base {
   * {
