@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { cp, mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const repo = new URL('..', import.meta.url).pathname;
@@ -30,6 +30,13 @@ for (let order = 0; order < approved.length; order += 1) {
   await mkdir(assetDir, { recursive: true });
   const filenames = ['hero.jpg', 'gallery-01.jpg', 'gallery-02.jpg', 'gallery-03.jpg', 'gallery-04.jpg', 'gallery-05.jpg'];
   for (const filename of filenames) await cp(join(sourceDir, filename), join(assetDir, filename));
+  const heroPath = join(assetDir, 'hero.jpg');
+  const heroStats = await stat(heroPath);
+  if (heroStats.size < 20_000) {
+    // Airbnb sometimes exposes its app icon before the listing photos.
+    // Never use that service artwork as a villa hero image.
+    await cp(join(assetDir, 'gallery-01.jpg'), heroPath);
+  }
 
   const amenities = [
     'Private pool',
@@ -106,7 +113,7 @@ const legacyFiles = [
 ];
 const { rm } = await import('node:fs/promises');
 for (const file of legacyFiles) {
-  if (!activeSlugs.has(file)) await rm(join(repo, 'src', 'content', 'villas', file));
+  if (!activeSlugs.has(file)) await rm(join(repo, 'src', 'content', 'villas', file), { force: true });
 }
 
 const headers = Object.keys(nameMapRows[0]);
