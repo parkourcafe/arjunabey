@@ -24,11 +24,10 @@
   --color-overlay-scrim: rgba(20, 18, 15, 0.38); /* hero video/image text-legibility scrim */
 
   /* ---- Type ------------------------------------------------------------
-   * Production: self-host Fraunces (display) + Inter (body/UI), woff2,
-   * preloaded, font-display: swap. Fraunces is wired up for real below
-   * (public/fonts/, one static weight); Inter still has no licensed file in
-   * the repo, so it renders via the system-ui fallback stack — see the
-   * @font-face block below for the full status and the TODO.
+   * Both families are real and self-hosted via @fontsource (SIL OFL):
+   * Fraunces 400/400-italic/500/600 + Inter 400/500, imported in
+   * BaseLayout.astro with the two above-the-fold files preloaded.
+   * No CDN, font-display: swap throughout.
    */
   --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-sans: 'Inter', system-ui, -apple-system, Roboto, sans-serif;
@@ -53,32 +52,9 @@
   --max-content: 1200px;
 }
 
-/* Self-hosted font faces. Do NOT swap this for a Google Fonts CDN <link>:
-   self-hosting keeps the site working with zero third-party network
-   dependency and is faster (see docs/BUILD.md §7).
-
-   Fraunces is real and live: public/fonts/fraunces-latin-600-normal.woff2
-   (SIL OFL-1.1, licence copied alongside it) — a single static weight (600),
-   not the full variable axis docs/BUILD.md describes. Every heading requests
-   font-weight: 500 (global.css), which the CSS font-matching algorithm
-   resolves to this 600 face rather than falling through to Georgia — so
-   headings render in real Fraunces, just at one consistent weight, until a
-   licensed variable file replaces this (see TODO below).
-
-   Inter has NO real file in this repo yet — the rule against fabricating
-   assets applies to fonts too, not just prices/reviews. Do not add an
-   @font-face for it that points at a file that doesn't exist. Body/UI text
-   uses the system-ui/-apple-system/Roboto fallback stack until a real
-   Inter woff2 (or @fontsource/inter) is added.
-   TODO(fonts): source licensed variable/static files for both Fraunces'
-   full weight range and Inter, then extend this block. */
-@font-face {
-  font-family: 'Fraunces';
-  src: url('/fonts/fraunces-latin-600-normal.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
+/* @font-face rules come from @fontsource (imported in BaseLayout.astro) —
+   self-hosted, SIL OFL, zero third-party network dependency. Do NOT add a
+   Google Fonts CDN <link> or hand-rolled @font-face here. */
 
 @media (prefers-reduced-motion: reduce) {
   :root {

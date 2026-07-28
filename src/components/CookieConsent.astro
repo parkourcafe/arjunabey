@@ -18,20 +18,31 @@ const META_PIXEL_ID = import.meta.env.PUBLIC_META_PIXEL_ID;
 
 <div
   id="cookie-consent"
-  class="fixed inset-x-0 bottom-0 z-50 hidden border-t border-hairline bg-paper/98 px-6 py-5 shadow-[0_-4px_20px_rgba(28,26,23,0.08)] backdrop-blur md:px-16"
+  class="fixed inset-x-0 bottom-0 z-50 hidden border-t border-hairline bg-paper/98 px-5 py-3.5 shadow-[0_-4px_20px_rgba(28,26,23,0.08)] backdrop-blur md:px-16 md:py-4"
   role="dialog"
   aria-label="Cookie preferences"
   aria-live="polite"
 >
-  <div class="container-content flex flex-col items-start gap-4 !px-0 md:flex-row md:items-center md:justify-between">
-    <p class="max-w-prose text-sm text-ink">
-      We use a small number of cookies to understand how the site is used and to measure the
-      effectiveness of our marketing. Nothing loads until you say yes — see our
+  <div class="container-content flex flex-row items-center justify-between gap-4 !px-0">
+    <p class="max-w-prose text-xs leading-snug text-muted md:text-sm">
+      A few cookies help us understand how the site is used. Nothing loads until you say yes —
       <a href="/privacy" class="underline">Privacy Notice</a>.
     </p>
-    <div class="flex shrink-0 gap-3">
-      <button type="button" id="cookie-decline" class="btn-secondary">Decline</button>
-      <button type="button" id="cookie-accept" class="btn-primary">Accept</button>
+    <div class="flex shrink-0 items-center gap-2.5">
+      <button
+        type="button"
+        id="cookie-decline"
+        class="px-3 py-2 text-xs font-medium tracking-wide text-muted underline-offset-4 transition-colors duration-400 ease-elegant hover:text-ink hover:underline md:text-sm"
+      >
+        Decline
+      </button>
+      <button
+        type="button"
+        id="cookie-accept"
+        class="bg-ocean px-5 py-2 text-xs font-medium tracking-wide text-paper transition-colors duration-400 ease-elegant hover:bg-ocean-dark md:px-6 md:py-2.5 md:text-sm"
+      >
+        Accept
+      </button>
     </div>
   </div>
 </div>

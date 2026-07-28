@@ -8,7 +8,19 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SeoHead from '../components/SeoHead.astro';
 import CookieConsent from '../components/CookieConsent.astro';
+// Self-hosted fonts (SIL OFL, shipped by @fontsource — no third-party CDN).
+// Fraunces: display serif for headings; Inter: body/UI sans.
+import '@fontsource/fraunces/400.css';
+import '@fontsource/fraunces/400-italic.css';
+import '@fontsource/fraunces/500.css';
+import '@fontsource/fraunces/600.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
 import '../styles/global.css';
+// Hashed URLs of the two above-the-fold-critical files, preloaded below so the
+// hero headline and first body text never flash a fallback face.
+import frauncesPreload from '@fontsource/fraunces/files/fraunces-latin-500-normal.woff2?url';
+import interPreload from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
 
 export interface Props {
   title: string;
@@ -38,15 +50,8 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f3eee7" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <!-- Real, self-hosted file (SIL OFL) — see src/styles/tokens.css for why
-         only Fraunces is preloaded here and not Inter. -->
-    <link
-      rel="preload"
-      href="/fonts/fraunces-latin-600-normal.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
+    <link rel="preload" href={frauncesPreload} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={interPreload} as="font" type="font/woff2" crossorigin />
     <SeoHead
       title={title}
       description={description}

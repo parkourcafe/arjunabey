@@ -88,7 +88,7 @@ Journal/experiences/offers follow their schemas the same way. **If a required re
 ## Design tokens (define once in `styles/tokens.css`, reference by role)
 
 - **Type:** display serif (e.g. *Fraunces* or *Cormorant Garamond*, self-hosted) for headings; humanist sans (*Inter*) for body/UI. No system-serif fallback flashes — preload + `font-display: swap`.
-  **Status:** Fraunces is real and wired up (`public/fonts/fraunces-latin-600-normal.woff2`, SIL OFL, preloaded in `BaseLayout.astro`) — one static weight (600) only, not the full variable axis. Inter has no licensed file in the repo yet; body/UI intentionally still falls back to the system-ui stack rather than pointing `@font-face` at a file that doesn't exist. TODO(fonts): source the rest of Fraunces' weight range + a real Inter file (self-hosted woff2 or `@fontsource/inter`) and extend `src/styles/tokens.css`.
+  **Status:** both families are real and self-hosted via `@fontsource` (SIL OFL): Fraunces 400/400-italic/500/600 and Inter 400/500, imported in `BaseLayout.astro` with the two above-the-fold files preloaded. No CDN, no hand-rolled `@font-face`.
 - **Palette (warm, Aman-like, restrained):**
   - `--sand: #f3eee7` (base surface) · `--paper: #faf7f2` · `--ink: #1c1a17` · `--muted: #6f6a61`
   - accent `--ocean: #2b4c53` *(deep muted teal/ocean)* · secondary `--clay: #c08a6a` *(soft sunset clay)*. Use colour sparingly; neutrals dominate. Tune exact values against the photography.
