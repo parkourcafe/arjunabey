@@ -6,7 +6,7 @@ import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import partytown from '@astrojs/partytown';
-import vercel from '@astrojs/vercel';
+import vercel from '@astrojs/vercel/serverless';
 // Hosting on Vercel (docs/BUILD.md §14 open decision — resolved). Swap back to
 // `netlify()` (from '@astrojs/netlify') if hosting moves to Netlify instead —
 // no other change needed.
