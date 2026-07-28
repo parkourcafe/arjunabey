@@ -36,6 +36,6 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
 {
   jsonLdBlocks.map((block) => (
-    <script type="application/ld+json" set:html={JSON.stringify(block)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(block)} />
   ))
 }

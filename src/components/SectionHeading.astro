@@ -5,14 +5,22 @@
 export interface Props {
   eyebrow?: string;
   heading: string;
+  level?: 1 | 2;
   align?: 'left' | 'center';
   class?: string;
 }
 
-const { eyebrow, heading, align = 'left', class: className = '' } = Astro.props;
+const {
+  eyebrow,
+  heading,
+  level = 2,
+  align = 'left',
+  class: className = '',
+} = Astro.props;
+const HeadingTag = level === 1 ? 'h1' : 'h2';
 ---
 
 <div class:list={['max-w-2xl', align === 'center' && 'mx-auto text-center', className]}>
   {eyebrow && <p class="eyebrow mb-3">{eyebrow}</p>}
-  <h2 class="font-serif text-h2 font-medium text-ink">{heading}</h2>
+  <HeadingTag class="font-serif text-h2 font-medium text-ink">{heading}</HeadingTag>
 </div>

@@ -3,4 +3,4 @@ Allow: /
 Disallow: /book
 Disallow: /api/
 
-Sitemap: https://anjunabay.com/sitemap-index.xml
+Sitemap: https://arjunabey.vercel.app/sitemap-index.xml

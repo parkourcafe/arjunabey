@@ -35,9 +35,6 @@ function walk(dir, exts, cb) {
 }
 
 // ---- 1. Relative import/reference resolution -----------------------------
-const importRe = /(?:from\s+|import\s*\(?\s*|src=\{?['"])(\.\.?\/[^'"\)\s;]+)['")]?/g;
-const astroImportRe = /import\s+.*?from\s+['"](\.\.?\/[^'"]+)['"]/g;
-
 function checkImportsInFile(file) {
   filesChecked++;
   const content = readFileSync(file, 'utf-8');
