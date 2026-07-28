@@ -1,0 +1,33 @@
+---
+/**
+ * SuitedTo — "who this villa is for", derived from the villa's own data via
+ * lib/audience.ts. Answers the question a guest asks before any other, and
+ * lets a couple, a family and a surfer each recognise themselves without the
+ * page having to shout at all three at once.
+ */
+import { audiencesFor, type AudienceInput } from '../lib/audience';
+
+export interface Props {
+  villa: AudienceInput;
+}
+
+const audiences = audiencesFor(Astro.props.villa);
+---
+
+{
+  audiences.length > 0 && (
+    <section aria-labelledby="suited-to">
+      <p class="eyebrow mb-6 text-muted" id="suited-to">
+        Suited to
+      </p>
+      <ul class="grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-2">
+        {audiences.map((audience) => (
+          <li>
+            <h3 class="font-serif text-h3 font-light text-ink">{audience.label}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">{audience.note}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

@@ -18,6 +18,7 @@ import Hero from '../components/Hero.astro';
 import VillaCard from '../components/VillaCard.astro';
 import JournalCard from '../components/JournalCard.astro';
 import LocationMap from '../components/LocationMap.astro';
+import EstateStory from '../components/EstateStory.astro';
 import homeHero from '../assets/placeholders/home-hero.jpg';
 import thePlaceHero from '../assets/placeholders/the-place-hero.jpg';
 import expDining from '../assets/placeholders/experience-dining.jpg';
@@ -149,6 +150,8 @@ const canonicalUrl = canonicalFor('/');
       </div>
     </div>
   </section>
+
+  <EstateStory tone="paper" />
 
   <LocationMap
     heading="Thomas Beach, Uluwatu"

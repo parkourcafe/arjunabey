@@ -1,0 +1,101 @@
+---
+/**
+ * EstateStory — what Anjuna Bay actually is: the scale of the community, what
+ * is open and what is still being built, and the headline numbers.
+ *
+ * Deliberately includes the unfinished clusters. A guest who arrives to find
+ * cranes they were not told about writes the review that costs the next ten
+ * bookings; a guest who was told finds it unremarkable (CLAUDE.md rule 4).
+ */
+import { getCollection } from 'astro:content';
+import { ESTATE_FACTS, ESTATE_CLUSTERS, ESTATE_AMENITIES } from '../lib/estate';
+
+export interface Props {
+  tone?: 'sand' | 'paper';
+}
+
+const { tone = 'paper' } = Astro.props;
+
+// Counted from the collection, never hardcoded — the number on the page and
+// the number of villas that exist can then never disagree.
+const villas = await getCollection('villas');
+const live = villas.filter((v) => v.data.status === 'live');
+const bedroomRange = [...new Set(live.map((v) => v.data.bedrooms))].sort((a, b) => a - b);
+const sleeps = live.map((v) => v.data.maximumGuests);
+
+const facts = [
+  { value: String(live.length), label: 'Villas available to book' },
+  {
+    value: `${bedroomRange[0]}–${bedroomRange[bedroomRange.length - 1]}`,
+    label: `Bedrooms, sleeping ${Math.min(...sleeps)} to ${Math.max(...sleeps)}`,
+  },
+  ...ESTATE_FACTS.slice(0, 2),
+];
+---
+
+<section class:list={['section', tone === 'paper' ? 'bg-paper' : 'bg-sand']}>
+  <div class="container-content">
+    <div class="fade-in-up mx-auto max-w-2xl text-center">
+      <p class="eyebrow mb-5 text-muted">The estate</p>
+      <h2 class="font-serif text-h1 font-light text-ink">A cliff-front community, still growing</h2>
+      <p class="mt-6 font-serif text-lg leading-relaxed text-ink/85">
+        Anjuna Bay is an 8.5-hectare community on the cliffs above Thomas Beach, with its own
+        access down to the sand. We look after the finished cliffside pool villas — the rest of
+        the estate is still taking shape around them, and we would rather you heard that from us.
+      </p>
+    </div>
+
+    <!-- The numbers -->
+    <dl class="mx-auto mt-14 grid max-w-4xl grid-cols-2 gap-x-8 gap-y-10 text-center md:mt-16 md:grid-cols-4">
+      {
+        facts.map((fact) => (
+          <div class="fade-in-up">
+            <dt class="font-serif text-4xl font-light text-ink md:text-5xl">{fact.value}</dt>
+            <dd class="mx-auto mt-3 max-w-[16rem] text-sm leading-relaxed text-muted">{fact.label}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <div class="mt-16 grid grid-cols-1 gap-12 border-t border-hairline pt-14 md:grid-cols-2 md:gap-16">
+      <!-- What's here -->
+      <div>
+        <p class="eyebrow mb-6 text-muted">On the estate</p>
+        <ul class="space-y-3.5">
+          {
+            ESTATE_AMENITIES.map((item) => (
+              <li class="flex items-baseline justify-between gap-4 border-b border-hairline pb-3.5 text-sm">
+                <span class="text-ink">{item.label}</span>
+                <span class="shrink-0 text-muted">
+                  {item.status === 'open' ? 'Open' : 'Planned'}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- What's being built -->
+      <div>
+        <p class="eyebrow mb-6 text-muted">The wider development</p>
+        <ul class="space-y-3.5">
+          {
+            ESTATE_CLUSTERS.map((cluster) => (
+              <li class="border-b border-hairline pb-3.5">
+                <div class="flex items-baseline justify-between gap-4">
+                  <span class="font-serif text-lg text-ink">{cluster.name}</span>
+                  <span class="shrink-0 text-sm text-muted">{cluster.status}</span>
+                </div>
+                <p class="mt-1 text-sm text-muted">{cluster.detail}</p>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-5 text-sm leading-relaxed text-muted">
+          Building work runs on parts of the estate, typically 8am–5pm. Every villa page says so,
+          and we will point you to the quietest villa for your dates.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
