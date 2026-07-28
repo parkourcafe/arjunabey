@@ -12,6 +12,7 @@
  * (CLAUDE.md rule 5).
  */
 import { whatsappLink } from '../lib/whatsapp';
+import { OPERATOR } from '../lib/operator';
 
 const year = new Date().getUTCFullYear();
 
@@ -77,7 +78,20 @@ const whatsapp = whatsappLink();
             )
           }
           <span class="px-2 text-muted/50">·</span>
+          <a href={`mailto:${OPERATOR.email}`} class="footer-link">{OPERATOR.email}</a>
+          <span class="px-2 text-muted/50">·</span>
           <a href="/book" class="footer-link">Plan your stay</a>
+        </p>
+        <p class="mt-1.5">
+          Guest operations by
+          <a
+            href={OPERATOR.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-link"
+          >
+            {OPERATOR.name}
+          </a>
         </p>
       </div>
 

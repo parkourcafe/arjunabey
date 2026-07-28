@@ -7,6 +7,9 @@
  * collection entries so this file stays trivially unit-testable.
  */
 
+import { OPERATOR } from './operator';
+import { whatsappNumber } from './whatsapp';
+
 const SITE_NAME = 'Anjuna Bay';
 const SITE_URL = import.meta.env.PUBLIC_SITE_URL ?? 'https://arjunabey.vercel.app';
 
@@ -21,6 +24,7 @@ export interface VillaLike {
 }
 
 export function lodgingBusiness() {
+  const phone = whatsappNumber();
   return {
     '@context': 'https://schema.org',
     '@type': 'LodgingBusiness',
@@ -33,6 +37,13 @@ export function lodgingBusiness() {
       addressLocality: 'Uluwatu, Pecatu',
       addressRegion: 'Bali',
       addressCountry: 'ID',
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'reservations',
+      email: OPERATOR.email,
+      url: OPERATOR.website,
+      ...(phone ? { telephone: `+${phone}` } : {}),
     },
     // TODO: real aggregate figures come from the Guesty/OTA export — do not
     // hand-set these; only render this block once real data is wired in.

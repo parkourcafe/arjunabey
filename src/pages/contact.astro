@@ -5,6 +5,11 @@ import pageHero from "../assets/placeholders/contact-hero.jpg";
 import SectionHeading from "../components/SectionHeading.astro";
 import WhatsAppButton from "../components/WhatsAppButton.astro";
 import { canonicalFor, faqPage } from "../lib/seo";
+import { OPERATOR } from "../lib/operator";
+import { whatsappLink, whatsappNumber } from "../lib/whatsapp";
+
+const whatsapp = whatsappLink();
+const phone = whatsappNumber();
 
 const faqs = [
   {
@@ -42,7 +47,7 @@ const faqs = [
     imageAlt="A villa entrance courtyard in late afternoon light"
     eyebrow="Get in touch"
     headline="Enquire"
-    subhead="Message us for a fast reply, or send the form below and we will come back to you."
+    subhead="Message the Balinest Villas guest operations team for dates, booking help or questions about your stay."
     height="tall"
   />
 
@@ -76,6 +81,59 @@ const faqs = [
               label="Start a WhatsApp conversation"
             />
           </div>
+
+          <dl class="mt-8 grid grid-cols-1 gap-5 border-t border-hairline pt-6 text-sm sm:grid-cols-2">
+            <div>
+              <dt class="text-muted">Guest operator</dt>
+              <dd class="mt-1 text-ink">
+                <a
+                  href={OPERATOR.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="underline underline-offset-4"
+                >
+                  {OPERATOR.name}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-muted">Email</dt>
+              <dd class="mt-1 text-ink">
+                <a href={`mailto:${OPERATOR.email}`} class="underline underline-offset-4">
+                  {OPERATOR.email}
+                </a>
+              </dd>
+            </div>
+            {
+              whatsapp && phone && (
+                <div>
+                  <dt class="text-muted">Phone &amp; WhatsApp</dt>
+                  <dd class="mt-1 text-ink">
+                    <a
+                      href={whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="underline underline-offset-4"
+                    >
+                      +{phone}
+                    </a>
+                  </dd>
+                </div>
+              )
+            }
+            <div>
+              <dt class="text-muted">Published office hours</dt>
+              <dd class="mt-1 text-ink">
+                {
+                  OPERATOR.officeHours.map((item) => (
+                    <span class="block">
+                      {item.days}: {item.hours}
+                    </span>
+                  ))
+                }
+              </dd>
+            </div>
+          </dl>
         </div>
       </div>
 
