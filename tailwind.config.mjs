@@ -28,7 +28,7 @@ export default {
         // Editorial scale — generous display sizes, restrained body. Positive
         // tracking on display type: light serifs need air between letters to
         // read as composed rather than condensed.
-        display: ['clamp(2.5rem, 5vw, 4.5rem)', { lineHeight: '1.08', letterSpacing: '0.005em' }],
+        display: ['clamp(2.75rem, 6.4vw, 6rem)', { lineHeight: '1.04', letterSpacing: '0.005em' }],
         h1: ['clamp(2rem, 3.5vw, 3rem)', { lineHeight: '1.15', letterSpacing: '0.005em' }],
         h2: ['clamp(1.5rem, 2.5vw, 2.25rem)', { lineHeight: '1.2', letterSpacing: '0.01em' }],
         h3: ['1.375rem', { lineHeight: '1.35', letterSpacing: '0.01em' }],

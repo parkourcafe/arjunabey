@@ -58,9 +58,9 @@ const priceLabel = offPlan
       )
     }
 
-    <div class="absolute inset-x-0 bottom-0 p-5 md:p-6">
-      <h3 class="font-serif text-3xl font-medium leading-tight text-paper">{d.landmarkName}</h3>
-      <p class="mt-1.5 text-sm text-paper/80">
+    <div class="absolute inset-x-0 bottom-0 p-6 md:p-8">
+      <h3 class="font-serif text-3xl font-light leading-tight text-paper md:text-4xl">{d.landmarkName}</h3>
+      <p class="mt-2 text-sm text-paper/80 md:text-base">
         {d.bedrooms}-Bedroom Pool Villa{walk ? ` · ${walk.minutes} min to ${walk.label}` : ''}
       </p>
     </div>

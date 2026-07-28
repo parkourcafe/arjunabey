@@ -73,11 +73,10 @@ const canonicalUrl = canonicalFor('/');
   <Hero
     image={homeHero}
     video="/video/hero.mp4"
-    videoWithSound="/video/hero-sound.mp4"
+    hasSound={true}
     imageAlt="Cliffside pool villa at Anjuna Bay, Uluwatu, at sunset"
     eyebrow="Thomas Beach · Uluwatu"
     headline="Cliffside pool villas above Thomas Beach."
-    subhead="The Uluwatu you came for — the view, the pool, the quiet. Without the Canggu crowds."
     primaryCta={{ label: 'Reserve', href: '/book' }}
     secondaryCta={{ label: 'Explore the villas', href: '/villas' }}
   />
@@ -102,7 +101,7 @@ const canonicalUrl = canonicalFor('/');
   {
     featuredVillas.length > 0 && (
       <section class="section bg-paper pt-0">
-        <div class="container-content">
+        <div class="container-wide">
           <div class="fade-in-up mx-auto mb-12 max-w-xl text-center md:mb-16">
             <p class="eyebrow mb-5 text-muted">Accommodation</p>
             <h2 class="font-serif text-h1 font-light text-ink">The villas</h2>
@@ -112,7 +111,7 @@ const canonicalUrl = canonicalFor('/');
             </p>
           </div>
 
-          <div class="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="grid grid-cols-1 gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-12">
             {featuredVillas.map((villa) => (
               <VillaCard villa={villa} />
             ))}

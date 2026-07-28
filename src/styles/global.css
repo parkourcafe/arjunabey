@@ -85,6 +85,13 @@
     @apply mx-auto w-full max-w-content px-6 md:px-16;
   }
 
+  /* Wider than the reading measure — for photographic grids, where the text
+     container's 1200px caps the images well below what the screen allows. */
+  .container-wide {
+    @apply mx-auto w-full px-6 md:px-16;
+    max-width: 1560px;
+  }
+
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 bg-ocean px-7 py-3 text-sm font-medium
       tracking-wide text-paper transition-colors duration-400 ease-elegant hover:bg-ocean-dark;

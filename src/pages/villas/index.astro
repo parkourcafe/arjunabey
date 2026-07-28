@@ -43,7 +43,7 @@ const jsonLd = itemList(
     height="tall"
   />
 
-  <div class="container-content pb-section pt-14 md:pt-20">
+  <div class="container-wide pb-section pt-14 md:pt-20">
     {
       villas.length > 0 && (
         <div class="flex flex-wrap items-end gap-8 border-b border-hairline pb-7">
@@ -82,7 +82,7 @@ const jsonLd = itemList(
       )
     }
 
-    <div id="villa-grid" class="mt-12 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+    <div id="villa-grid" class="mt-12 grid grid-cols-1 gap-x-10 gap-y-16 sm:grid-cols-2 lg:gap-x-12">
       {villas.map((villa) => <VillaCard villa={villa} />)}
     </div>
 

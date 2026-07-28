@@ -13,10 +13,12 @@ export interface Props {
   imageAlt: string;
   /** Public path to an mp4/webm loop (e.g. /video/hero.mp4). The image stays as poster + reduced-motion fallback. */
   video?: string;
-  /** Same film carrying its audio track. Browsers only autoplay muted, so the
-   *  silent cut plays by default and this one is swapped in when the visitor
-   *  asks for sound. Omit to hide the control entirely. */
-  videoWithSound?: string;
+  /** Show the sound control. The file must carry an audio track: it autoplays
+   *  muted (every browser requires that) and the control simply unmutes it.
+   *  An earlier version swapped in a second, audio-bearing file on click and
+   *  called play() before it had loaded, which left the hero paused at zero —
+   *  one file, one muted flag, nothing to sequence. */
+  hasSound?: boolean;
   eyebrow?: string;
   headline: string;
   subhead?: string;
@@ -29,7 +31,7 @@ const {
   image,
   imageAlt,
   video,
-  videoWithSound,
+  hasSound = false,
   eyebrow,
   headline,
   subhead,
@@ -42,7 +44,10 @@ const {
 <section
   class:list={[
     'relative flex items-end overflow-hidden bg-ink',
-    height === 'full' ? 'h-[92vh] min-h-[560px]' : 'h-[70vh] min-h-[420px]',
+    // Full-viewport: the film is the first thing a visitor meets and scale is
+    // most of what makes it land. 100svh rather than 100vh so mobile browser
+    // chrome does not push the composition off-screen.
+    height === 'full' ? 'h-[100svh] min-h-[600px]' : 'h-[78vh] min-h-[460px]',
   ]}
 >
   <Image
@@ -74,12 +79,11 @@ const {
   <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/15 to-transparent" aria-hidden="true"></div>
 
   {
-    video && videoWithSound && (
+    video && hasSound && (
       <button
         type="button"
         class="absolute bottom-6 right-6 z-20 hidden h-11 w-11 items-center justify-center rounded-full border border-paper/50 text-paper transition-colors duration-400 ease-elegant hover:bg-paper/10 md:flex"
         data-sound-toggle
-        data-sound-src={videoWithSound}
         aria-pressed="false"
         aria-label="Play with sound"
       >
@@ -97,7 +101,7 @@ const {
 
   <div class="container-content relative z-10 pb-16 pt-32 text-paper md:pb-24">
     {eyebrow && <p class="eyebrow mb-4 text-paper/80">{eyebrow}</p>}
-    <h1 class="max-w-3xl text-display font-serif font-medium text-paper">{headline}</h1>
+    <h1 class="max-w-4xl text-display font-serif font-light text-paper">{headline}</h1>
     {subhead && <p class="mt-5 max-w-xl font-serif text-lg italic text-paper/90 md:text-xl">{subhead}</p>}
     {
       (primaryCta || secondaryCta) && (
@@ -153,30 +157,16 @@ const {
     });
   });
 
-  // Sound toggle: browsers only autoplay muted, so the silent cut runs by
-  // default and the audio-bearing file is swapped in on the first click,
-  // resuming at the same point so the picture does not jump.
+  // Sound toggle. The film already carries its audio and is autoplaying muted,
+  // so this only flips the flag — no source swap, nothing to reload or seek.
   const toggle = document.querySelector<HTMLButtonElement>('[data-sound-toggle]');
   const heroVideo = document.querySelector<HTMLVideoElement>('.hero-video');
   if (toggle && heroVideo && !reduceMotion.matches) {
-    const soundSrc = toggle.dataset.soundSrc;
-    let swapped = false;
-
     toggle.addEventListener('click', () => {
       const turningOn = toggle.getAttribute('aria-pressed') !== 'true';
 
-      if (turningOn && !swapped && soundSrc) {
-        const at = heroVideo.currentTime;
-        heroVideo.querySelector('source')?.remove();
-        heroVideo.src = soundSrc;
-        heroVideo.currentTime = at;
-        swapped = true;
-      }
-
       heroVideo.muted = !turningOn;
-      heroVideo.play().catch(() => {
-        /* blocked — leave the control as it was */
-      });
+      if (heroVideo.paused) heroVideo.play().catch(() => {});
 
       toggle.setAttribute('aria-pressed', String(turningOn));
       toggle.setAttribute('aria-label', turningOn ? 'Mute' : 'Play with sound');
