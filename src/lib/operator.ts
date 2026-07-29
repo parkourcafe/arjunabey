@@ -12,9 +12,9 @@
  * says up front that the sender is a guest asking about a stay — whoever picks
  * it up will otherwise read it as a purchase enquiry.
  *
- * TODO(owner): a public guest mailbox on the brand's own domain. Enquiries are
- * currently routed by ENQUIRY_TO, which is deliberately not published here —
- * a personal address in the footer undercuts the brand it is meant to carry.
+ * TODO(owner): a guest mailbox on the brand's own domain. The published
+ * address is a personal one, shown at the owner's instruction so there is a
+ * visible contact for the meeting. Swap it the moment brand DNS exists.
  */
 export const OPERATOR = {
   name: 'CV FDR Hospitality',
@@ -28,8 +28,8 @@ export const OPERATOR = {
   registeredAddress: null as string | null,
   /** TODO(owner): brand domain, once the address is settled. */
   website: null as string | null,
-  /** TODO(owner): public guest mailbox. Null hides the mailto link. */
-  email: null as string | null,
+  /** Published contact. Same address the enquiry form delivers to. */
+  email: 'saidalarust@gmail.com' as string | null,
   officeHours: [
     { days: 'Monday–Friday', hours: '09:00–18:00' },
     { days: 'Saturday–Sunday', hours: 'Closed' },
