@@ -35,15 +35,11 @@
         display: flex;
         flex-direction: column;
       }
-      .grow {
-        flex: 1 1 auto;
-        min-height: 0;
-      }
       .spread {
         justify-content: space-between;
       }
-      .block + .block {
-        margin-top: 7mm;
+      .block > h2 {
+        margin-bottom: 4mm;
       }
       .block > h4 {
         padding-bottom: 2mm;
@@ -67,39 +63,34 @@
         margin-bottom: 0;
       }
       .contents .list li {
-        padding: 2mm 0;
+        padding: 2.2mm 0;
       }
       .contents .k {
         display: flex;
-        gap: 4mm;
+        gap: 5mm;
       }
       .contents .k .idx {
         color: var(--muted);
-        flex: 0 0 5mm;
+        flex: 0 0 4mm;
+      }
+      .contents--obs .k .idx {
+        flex: 0 0 10mm;
       }
 
       /* ---- Page 2: the four rate tables ---- */
       .rates {
-        row-gap: 9mm;
-        column-gap: 11mm;
+        row-gap: 10mm;
+        column-gap: 12mm;
         align-content: space-between;
       }
       .rates h3 {
-        margin-bottom: 2mm;
-        padding-bottom: 1.5mm;
-        border-bottom: 1px solid var(--hairline);
-      }
-      .rates thead th {
-        border-bottom-width: 0;
+        margin-bottom: 2.5mm;
       }
 
       /* ---- Pages 3–4: the observations ---- */
       .obs {
         border-top: 1px solid var(--hairline);
         padding-top: 4mm;
-      }
-      .obs + .obs {
-        margin-top: 8mm;
       }
       .obs__head {
         display: flex;
@@ -125,36 +116,36 @@
         margin-bottom: 2.5mm;
       }
       .fig .list li {
-        padding: 1.6mm 0;
-      }
-      .fig .list--split .v {
-        color: var(--ink);
-      }
-      .fig .list--split li {
-        gap: 4mm;
+        padding: 2mm 0;
       }
       .fig .seq {
         display: block;
-        margin-top: 0.6mm;
+        margin-top: 0.8mm;
       }
-      .fig .list--split .seq-item {
+      .fig .list li strong {
         display: block;
       }
 
-      /* The New Year jumps, set as three parallel readings. */
-      .jumps {
-        gap: 7mm;
+      /* Evidence set as parallel readings rather than a table. */
+      .pillars {
+        gap: 8mm;
       }
-      .jumps > div {
+      .pillar {
         border-top: 1px solid var(--hairline);
-        padding-top: 3mm;
+        padding-top: 3.5mm;
       }
-      .jumps .stat__value {
-        margin-top: 1.5mm;
+      .pillar--flag {
+        border-top-color: var(--clay);
       }
-      .jumps h4 {
-        color: var(--ink);
-        margin-bottom: 1.5mm;
+      .pillar .eyebrow {
+        margin-bottom: 3mm;
+        min-height: 7mm;
+      }
+      .pillar .stat__label {
+        margin-top: 3mm;
+      }
+      .jump-note {
+        margin-top: 2.5mm;
       }
 
       /* ---- Page 5: what the data does not prove ---- */
@@ -168,7 +159,7 @@
       .nots p {
         margin-bottom: 0;
       }
-      .nots strong {
+      .nots .claim {
         display: block;
         margin-bottom: 2mm;
       }
@@ -183,28 +174,32 @@
       }
 
       /* ---- Page 6: the four statements ---- */
-      .quotes {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+      .quote-card {
+        padding: 5.5mm 6mm;
       }
-      .quote-block .eyebrow {
-        margin-bottom: 3mm;
+      .quote-card__grid {
+        display: grid;
+        grid-template-columns: 32mm 1fr;
+        gap: 7mm;
+        align-items: start;
       }
-      .quote-block blockquote {
+      .quote-card blockquote {
         margin-bottom: 0;
+      }
+      .quote-card .eyebrow + .eyebrow {
+        margin-top: 1.5mm;
       }
 
       /* ---- Page 7: the thirty-day list and the ask ---- */
       .plan {
-        column-gap: 10mm;
+        column-gap: 11mm;
         align-items: start;
       }
       .list--num li {
         display: flex;
-        gap: 4mm;
+        gap: 4.5mm;
         align-items: baseline;
-        padding: 2.6mm 0;
+        padding: 3.6mm 0;
       }
       .list--num .step-n {
         flex: 0 0 6mm;
@@ -213,20 +208,29 @@
       }
 
       /* ---- Page 8: the closing caveat ---- */
-      .closing .lede {
-        max-width: 58ch;
-      }
       .closing-three {
         gap: 9mm;
       }
       .closing-three > div {
-        padding: 5mm 0 0;
+        border-top: 1px solid rgb(250 247 242 / 0.22);
+        padding-top: 4mm;
       }
       .closing-three h3 {
-        margin-bottom: 2mm;
+        margin-bottom: 2.5mm;
       }
       .closing-three p {
         margin-bottom: 0;
+      }
+      .closing-statement {
+        max-width: 34ch;
+      }
+      .colophon .list li {
+        border-bottom-color: rgb(250 247 242 / 0.22);
+        padding: 2.4mm 0;
+      }
+      .colophon .k,
+      .colophon .v {
+        color: rgb(250 247 242 / 0.86);
       }
     </style>
   </head>
@@ -367,7 +371,7 @@
       </div>
 
       <div class="doc-body">
-        <section class="cols cols--2 rates grow">
+        <section class="cols cols--2 rates grow" style="flex: 1 1 auto; min-height: 0">
           <div>
             <h3>Вилла A — 1BR</h3>
             <table>
@@ -625,13 +629,46 @@
     <div class="page page--portrait">
       <div class="doc-head">
         <div class="head__row">
-          <p class="eyebrow">Раздел 3 · Пять наблюдений</p>
+          <p class="eyebrow">Раздел 3 · Наблюдения 3.1 — 3.2</p>
           <p class="eyebrow">Anjuna Bay</p>
         </div>
         <h2>3. Пять наблюдений</h2>
       </div>
 
       <div class="doc-body spread">
+        <section class="block contents contents--obs">
+          <h4>Наблюдения</h4>
+          <ul class="list list--split">
+            <li>
+              <span class="k"
+                ><span class="idx">3.1</span>Цены на дальних датах вдвое выше, чем в июльском
+                аудите</span
+              ><span class="v">03</span>
+            </li>
+            <li>
+              <span class="k"
+                ><span class="idx">3.2</span>Надбавки за выходные нет почти нигде</span
+              ><span class="v">03</span>
+            </li>
+            <li>
+              <span class="k"
+                ><span class="idx">3.3</span>Механика динамического ценообразования существует — но
+                работает одну неделю в году</span
+              ><span class="v">04</span>
+            </li>
+            <li>
+              <span class="k"
+                ><span class="idx">3.4</span>Разброс между одинаковыми юнитами — двукратный</span
+              ><span class="v">04</span>
+            </li>
+            <li>
+              <span class="k"
+                ><span class="idx">3.5</span>Окно бронирования — около трёх месяцев</span
+              ><span class="v">04</span>
+            </li>
+          </ul>
+        </section>
+
         <article class="obs">
           <div class="obs__head">
             <span class="numeral">3.1</span>
@@ -685,61 +722,38 @@
             <span class="numeral">3.2</span>
             <h3>Надбавки за выходные нет почти нигде</h3>
           </div>
-          <div class="cols cols--sidebar obs__body">
-            <div>
-              <p>
-                По аудиту рынок Улувату даёт на пятницу и субботу надбавку 100–125%. Здесь её нет.
-              </p>
-              <p>
-                <strong>Оценка упущенного:</strong> при 8–9 выходных ночах в месяц и надбавке всего
-                25% это порядка 8–10% месячной выручки на юнит.
-              </p>
-            </div>
-            <div class="card fig">
-              <h4>Примеры подряд идущих дат</h4>
-              <ul class="list">
-                <li>
-                  <strong>Вилла B, ноябрь:</strong> 15–21 числа
-                  <span class="seq">3,9 / 3,8 / 3,8 / 3,8 / 3,8 / 3,9 / 3,8</span>
-                  <span class="seq small">Суббота не отличается от вторника.</span>
-                </li>
-                <li>
-                  <strong>B13, февраль:</strong> 22–28 числа
-                  <span class="seq">€179 / 180 / 177 / 178 / 181 / 180 / 179</span>
-                  <span class="seq small">Разброс 2%.</span>
-                </li>
-                <li>
-                  <strong>Вилла A, февраль:</strong>
-                  <span class="seq">28 дней подряд в диапазоне 3,0–3,2 млн</span>
-                </li>
-              </ul>
+          <div class="cols cols--2 obs__body">
+            <p>
+              По аудиту рынок Улувату даёт на пятницу и субботу надбавку 100–125%. Здесь её нет.
+            </p>
+            <p>
+              <strong>Оценка упущенного:</strong> при 8–9 выходных ночах в месяц и надбавке всего
+              25% это порядка 8–10% месячной выручки на юнит.
+            </p>
+          </div>
+          <div class="card fig" style="margin-top: 5mm">
+            <h4>Примеры подряд идущих дат</h4>
+            <div class="cols cols--3" style="gap: 9mm">
+              <div>
+                <p class="small" style="margin-bottom: 1.2mm"><strong>Вилла B, ноябрь</strong></p>
+                <p style="margin-bottom: 1.2mm">15–21 числа</p>
+                <p style="margin-bottom: 1.2mm">3,9 / 3,8 / 3,8 / 3,8 / 3,8 / 3,9 / 3,8</p>
+                <p class="small">Суббота не отличается от вторника.</p>
+              </div>
+              <div>
+                <p class="small" style="margin-bottom: 1.2mm"><strong>B13, февраль</strong></p>
+                <p style="margin-bottom: 1.2mm">22–28 числа</p>
+                <p style="margin-bottom: 1.2mm">€179 / 180 / 177 / 178 / 181 / 180 / 179</p>
+                <p class="small">Разброс 2%.</p>
+              </div>
+              <div>
+                <p class="small" style="margin-bottom: 1.2mm"><strong>Вилла A, февраль</strong></p>
+                <p>28 дней подряд в диапазоне 3,0–3,2 млн.</p>
+              </div>
             </div>
           </div>
         </article>
 
-        <article class="obs">
-          <div class="obs__head">
-            <span class="numeral">3.3</span>
-            <h3>Механика динамического ценообразования существует — но работает одну неделю в году</h3>
-          </div>
-          <section class="cols cols--3 jumps">
-            <div>
-              <h4>Вилла C, декабрь</h4>
-              <p class="small">5,2 млн (9 дек) → 9,1 млн (30–31 дек)</p>
-              <span class="stat__value">+75%</span>
-            </div>
-            <div>
-              <h4>B13, декабрь</h4>
-              <p class="small">€177 (3 дек) → €257 (30–31 дек)</p>
-              <span class="stat__value">+45%</span>
-            </div>
-            <div>
-              <h4>Вилла B, декабрь</h4>
-              <p class="small">3,0 млн (1 дек) → 5,9 млн (29–30 дек)</p>
-              <span class="stat__value">+97%</span>
-            </div>
-          </section>
-        </article>
       </div>
 
       <div class="doc-foot">
@@ -752,74 +766,40 @@
     <div class="page page--portrait">
       <div class="doc-head">
         <div class="head__row">
-          <p class="eyebrow">Раздел 3 · Пять наблюдений</p>
+          <p class="eyebrow">Раздел 3 · Наблюдения 3.4 — 3.5</p>
           <p class="eyebrow">Anjuna Bay</p>
         </div>
-        <h2>3.3 — 3.5 · Продолжение</h2>
+        <h2>Пять наблюдений · продолжение</h2>
       </div>
 
       <div class="doc-body spread">
-        <section class="cols cols--sidebar band">
-          <div>
-            <p>
-              Инструмент есть, им умеют пользоваться, и на Новый год он применяется грамотно.
-              Остальные одиннадцать месяцев — статичный прайс с плавным сезонным сползанием.
-            </p>
-            <p class="small">
-              Три декабрьских кривых на предыдущей странице — единственный участок календаря, где
-              цена реагирует на спрос.
-            </p>
-          </div>
-          <div class="card card--ocean">
-            <h3>Это ключевой вывод отчёта</h3>
-            <p>
-              Задача не построить систему с нуля, а включить существующую на весь календарь.
-            </p>
-          </div>
-        </section>
-
         <article class="obs">
           <div class="obs__head">
             <span class="numeral">3.4</span>
             <h3>Разброс между одинаковыми юнитами — двукратный</h3>
           </div>
-          <div class="cols cols--sidebar obs__body">
-            <div>
-              <p>
-                Вилла B и B13 — обе 2BR, цена практически совпадает: 4,74 млн против €224 ≈ 4,70
-                млн.
-              </p>
-              <p>
-                Одинаковый продукт, одинаковая цена, одинаковые даты — разница в 2,5 раза. Причина
-                не в цене и не в спросе. Остаются: качество листинга, фотографии, заголовок,
-                количество отзывов, позиция в выдаче.
-              </p>
-            </div>
-            <div class="card fig">
-              <h4>Август</h4>
-              <table>
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th class="num">Недоступно</th>
-                    <th class="num">Доля</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Вилла B</td>
-                    <td class="num">9 из 31</td>
-                    <td class="num">29%</td>
-                  </tr>
-                  <tr>
-                    <td class="flag">B13</td>
-                    <td class="num flag">23 из 31</td>
-                    <td class="num flag">74%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="cols cols--2 obs__body">
+            <p>
+              Вилла B и B13 — обе 2BR, цена практически совпадает: 4,74 млн против €224 ≈ 4,70 млн.
+            </p>
+            <p>
+              Одинаковый продукт, одинаковая цена, одинаковые даты — разница в 2,5 раза. Причина не
+              в цене и не в спросе. Остаются: качество листинга, фотографии, заголовок, количество
+              отзывов, позиция в выдаче.
+            </p>
           </div>
+          <section class="cols cols--2 pillars" style="margin-top: 6mm">
+            <div class="pillar">
+              <p class="eyebrow">Вилла B · август</p>
+              <span class="stat__value">29%</span>
+              <span class="stat__label">недоступно — 9 из 31</span>
+            </div>
+            <div class="pillar pillar--flag stat--clay">
+              <p class="eyebrow">B13 · август</p>
+              <span class="stat__value">74%</span>
+              <span class="stat__label">недоступно — 23 из 31</span>
+            </div>
+          </section>
         </article>
 
         <article class="obs">
@@ -827,45 +807,46 @@
             <span class="numeral">3.5</span>
             <h3>Окно бронирования — около трёх месяцев</h3>
           </div>
-          <div class="cols cols--sidebar obs__body">
-            <div>
-              <p>Кривая падает ровно и предсказуемо. Ничего не продаётся глубже квартала.</p>
-              <p>
-                При этом цена на дальних датах снижается всего на 15% (€224 → €191). Для сбора
-                раннего бронирования этого недостаточно.
-              </p>
-            </div>
-            <div class="card fig">
-              <h4>По B13, где данные наиболее полные</h4>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Месяц</th>
-                    <th class="num">Недоступно</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Август</td>
-                    <td class="num">74%</td>
-                  </tr>
-                  <tr>
-                    <td>Сентябрь</td>
-                    <td class="num">43%</td>
-                  </tr>
-                  <tr>
-                    <td>Октябрь</td>
-                    <td class="num">23%</td>
-                  </tr>
-                  <tr>
-                    <td>Ноябрь и дальше</td>
-                    <td class="num">0%</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="cols cols--2 obs__body">
+            <p>
+              По B13, где данные наиболее полные, кривая падает ровно и предсказуемо. Ничего не
+              продаётся глубже квартала.
+            </p>
+            <p>
+              При этом цена на дальних датах снижается всего на 15% (€224 → €191). Для сбора
+              раннего бронирования этого недостаточно.
+            </p>
           </div>
+          <section class="cols cols--4 pillars" style="margin-top: 6mm">
+            <div class="pillar">
+              <p class="eyebrow">Август</p>
+              <span class="stat__value">74%</span>
+              <span class="stat__label">недоступно</span>
+            </div>
+            <div class="pillar">
+              <p class="eyebrow">Сентябрь</p>
+              <span class="stat__value">43%</span>
+              <span class="stat__label">недоступно</span>
+            </div>
+            <div class="pillar">
+              <p class="eyebrow">Октябрь</p>
+              <span class="stat__value">23%</span>
+              <span class="stat__label">недоступно</span>
+            </div>
+            <div class="pillar">
+              <p class="eyebrow">Ноябрь и дальше</p>
+              <span class="stat__value">0%</span>
+              <span class="stat__label">недоступно</span>
+            </div>
+          </section>
         </article>
+
+        <div class="caveat">
+          <p>
+            Доли выше считаются от числа дат, закрытых для запроса на одну ночь. Это не измерение
+            загрузки — см. раздел 4.
+          </p>
+        </div>
       </div>
 
       <div class="doc-foot">
@@ -899,7 +880,7 @@
           <div class="card">
             <span class="numeral">01</span>
             <p>
-              <strong
+              <strong class="claim"
                 >Нельзя утверждать, что августовская загрузка виллы C составляет 84%.</strong
               >
               26 закрытых дат могут быть правилом минимального срока.
@@ -908,8 +889,8 @@
           <div class="card">
             <span class="numeral">02</span>
             <p>
-              <strong>Нельзя утверждать, что ноябрь и февраль пустые.</strong> Можно утверждать
-              только, что на эти даты доступно бронирование одной ночи.
+              <strong class="claim">Нельзя утверждать, что ноябрь и февраль пустые.</strong> Можно
+              утверждать только, что на эти даты доступно бронирование одной ночи.
             </p>
           </div>
           <div class="card">
@@ -942,8 +923,8 @@
 
         <div class="caveat">
           <p>
-            Всё, что ниже раздела 5, опирается на эти ограничения. Ни одна цифра из раздела 2 не
-            является утверждением о загрузке.
+            Что из собранного всё же можно вынести на встречу без оговорок — раздел 5. Что нужно
+            запросить, чтобы снять остальное, — раздел 7.
           </p>
         </div>
       </div>
@@ -968,57 +949,84 @@
         </p>
       </div>
 
-      <div class="doc-body quotes">
-        <div class="quote-block">
-          <p class="eyebrow">Ценообразование · п. 3.3</p>
-          <blockquote>
-            <p>
-              <strong
-                >Динамическое ценообразование на объекте применяется примерно одну неделю в
-                году.</strong
-              >
-              На новогодние даты цена растёт на 45–97%. Остальные одиннадцать месяцев прайс
-              статичен: в феврале двадцать восемь дней подряд стоят одинаково.
-            </p>
-          </blockquote>
+      <div class="doc-body spread">
+        <div class="card quote-card">
+          <div class="quote-card__grid">
+            <div>
+              <p class="eyebrow">Ценообразование</p>
+              <p class="eyebrow">п. 3.3</p>
+            </div>
+            <blockquote>
+              <p>
+                <strong
+                  >Динамическое ценообразование на объекте применяется примерно одну неделю в
+                  году.</strong
+                >
+                На новогодние даты цена растёт на 45–97%. Остальные одиннадцать месяцев прайс
+                статичен: в феврале двадцать восемь дней подряд стоят одинаково.
+              </p>
+            </blockquote>
+          </div>
         </div>
 
-        <div class="quote-block">
-          <p class="eyebrow">Выходные · п. 3.2</p>
-          <blockquote>
-            <p>
-              <strong>Надбавки за выходные нет ни в одном из проверенных юнитов.</strong> Суббота
-              стоит столько же, сколько вторник, при том что рынок Улувату даёт на выходных
-              существенно больше.
-            </p>
-          </blockquote>
+        <div class="card quote-card">
+          <div class="quote-card__grid">
+            <div>
+              <p class="eyebrow">Выходные</p>
+              <p class="eyebrow">п. 3.2</p>
+            </div>
+            <blockquote>
+              <p>
+                <strong>Надбавки за выходные нет ни в одном из проверенных юнитов.</strong> Суббота
+                стоит столько же, сколько вторник, при том что рынок Улувату даёт на выходных
+                существенно больше.
+              </p>
+            </blockquote>
+          </div>
         </div>
 
-        <div class="quote-block">
-          <p class="eyebrow">Листинги · п. 3.4</p>
-          <blockquote>
-            <p>
-              <strong
-                >Две двухкомнатные виллы с одинаковой ценой имеют разную заполненность на одни и те
-                же даты.</strong
-              >
-              Разница не объясняется ни ценой, ни спросом — значит дело в листинге.
-            </p>
-          </blockquote>
+        <div class="card quote-card">
+          <div class="quote-card__grid">
+            <div>
+              <p class="eyebrow">Листинги</p>
+              <p class="eyebrow">п. 3.4</p>
+            </div>
+            <blockquote>
+              <p>
+                <strong
+                  >Две двухкомнатные виллы с одинаковой ценой имеют разную заполненность на одни и
+                  те же даты.</strong
+                >
+                Разница не объясняется ни ценой, ни спросом — значит дело в листинге.
+              </p>
+            </blockquote>
+          </div>
         </div>
 
-        <div class="quote-block">
-          <p class="eyebrow">Данные · п. 3.1</p>
-          <blockquote>
-            <p>
-              <strong
-                >Публичные цены на дальних датах вдвое выше тех, что фигурируют во внутреннем
-                аудите.</strong
-              >
-              Это само по себе требует объяснения: либо аудит нерепрезентативен, либо тарифы между
-              каналами и периодами не согласованы.
-            </p>
-          </blockquote>
+        <div class="card quote-card">
+          <div class="quote-card__grid">
+            <div>
+              <p class="eyebrow">Данные</p>
+              <p class="eyebrow">п. 3.1</p>
+            </div>
+            <blockquote>
+              <p>
+                <strong
+                  >Публичные цены на дальних датах вдвое выше тех, что фигурируют во внутреннем
+                  аудите.</strong
+                >
+                Это само по себе требует объяснения: либо аудит нерепрезентативен, либо тарифы
+                между каналами и периодами не согласованы.
+              </p>
+            </blockquote>
+          </div>
+        </div>
+
+        <div class="caveat">
+          <p>
+            Каждое из четырёх утверждений проверяется открытием публичного календаря на указанных
+            датах. Ни одно из них не требует доступа к системам объекта.
+          </p>
         </div>
       </div>
 
@@ -1094,32 +1102,29 @@
           </ul>
         </section>
 
-        <hr class="rule" />
-
-        <section class="block">
+        <section class="block" style="border-top: 1px solid var(--hairline); padding-top: 6mm">
           <h2>7. Что запросить у владельца</h2>
           <p>Одна выгрузка закрывает все открытые вопросы:</p>
-        </section>
-
-        <section class="cols cols--sidebar band">
-          <div class="card card--ocean">
-            <h3>
-              Помесячно за 12 месяцев, по каждому юниту: проданные ночи, выручка, комиссия
-              площадки, канал.
-            </h3>
-            <p>
-              Из неё считаются без единого допущения: реализованная средняя цена, загрузка, RevPAR,
-              средняя комиссия, микс каналов.
-            </p>
-          </div>
-          <div>
-            <h4>Дополнительно</h4>
-            <ul class="list list--bullet">
-              <li>Правила минимальной длительности по сезонам</li>
-              <li>Календарь owner blocks</li>
-              <li>Текущие акции и промо-тарифы Booking</li>
-              <li>Доступ на чтение в PMS и channel manager</li>
-            </ul>
+          <div class="cols cols--sidebar band" style="margin-top: 5mm">
+            <div class="card card--ocean">
+              <h3>
+                Помесячно за 12 месяцев, по каждому юниту: проданные ночи, выручка, комиссия
+                площадки, канал.
+              </h3>
+              <p>
+                Из неё считаются без единого допущения: реализованная средняя цена, загрузка,
+                RevPAR, средняя комиссия, микс каналов.
+              </p>
+            </div>
+            <div>
+              <h4>Дополнительно</h4>
+              <ul class="list list--bullet">
+                <li>Правила минимальной длительности по сезонам</li>
+                <li>Календарь owner blocks</li>
+                <li>Текущие акции и промо-тарифы Booking</li>
+                <li>Доступ на чтение в PMS и channel manager</li>
+              </ul>
+            </div>
           </div>
         </section>
       </div>
@@ -1131,7 +1136,7 @@
     </div>
 
     <!-- ============================ Page 8 ============================ -->
-    <div class="page page--portrait page--ocean closing">
+    <div class="page page--portrait page--ocean">
       <div class="doc-head">
         <div class="head__row">
           <p class="eyebrow">Раздел 8 · Статус документа</p>
@@ -1162,17 +1167,24 @@
 
         <section class="cols cols--sidebar band">
           <div>
-            <p>
-              Документ показывает <strong>где искать</strong>, а не
-              <strong>сколько получится</strong>. Проверяемые выводы отмечены в разделе 5; всё
-              остальное требует подтверждения данными из раздела 7.
+            <h2 class="closing-statement">
+              Документ показывает где искать, а не сколько получится.
+            </h2>
+            <p style="margin-top: 4mm">
+              Проверяемые выводы отмечены в разделе 5; всё остальное требует подтверждения данными
+              из раздела 7.
             </p>
           </div>
-          <div class="card card--plain">
-            <h4>Что закрывает вопрос</h4>
-            <p class="small">
-              Помесячная выгрузка за 12 месяцев по каждому юниту — раздел 7.
-            </p>
+          <div class="colophon">
+            <p class="eyebrow" style="margin-bottom: 3mm">Параметры среза</p>
+            <ul class="list list--split">
+              <li><span class="k">Дата</span><span class="v">29 июля 2026</span></li>
+              <li><span class="k">Горизонт</span><span class="v">7–8 месяцев</span></li>
+              <li><span class="k">Юнитов</span><span class="v">4</span></li>
+              <li><span class="k">Источник</span><span class="v">Booking.com</span></li>
+              <li><span class="k">Курс</span><span class="v">18 080 IDR / USD</span></li>
+              <li><span class="k"></span><span class="v">≈21 000 IDR / EUR</span></li>
+            </ul>
           </div>
         </section>
       </div>
