@@ -489,8 +489,14 @@ blockquote p {
 }
 
 /* ---- Print ------------------------------------------------------------ */
+/**
+ * Deliberately no `size` here. This stylesheet serves both the landscape decks
+ * and the portrait report, and a CSS `@page size` wins over the orientation
+ * render.mjs asks for — which silently printed the eight-page portrait report
+ * onto sixteen landscape sheets, each page sliced down the middle. Orientation
+ * is the renderer's job; it reads it off the first .page.
+ */
 @page {
-  size: A4 landscape;
   margin: 0;
 }
 @media print {

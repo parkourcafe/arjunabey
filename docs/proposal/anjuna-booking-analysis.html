@@ -11,7 +11,7 @@
 
       /* ---- Running head and page frame ---- */
       .doc-head {
-        margin-bottom: 7mm;
+        margin-bottom: 5.5mm;
       }
       .head__row {
         display: flex;
@@ -25,7 +25,7 @@
         max-width: 22ch;
       }
       .doc-head h2 {
-        margin-top: 4mm;
+        margin-top: 3mm;
       }
       .doc-head .lede {
         margin-top: 3mm;
@@ -90,13 +90,13 @@
       /* ---- Pages 3–4: the observations ---- */
       .obs {
         border-top: 1px solid var(--hairline);
-        padding-top: 4mm;
+        padding-top: 3mm;
       }
       .obs__head {
         display: flex;
         align-items: baseline;
         gap: 4.5mm;
-        margin-bottom: 4mm;
+        margin-bottom: 3mm;
       }
       .obs__head .numeral {
         margin-bottom: 0;
@@ -110,20 +110,24 @@
         align-items: start;
       }
       .fig {
-        padding: 4.5mm 5mm;
+        padding: 4mm 4.5mm;
       }
       .fig h4 {
         margin-bottom: 2.5mm;
       }
-      .fig .list li {
-        padding: 2mm 0;
+      .fig tbody td {
+        padding-top: 2mm;
+        padding-bottom: 2mm;
       }
-      .fig .seq {
-        display: block;
-        margin-top: 0.8mm;
+      .fig thead th {
+        padding-bottom: 2mm;
       }
-      .fig .list li strong {
-        display: block;
+      .fig td.num,
+      .fig th.num {
+        padding-left: 3.5mm;
+      }
+      .fig tbody td:first-child {
+        white-space: nowrap;
       }
 
       /* Evidence set as parallel readings rather than a table. */
@@ -134,18 +138,11 @@
         border-top: 1px solid var(--hairline);
         padding-top: 3.5mm;
       }
-      .pillar--flag {
-        border-top-color: var(--clay);
-      }
       .pillar .eyebrow {
-        margin-bottom: 3mm;
-        min-height: 7mm;
+        margin-bottom: 2mm;
       }
       .pillar .stat__label {
-        margin-top: 3mm;
-      }
-      .jump-note {
-        margin-top: 2.5mm;
+        margin-top: 2mm;
       }
 
       /* ---- Page 5: what the data does not prove ---- */
@@ -179,8 +176,8 @@
       }
       .quote-card__grid {
         display: grid;
-        grid-template-columns: 32mm 1fr;
-        gap: 7mm;
+        grid-template-columns: 43mm 1fr;
+        gap: 6mm;
         align-items: start;
       }
       .quote-card blockquote {
@@ -192,16 +189,26 @@
 
       /* ---- Page 7: the thirty-day list and the ask ---- */
       .plan {
+        flex: 1 1 auto;
+        min-height: 0;
         column-gap: 11mm;
-        align-items: start;
+        row-gap: 6mm;
+        align-content: space-between;
       }
-      .list--num li {
+      .step {
         display: flex;
-        gap: 4.5mm;
         align-items: baseline;
-        padding: 3.6mm 0;
+        gap: 4.5mm;
+        border-top: 1px solid var(--hairline);
+        padding-top: 3mm;
       }
-      .list--num .step-n {
+      .step--wide {
+        grid-column: 1 / -1;
+      }
+      .step p {
+        margin: 0;
+      }
+      .step-n {
         flex: 0 0 6mm;
         color: var(--muted);
         font-variant-numeric: tabular-nums;
@@ -214,6 +221,7 @@
       .closing-three > div {
         border-top: 1px solid rgb(250 247 242 / 0.22);
         padding-top: 4mm;
+        min-height: 80mm;
       }
       .closing-three h3 {
         margin-bottom: 2.5mm;
@@ -222,7 +230,8 @@
         margin-bottom: 0;
       }
       .closing-statement {
-        max-width: 34ch;
+        max-width: 26ch;
+        margin-top: 0;
       }
       .colophon .list li {
         border-bottom-color: rgb(250 247 242 / 0.22);
@@ -797,7 +806,7 @@
               <span class="stat__label">3,0 млн (1 дек) → 5,9 млн (29–30 дек)</span>
             </div>
           </section>
-          <div class="cols cols--sidebar band" style="margin-top: 6mm">
+          <div class="cols cols--sidebar band" style="margin-top: 4mm">
             <div>
               <p>
                 Инструмент есть, им умеют пользоваться, и на Новый год он применяется грамотно.
@@ -977,8 +986,8 @@
 
         <div class="caveat">
           <p>
-            Что из собранного всё же можно вынести на встречу без оговорок — раздел 5. Что нужно
-            запросить, чтобы снять остальное, — раздел 7.
+            Что из собранного можно вынести на встречу — раздел 5. Что нужно запросить, чтобы снять
+            остальное, — раздел 7.
           </p>
         </div>
       </div>
@@ -1078,8 +1087,8 @@
 
         <div class="caveat">
           <p>
-            Каждое из четырёх утверждений проверяется открытием публичного календаря на указанных
-            датах. Ни одно из них не требует доступа к системам объекта.
+            Формулировки выше не выходят за рамки собранных данных. Всё, что требует подтверждения,
+            перечислено в разделах 4 и 7.
           </p>
         </div>
       </div>
@@ -1101,62 +1110,57 @@
         <p class="lede">Без рекламного бюджета, только работа с ценой и листингами.</p>
       </div>
 
-      <div class="doc-body spread">
+      <div class="doc-body">
         <section class="cols cols--2 plan">
-          <ul class="list list--num">
-            <li>
-              <span class="step-n">01</span>
-              <span
-                ><strong>Надбавка за пятницу и субботу</strong> по всему календарю. Начать с 15–20%
-                и тестировать.</span
-              >
-            </li>
-            <li>
-              <span class="step-n">02</span>
-              <span
-                ><strong>Ценовая лестница по глубине бронирования:</strong> дальние даты дешевле,
-                цена растёт по мере заполнения. Сейчас разница дальний/ближний всего 15%.</span
-              >
-            </li>
-            <li>
-              <span class="step-n">03</span>
-              <span
-                ><strong>Минимальная длительность на пиковые даты</strong> — вместо разрывов
-                календаря.</span
-              >
-            </li>
-            <li>
-              <span class="step-n">04</span>
-              <span
-                ><strong>Скидки за длительность</strong> для закрытия дыр между бронями.</span
-              >
-            </li>
-          </ul>
-          <ul class="list list--num">
-            <li>
-              <span class="step-n">05</span>
-              <span
-                ><strong>Тариф раннего бронирования</strong> на месяцы с нулевой глубиной.</span
-              >
-            </li>
-            <li>
-              <span class="step-n">06</span>
-              <span
-                ><strong>Аудит листингов отстающих юнитов</strong> — сравнить с B13: фото,
-                заголовок, описание, отзывы.</span
-              >
-            </li>
-            <li>
-              <span class="step-n">07</span>
-              <span
-                ><strong>Проверить парность цен</strong> между Booking, Airbnb и остальными
-                каналами на одинаковые даты.</span
-              >
-            </li>
-          </ul>
+          <div class="step">
+            <span class="step-n">01</span>
+            <p>
+              <strong>Надбавка за пятницу и субботу</strong> по всему календарю. Начать с 15–20% и
+              тестировать.
+            </p>
+          </div>
+          <div class="step">
+            <span class="step-n">02</span>
+            <p>
+              <strong>Ценовая лестница по глубине бронирования:</strong> дальние даты дешевле, цена
+              растёт по мере заполнения. Сейчас разница дальний/ближний всего 15%.
+            </p>
+          </div>
+          <div class="step">
+            <span class="step-n">03</span>
+            <p>
+              <strong>Минимальная длительность на пиковые даты</strong> — вместо разрывов
+              календаря.
+            </p>
+          </div>
+          <div class="step">
+            <span class="step-n">04</span>
+            <p><strong>Скидки за длительность</strong> для закрытия дыр между бронями.</p>
+          </div>
+          <div class="step">
+            <span class="step-n">05</span>
+            <p><strong>Тариф раннего бронирования</strong> на месяцы с нулевой глубиной.</p>
+          </div>
+          <div class="step">
+            <span class="step-n">06</span>
+            <p>
+              <strong>Аудит листингов отстающих юнитов</strong> — сравнить с B13: фото, заголовок,
+              описание, отзывы.
+            </p>
+          </div>
+          <div class="step step--wide">
+            <span class="step-n">07</span>
+            <p>
+              <strong>Проверить парность цен</strong> между Booking, Airbnb и остальными каналами
+              на одинаковые даты.
+            </p>
+          </div>
         </section>
 
-        <section class="block" style="border-top: 1px solid var(--hairline); padding-top: 6mm">
+        <section
+          class="block"
+          style="border-top: 1px solid var(--hairline); padding-top: 6mm; margin-top: 8mm"
+        >
           <h2>7. Что запросить у владельца</h2>
           <p>Одна выгрузка закрывает все открытые вопросы:</p>
           <div class="cols cols--sidebar band" style="margin-top: 5mm">
@@ -1221,21 +1225,30 @@
 
         <section class="cols cols--sidebar band">
           <div>
-            <h2 class="closing-statement">
+            <h1 class="closing-statement">
               Документ показывает где искать, а не сколько получится.
-            </h2>
-            <p style="margin-top: 4mm">
+            </h1>
+          </div>
+          <div>
+            <p>
               Проверяемые выводы отмечены в разделе 5; всё остальное требует подтверждения данными
               из раздела 7.
             </p>
           </div>
-          <div class="colophon">
-            <p class="eyebrow" style="margin-bottom: 3mm">Параметры среза</p>
+        </section>
+
+        <section class="colophon">
+          <p class="eyebrow" style="margin-bottom: 3mm">Параметры среза</p>
+          <div class="cols cols--3" style="gap: 12mm">
             <ul class="list list--split">
-              <li><span class="k">Дата</span><span class="v">29 июля 2026</span></li>
+              <li><span class="k">Дата среза</span><span class="v">29 июля 2026</span></li>
               <li><span class="k">Горизонт</span><span class="v">7–8 месяцев</span></li>
-              <li><span class="k">Юнитов</span><span class="v">4</span></li>
+            </ul>
+            <ul class="list list--split">
+              <li><span class="k">Юнитов проверено</span><span class="v">4</span></li>
               <li><span class="k">Источник</span><span class="v">Booking.com</span></li>
+            </ul>
+            <ul class="list list--split">
               <li><span class="k">Курс</span><span class="v">18 080 IDR / USD</span></li>
               <li><span class="k"></span><span class="v">≈21 000 IDR / EUR</span></li>
             </ul>
