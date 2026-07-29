@@ -422,13 +422,21 @@ tbody td {
 tbody tr:last-child td {
   border-bottom: 0;
 }
-.num {
-  text-align: right;
-  padding-right: 0;
-}
+/**
+ * Right-aligned numeric columns. The left padding is load-bearing: cells carry
+ * no right padding so the column edge stays flush, and two right-aligned
+ * columns side by side would otherwise touch — "€224" and "4,70 млн" ran
+ * together into "€2244,70 млн" before this existed.
+ */
 td.num,
 th.num {
   text-align: right;
+  padding-right: 0;
+  padding-left: 3.5mm;
+}
+/* A figure that wraps mid-value ("4,70" over "млн") reads as two numbers. */
+td.num {
+  white-space: nowrap;
 }
 .flag {
   color: var(--clay);
@@ -481,8 +489,14 @@ blockquote p {
 }
 
 /* ---- Print ------------------------------------------------------------ */
+/**
+ * Deliberately no `size` here. This stylesheet serves both the landscape decks
+ * and the portrait report, and a CSS `@page size` wins over the orientation
+ * render.mjs asks for — which silently printed the eight-page portrait report
+ * onto sixteen landscape sheets, each page sliced down the middle. Orientation
+ * is the renderer's job; it reads it off the first .page.
+ */
 @page {
-  size: A4 landscape;
   margin: 0;
 }
 @media print {
