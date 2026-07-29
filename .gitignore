@@ -25,3 +25,6 @@ npm-debug.log*
 .shoot-tmp.cjs
 *.tmp.mjs
 *.tmp.cjs
+
+# Stray screenshot helpers agents leave behind
+_shot.mjs
