@@ -85,12 +85,16 @@ function checkContactChannels() {
     add('site', 'PUBLIC_SITE_URL unset — canonical follows the Vercel deployment URL', '.env');
 }
 
-/** TODOs the libraries mark against facts nobody has verified yet. */
+/**
+ * TODOs the libraries mark against facts nobody has verified yet — including
+ * the ones sitting above a `null` field, which is how an unknown value is
+ * recorded rather than guessed.
+ */
 async function checkLibraryTodos() {
   for (const file of await readdir(LIB)) {
     if (!file.endsWith('.ts')) continue;
     const raw = await readFile(path.join(LIB, file), 'utf8');
-    for (const match of raw.matchAll(/TODO\(([^)]+)\):\s*(.+)/g))
+    for (const match of raw.matchAll(/TODO\(([^)]+)\):\s*([^*\n]+)/g))
       add('todo', `${match[1]}: ${match[2].trim()}`, `${LIB}/${file}`);
   }
 }

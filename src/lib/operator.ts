@@ -17,7 +17,15 @@
  * a personal address in the footer undercuts the brand it is meant to carry.
  */
 export const OPERATOR = {
-  name: 'CV FDR Hospitality Operations',
+  name: 'CV FDR Hospitality',
+  /**
+   * Named because a privacy notice has to say who is accountable for the
+   * personal data the enquiry form collects — "the property team" is not a
+   * person anyone can write to.
+   */
+  principal: 'Fadjri D. Roesman',
+  /** TODO(owner): registered address of the CV, for the privacy notice. */
+  registeredAddress: null as string | null,
   /** TODO(owner): brand domain, once the address is settled. */
   website: null as string | null,
   /** TODO(owner): public guest mailbox. Null hides the mailto link. */

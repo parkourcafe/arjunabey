@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageIntro from '../components/PageIntro.astro';
 import pageImage from '../assets/placeholders/legal-hero.jpg';
 import { canonicalFor } from '../lib/seo';
+import { OPERATOR } from '../lib/operator';
 ---
 
 <BaseLayout
@@ -24,22 +25,56 @@ import { canonicalFor } from '../lib/seo';
         This notice explains what information this website processes and how
         your choices are respected.
       </p>
+
+      <h2>Who is responsible</h2>
+      <p>
+        This site is operated by {OPERATOR.name}, guest operations for Anjuna Bay
+        at Thomas Beach, Uluwatu, Pecatu, Bali, Indonesia. {OPERATOR.principal} is
+        accountable for the information described here. To reach us about
+        anything on this page, use the <a href="/contact">contact page</a>.
+      </p>
+
       <h2>What we collect</h2>
       <p>
-        This website does not currently take payment or store booking details.
-        If you continue to Airbnb or WhatsApp, the information you provide is
-        handled by that service under its own privacy terms. Only after you
-        accept optional cookies may we collect aggregated analytics about how
-        this website is used.
+        If you send an enquiry, we receive what you type into the form: your
+        name, your email address, and — where you choose to give them — your
+        dates, the number of guests, the occasion, and your message. We ask you
+        to confirm we may contact you before the form will send.
       </p>
+      <p>
+        If you accept optional cookies, we also collect aggregated analytics
+        about how this website is used. Nothing analytics-related loads before
+        you accept.
+      </p>
+      <p>
+        This website does not take payment and does not store booking details.
+        If you continue to Airbnb or to WhatsApp, whatever you provide there is
+        handled by that service under its own privacy terms, not ours.
+      </p>
+
+      <h2>Why we hold it, and for how long</h2>
+      <p>
+        Enquiry details are used for one purpose: to answer your enquiry and
+        arrange the stay you asked about. We do not sell them, and we do not add
+        you to a mailing list on the strength of an enquiry. They are deleted
+        once the conversation is finished, and in any case within twelve months.
+      </p>
+
       <h2>Cookies and consent</h2>
       <p>
         We ask before loading non-essential analytics. Your choice is stored in
         this browser and can be changed at any time through “Cookies” in the
-        footer.
+        footer. Declining leaves the site fully usable — nothing on it depends
+        on your saying yes.
       </p>
-      <h2>How to reach us</h2>
-      <p>For any privacy question, message us via the <a href="/contact">contact page</a>.</p>
+
+      <h2>Your choices</h2>
+      <p>
+        You can ask us what we hold about you, ask for it to be corrected, or
+        ask us to delete it — including before the twelve months are up. Write
+        to us through the <a href="/contact">contact page</a> and we will
+        confirm once it is done.
+      </p>
     </div>
   </div>
 </BaseLayout>
