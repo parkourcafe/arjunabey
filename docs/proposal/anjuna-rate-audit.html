@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Anjuna Bay — Rate Audit, 29 July 2026</title>
+    <link rel="stylesheet" href="anjuna-doc.css" />
+    <style>
+      /* Layout specific to the two-page rate audit. Colours, fonts and type
+         sizes come from anjuna-doc.css — only geometry is set here. */
+
+      .doc-head {
+        margin-bottom: 6mm;
+      }
+      .head__row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10mm;
+      }
+      .doc-head h1 {
+        max-width: 30ch;
+      }
+      .doc-head .lede {
+        max-width: 74ch;
+      }
+      .doc-body {
+        display: flex;
+        flex-direction: column;
+      }
+      .grow {
+        flex: 1 1 auto;
+        min-height: 0;
+      }
+
+      /* ---- Page 1: the three findings ---- */
+      .findings {
+        gap: 6mm;
+        align-items: stretch;
+      }
+      .find {
+        display: flex;
+        flex-direction: column;
+        padding: 5mm 5.5mm;
+      }
+      .find h3 {
+        margin-bottom: 2.5mm;
+      }
+      .find p {
+        margin-bottom: 2mm;
+      }
+      /* Evidence read straight off the public calendar, set apart from the
+         reading of it. */
+      .ev {
+        border-top: 1px solid var(--hairline);
+        border-bottom: 1px solid var(--hairline);
+        margin: 0 0 3mm;
+        padding: 0.4mm 0;
+      }
+      .ev li {
+        padding: 1.1mm 0;
+        border-bottom: 0;
+      }
+      .ev .v {
+        color: var(--ink);
+      }
+      .ev--stack li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4mm;
+      }
+      .ev--stack .k {
+        color: var(--muted);
+      }
+      .ev--stack .v {
+        flex: 1 1 auto;
+        text-align: left;
+      }
+      /* Each finding closes on one line, and the three lines align. */
+      .find .close {
+        margin: auto 0 0;
+        padding-top: 2.5mm;
+        border-top: 1px solid var(--hairline);
+      }
+
+      /* ---- Page 1: the finding that is not about rate ---- */
+      .aside {
+        display: grid;
+        grid-template-columns: 0.42fr 1.58fr;
+        gap: 9mm;
+        align-items: start;
+        margin-top: 5mm;
+        padding-top: 4mm;
+        border-top: 1px solid var(--hairline);
+      }
+      .aside .lede {
+        margin: 0;
+        max-width: none;
+      }
+
+      /* ---- Page 2: the thirty-day list ---- */
+      .actions {
+        row-gap: 6mm;
+        column-gap: 8mm;
+        align-content: space-between;
+      }
+      .action {
+        border-top: 1px solid var(--hairline);
+        padding-top: 3mm;
+      }
+      .action h3 {
+        margin-bottom: 1.8mm;
+      }
+      /* The programme is a working list, so it takes the system's smaller step —
+         but it stays ink, because it is the substance of the page. */
+      .action .small {
+        color: var(--ink);
+        margin-bottom: 0;
+      }
+
+      /* ---- Page 2: the closing band ---- */
+      .close-band {
+        margin-top: 6mm;
+        padding-top: 4.5mm;
+        border-top: 1px solid var(--hairline);
+        align-items: stretch;
+      }
+      .blind {
+        display: flex;
+        flex-direction: column;
+      }
+      .blind h4 {
+        margin-bottom: 3mm;
+      }
+      .blind .cols--2 {
+        gap: 8mm;
+        flex: 1 1 auto;
+      }
+      /* The two bullet columns are set to the depth of the card beside them, so
+         the band reads as one block rather than two loose halves. Even rows,
+         separated by hairlines, keep the extra height from reading as a void. */
+      .blind .list--bullet {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      .blind .list--bullet li {
+        flex: 1 1 0;
+        display: flex;
+        align-items: center;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-bottom: 1px solid var(--hairline);
+      }
+      .blind .list--bullet li:last-child {
+        border-bottom: 0;
+      }
+      .blind .list--bullet li::before {
+        top: 50%;
+      }
+      .ask {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .ask h3 {
+        margin-bottom: 3mm;
+      }
+      .ask p:last-child {
+        margin-bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============================ Page 1 ============================ -->
+    <div class="page">
+      <div class="doc-head">
+        <div class="head__row">
+          <p class="eyebrow">Rate audit · 29 July 2026</p>
+          <p class="eyebrow">Anjuna Bay</p>
+        </div>
+        <h1>What your Booking calendar shows today</h1>
+        <p class="lede">
+          Checked this morning from public listings only — four units, eight
+          months forward, no access to your systems.
+        </p>
+      </div>
+
+      <div class="doc-body">
+        <section class="cols cols--3 findings grow">
+          <article class="card find">
+            <span class="numeral">01</span>
+            <h3>Dynamic pricing works — for one week a year</h3>
+            <ul class="list list--split ev">
+              <li>
+                <span class="k">3-bedroom · 9 December</span
+                ><span class="v">5.2M</span>
+              </li>
+              <li>
+                <span class="k">3-bedroom · 30 December</span
+                ><span class="v">9.1M</span>
+              </li>
+            </ul>
+            <p>That is +75%, and it is done well.</p>
+            <p>
+              The same pattern appears on the other units: +45% and +97% over
+              the New Year period.
+            </p>
+            <p class="close">
+              <em>Someone on the team knows how to do this.</em>
+            </p>
+          </article>
+
+          <article class="card find">
+            <span class="numeral">02</span>
+            <h3>No weekend premium on any unit checked</h3>
+            <ul class="list list--split ev">
+              <li>
+                <span class="k">Sunday 15 November</span
+                ><span class="v">3.9M</span>
+              </li>
+              <li>
+                <span class="k">Wednesday 18 November</span
+                ><span class="v">3.8M</span>
+              </li>
+            </ul>
+            <p>Saturday prices the same as a Tuesday.</p>
+            <p>The same holds across every month and every unit we opened.</p>
+            <p class="close">
+              <em>Uluwatu weekends normally carry a material premium.</em>
+            </p>
+          </article>
+
+          <article class="card find">
+            <span class="numeral">03</span>
+            <h3>The rate stays flat through the quiet months</h3>
+            <ul class="list list--split ev ev--stack">
+              <li>
+                <span class="k">February</span>
+                <span class="v"
+                  >twenty-eight consecutive days at effectively one price</span
+                >
+              </li>
+              <li>
+                <span class="k">November</span>
+                <span class="v">seven days in a row within 2%</span>
+              </li>
+            </ul>
+            <p>
+              The rate does not respond to the day of the week, or to how far
+              ahead the date sits.
+            </p>
+            <p class="close">
+              <em>The tool that produced +75% in December is switched off.</em>
+            </p>
+          </article>
+        </section>
+
+        <section class="aside">
+          <p class="eyebrow">And one finding that is not about rate</p>
+          <p class="lede">
+            Across every Airbnb listing we opened, all dates from August 2026 to
+            March 2027 are available. Not one booking in eight months — while
+            the same property carries bookings on Booking.com.
+          </p>
+        </section>
+      </div>
+
+      <div class="doc-foot">
+        <span>Rate audit · Anjuna Bay · 29 July 2026 · public data only</span>
+        <span>01</span>
+      </div>
+    </div>
+
+    <!-- ============================ Page 2 ============================ -->
+    <div class="page">
+      <div class="doc-head">
+        <div class="head__row">
+          <p class="eyebrow">What we would do</p>
+          <p class="eyebrow">Anjuna Bay</p>
+        </div>
+        <h1>First thirty days — rate work only, no advertising budget</h1>
+        <p class="lede">
+          Everything below is done inside the extranet and the channel manager.
+          None of it requires spend.
+        </p>
+      </div>
+
+      <div class="doc-body">
+        <section class="cols cols--3 actions grow">
+          <div class="action">
+            <h3>Weekend premium</h3>
+            <p class="small">
+              Friday and Saturday priced above midweek across the full calendar.
+              Start at 15–20% and test.
+            </p>
+          </div>
+          <div class="action">
+            <h3>Depth-based rate ladder</h3>
+            <p class="small">
+              Further-out dates priced lower, rate rising as the calendar fills.
+              Today the spread between near and far dates is about 15%.
+            </p>
+          </div>
+          <div class="action">
+            <h3>Minimum stay on peak dates</h3>
+            <p class="small">
+              Protects high-value periods instead of leaving one-night gaps in
+              the calendar.
+            </p>
+          </div>
+          <div class="action">
+            <h3>Orphan-night rule</h3>
+            <p class="small">
+              A two-night minimum means a single free night between bookings
+              cannot be sold at all. An exception rule releases those dates
+              instead of losing them.
+            </p>
+          </div>
+          <div class="action">
+            <h3>Early-booking rate</h3>
+            <p class="small">
+              Applied to the months that currently carry no forward demand at
+              all.
+            </p>
+          </div>
+          <div class="action">
+            <h3>Airbnb rebuild and channel parity</h3>
+            <p class="small">
+              Eight months with no bookings on Airbnb is not a demand problem.
+              Sync, pricing, photography and titles reviewed listing by listing
+              against what works on Booking.
+            </p>
+          </div>
+        </section>
+
+        <section class="cols cols--sidebar close-band">
+          <div class="blind">
+            <h4>What we cannot see from outside</h4>
+            <div class="cols cols--2">
+              <ul class="list list--bullet">
+                <li>Realized rate and actual occupancy</li>
+                <li>Whether a blank date is booked or simply unsellable</li>
+                <li>Owner blocks and closed dates</li>
+              </ul>
+              <ul class="list list--bullet">
+                <li>Promotions and discounts applied</li>
+                <li>Channel mix and real commission</li>
+                <li>Cancellations and no-shows</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card card--ocean ask">
+            <h3>One report closes all of it</h3>
+            <p>
+              Monthly, per unit, last 12 months: nights sold, revenue, platform
+              commission, channel.
+            </p>
+            <p>
+              From that, realized rate, occupancy, RevPAR and channel mix
+              calculate themselves — with no assumptions from us.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <div class="doc-foot">
+        <span>Rate audit · Anjuna Bay · 29 July 2026 · public data only</span>
+        <span>02</span>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Anjuna Bay — Анализ календарей Booking, 29 июля 2026</title>
+    <link rel="stylesheet" href="anjuna-doc.css" />
+    <style>
+      /* Layout specific to the eight-page portrait report. Colours, fonts and
+         type sizes all come from anjuna-doc.css — only geometry is set here. */
+
+      /* ---- Running head and page frame ---- */
+      .doc-head {
+        margin-bottom: 7mm;
+      }
+      .head__row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10mm;
+        padding-bottom: 2.5mm;
+        border-bottom: 1px solid var(--hairline);
+      }
+      .doc-head h1 {
+        max-width: 22ch;
+      }
+      .doc-head h2 {
+        margin-top: 4mm;
+      }
+      .doc-head .lede {
+        margin-top: 3mm;
+        max-width: 66ch;
+      }
+      .doc-body {
+        display: flex;
+        flex-direction: column;
+      }
+      .grow {
+        flex: 1 1 auto;
+        min-height: 0;
+      }
+      .spread {
+        justify-content: space-between;
+      }
+      .block + .block {
+        margin-top: 7mm;
+      }
+      .block > h4 {
+        padding-bottom: 2mm;
+        border-bottom: 1px solid var(--hairline);
+      }
+      p:last-child,
+      .list:last-child {
+        margin-bottom: 0;
+      }
+
+      /* ---- Page 1: method band and contents ---- */
+      .meta > div {
+        border-top: 1px solid var(--hairline);
+        padding-top: 2.5mm;
+      }
+      .meta h4 {
+        color: var(--ink);
+        margin-bottom: 1.5mm;
+      }
+      .meta p {
+        margin-bottom: 0;
+      }
+      .contents .list li {
+        padding: 2mm 0;
+      }
+      .contents .k {
+        display: flex;
+        gap: 4mm;
+      }
+      .contents .k .idx {
+        color: var(--muted);
+        flex: 0 0 5mm;
+      }
+
+      /* ---- Page 2: the four rate tables ---- */
+      .rates {
+        row-gap: 9mm;
+        column-gap: 11mm;
+        align-content: space-between;
+      }
+      .rates h3 {
+        margin-bottom: 2mm;
+        padding-bottom: 1.5mm;
+        border-bottom: 1px solid var(--hairline);
+      }
+      .rates thead th {
+        border-bottom-width: 0;
+      }
+
+      /* ---- Pages 3–4: the observations ---- */
+      .obs {
+        border-top: 1px solid var(--hairline);
+        padding-top: 4mm;
+      }
+      .obs + .obs {
+        margin-top: 8mm;
+      }
+      .obs__head {
+        display: flex;
+        align-items: baseline;
+        gap: 4.5mm;
+        margin-bottom: 4mm;
+      }
+      .obs__head .numeral {
+        margin-bottom: 0;
+        flex: 0 0 auto;
+      }
+      .obs__head h3 {
+        margin: 0;
+      }
+      .obs__body {
+        gap: 9mm;
+        align-items: start;
+      }
+      .fig {
+        padding: 4.5mm 5mm;
+      }
+      .fig h4 {
+        margin-bottom: 2.5mm;
+      }
+      .fig .list li {
+        padding: 1.6mm 0;
+      }
+      .fig .list--split .v {
+        color: var(--ink);
+      }
+      .fig .list--split li {
+        gap: 4mm;
+      }
+      .fig .seq {
+        display: block;
+        margin-top: 0.6mm;
+      }
+      .fig .list--split .seq-item {
+        display: block;
+      }
+
+      /* The New Year jumps, set as three parallel readings. */
+      .jumps {
+        gap: 7mm;
+      }
+      .jumps > div {
+        border-top: 1px solid var(--hairline);
+        padding-top: 3mm;
+      }
+      .jumps .stat__value {
+        margin-top: 1.5mm;
+      }
+      .jumps h4 {
+        color: var(--ink);
+        margin-bottom: 1.5mm;
+      }
+
+      /* ---- Page 5: what the data does not prove ---- */
+      .nots {
+        gap: 7mm;
+        align-items: stretch;
+      }
+      .nots .card {
+        padding: 5mm 5.5mm;
+      }
+      .nots p {
+        margin-bottom: 0;
+      }
+      .nots strong {
+        display: block;
+        margin-bottom: 2mm;
+      }
+      .band {
+        gap: 9mm;
+        align-items: stretch;
+      }
+      .band .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      /* ---- Page 6: the four statements ---- */
+      .quotes {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .quote-block .eyebrow {
+        margin-bottom: 3mm;
+      }
+      .quote-block blockquote {
+        margin-bottom: 0;
+      }
+
+      /* ---- Page 7: the thirty-day list and the ask ---- */
+      .plan {
+        column-gap: 10mm;
+        align-items: start;
+      }
+      .list--num li {
+        display: flex;
+        gap: 4mm;
+        align-items: baseline;
+        padding: 2.6mm 0;
+      }
+      .list--num .step-n {
+        flex: 0 0 6mm;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ---- Page 8: the closing caveat ---- */
+      .closing .lede {
+        max-width: 58ch;
+      }
+      .closing-three {
+        gap: 9mm;
+      }
+      .closing-three > div {
+        padding: 5mm 0 0;
+      }
+      .closing-three h3 {
+        margin-bottom: 2mm;
+      }
+      .closing-three p {
+        margin-bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============================ Page 1 ============================ -->
+    <div class="page page--portrait">
+      <div class="doc-head">
+        <div class="head__row">
+          <p class="eyebrow">Аналитический отчёт</p>
+          <p class="eyebrow">Anjuna Bay</p>
+        </div>
+        <h1>Анализ календарей Booking</h1>
+        <p class="lede">Срез на 29 июля 2026, горизонт 7–8 месяцев вперёд.</p>
+      </div>
+
+      <div class="doc-body spread">
+        <section class="cols cols--3 meta block">
+          <div>
+            <h4>Источник</h4>
+            <p class="small">Публичные календари Booking.com по четырём юнитам.</p>
+          </div>
+          <div>
+            <h4>Метод</h4>
+            <p class="small">
+              Запрос на одну ночь, фиксация цены и доступности по каждой дате.
+            </p>
+          </div>
+          <div>
+            <h4>Курс для пересчёта</h4>
+            <p class="small">18 080 IDR / USD, ≈21 000 IDR / EUR.</p>
+          </div>
+        </section>
+
+        <section class="block">
+          <h2>1. Что было проверено</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Юнит</th>
+                <th>Тип</th>
+                <th>Валюта витрины</th>
+                <th>Период</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Вилла A</td>
+                <td>1BR</td>
+                <td>IDR</td>
+                <td>авг 2026 – фев 2027</td>
+              </tr>
+              <tr>
+                <td>Вилла B</td>
+                <td>2BR</td>
+                <td>IDR</td>
+                <td>авг 2026 – фев 2027</td>
+              </tr>
+              <tr>
+                <td class="flag">Anjuna B13</td>
+                <td>2BR</td>
+                <td>EUR</td>
+                <td>авг 2026 – мар 2027</td>
+              </tr>
+              <tr>
+                <td>Вилла C</td>
+                <td>3BR</td>
+                <td>IDR</td>
+                <td>авг 2026 – фев 2027</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="block contents">
+          <h4>Содержание</h4>
+          <ul class="list list--split">
+            <li>
+              <span class="k"><span class="idx">1</span>Что было проверено</span
+              ><span class="v">01</span>
+            </li>
+            <li>
+              <span class="k"><span class="idx">2</span>Средние цены по месяцам</span
+              ><span class="v">02</span>
+            </li>
+            <li>
+              <span class="k"><span class="idx">3</span>Пять наблюдений</span
+              ><span class="v">03</span>
+            </li>
+            <li>
+              <span class="k"><span class="idx">4</span>Чего эти данные НЕ доказывают</span
+              ><span class="v">05</span>
+            </li>
+            <li>
+              <span class="k"><span class="idx">5</span>Что можно утверждать на встрече</span
+              ><span class="v">06</span>
+            </li>
+            <li>
+              <span class="k"><span class="idx">6</span>План первых 30 дней по прайсу</span
+              ><span class="v">07</span>
+            </li>
+            <li>
+              <span class="k"><span class="idx">7</span>Что запросить у владельца</span
+              ><span class="v">07</span>
+            </li>
+            <li>
+              <span class="k"><span class="idx">8</span>Оговорка о статусе документа</span
+              ><span class="v">08</span>
+            </li>
+          </ul>
+        </section>
+
+        <div class="caveat">
+          <p>
+            Данные собраны из публичных календарей без доступа к системам объекта. Цены —
+            витринные, доступность — не загрузка. Границы применимости описаны в разделах 4 и 8.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Anjuna Bay · Анализ календарей Booking · 29 июля 2026</span>
+        <span>01 / 08</span>
+      </div>
+    </div>
+
+    <!-- ============================ Page 2 ============================ -->
+    <div class="page page--portrait page--paper">
+      <div class="doc-head">
+        <div class="head__row">
+          <p class="eyebrow">Раздел 2 · Средние цены по месяцам</p>
+          <p class="eyebrow">Anjuna Bay</p>
+        </div>
+        <h2>2. Средние цены по месяцам</h2>
+        <p class="lede">
+          Среднее по всем датам месяца, на которые открыто бронирование одной ночи. Колонка
+          «Недоступно» — число дат, закрытых для такого запроса.
+        </p>
+      </div>
+
+      <div class="doc-body">
+        <section class="cols cols--2 rates grow">
+          <div>
+            <h3>Вилла A — 1BR</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Месяц</th>
+                  <th class="num">Средняя IDR</th>
+                  <th class="num">USD</th>
+                  <th class="num">Недоступно</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Август</td>
+                  <td class="num">4,14 млн</td>
+                  <td class="num">$229</td>
+                  <td class="num">8 из 31</td>
+                </tr>
+                <tr>
+                  <td>Сентябрь</td>
+                  <td class="num">3,83</td>
+                  <td class="num">$212</td>
+                  <td class="num">3 из 30</td>
+                </tr>
+                <tr>
+                  <td>Октябрь</td>
+                  <td class="num">3,54</td>
+                  <td class="num">$196</td>
+                  <td class="num">0</td>
+                </tr>
+                <tr>
+                  <td>Ноябрь</td>
+                  <td class="num">3,28</td>
+                  <td class="num">$182</td>
+                  <td class="num">1 из 30</td>
+                </tr>
+                <tr>
+                  <td>Декабрь</td>
+                  <td class="num">3,63</td>
+                  <td class="num">$201</td>
+                  <td class="num">0</td>
+                </tr>
+                <tr>
+                  <td>Январь</td>
+                  <td class="num">3,42</td>
+                  <td class="num">$189</td>
+                  <td class="num">2 из 31</td>
+                </tr>
+                <tr>
+                  <td>Февраль</td>
+                  <td class="num">3,10</td>
+                  <td class="num">$171</td>
+                  <td class="num">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <h3>Вилла B — 2BR</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Месяц</th>
+                  <th class="num">Средняя IDR</th>
+                  <th class="num">USD</th>
+                  <th class="num">Недоступно</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Август</td>
+                  <td class="num">4,74 млн</td>
+                  <td class="num">$262</td>
+                  <td class="num">9 из 31</td>
+                </tr>
+                <tr>
+                  <td>Сентябрь</td>
+                  <td class="num">4,33</td>
+                  <td class="num">$239</td>
+                  <td class="num">0</td>
+                </tr>
+                <tr>
+                  <td>Октябрь</td>
+                  <td class="num">4,10</td>
+                  <td class="num">$227</td>
+                  <td class="num">1 из 31</td>
+                </tr>
+                <tr>
+                  <td>Ноябрь</td>
+                  <td class="num">3,85</td>
+                  <td class="num">$213</td>
+                  <td class="num">0</td>
+                </tr>
+                <tr>
+                  <td>Декабрь</td>
+                  <td class="num">4,21</td>
+                  <td class="num">$233</td>
+                  <td class="num">1 из 31</td>
+                </tr>
+                <tr>
+                  <td>Январь</td>
+                  <td class="num">4,17</td>
+                  <td class="num">$231</td>
+                  <td class="num">0</td>
+                </tr>
+                <tr>
+                  <td>Февраль</td>
+                  <td class="num">3,77</td>
+                  <td class="num">$208</td>
+                  <td class="num">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <h3>Anjuna B13 — 2BR</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Месяц</th>
+                  <th class="num">Средняя EUR</th>
+                  <th class="num">≈ IDR</th>
+                  <th class="num">Недоступно</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Август</td>
+                  <td class="num">€224</td>
+                  <td class="num">4,70 млн</td>
+                  <td class="num flag">23 из 31</td>
+                </tr>
+                <tr>
+                  <td>Сентябрь</td>
+                  <td class="num">€221</td>
+                  <td class="num">4,64</td>
+                  <td class="num flag">13 из 30</td>
+                </tr>
+                <tr>
+                  <td>Октябрь</td>
+                  <td class="num">€205</td>
+                  <td class="num">4,31</td>
+                  <td class="num">7 из 31</td>
+                </tr>
+                <tr>
+                  <td>Ноябрь</td>
+                  <td class="num">€191</td>
+                  <td class="num">4,01</td>
+                  <td class="num">0</td>
+                </tr>
+                <tr>
+                  <td>Декабрь</td>
+                  <td class="num">€205</td>
+                  <td class="num">4,31</td>
+                  <td class="num">0</td>
+                </tr>
+                <tr>
+                  <td>Январь</td>
+                  <td class="num">€197</td>
+                  <td class="num">4,14</td>
+                  <td class="num">0</td>
+                </tr>
+                <tr>
+                  <td>Февраль</td>
+                  <td class="num">€178</td>
+                  <td class="num">3,74</td>
+                  <td class="num">0</td>
+                </tr>
+                <tr>
+                  <td>Март</td>
+                  <td class="num">€188</td>
+                  <td class="num">3,95</td>
+                  <td class="num">2 из 31</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <h3>Вилла C — 3BR</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Месяц</th>
+                  <th class="num">Средняя IDR</th>
+                  <th class="num">USD</th>
+                  <th class="num">Недоступно</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Август</td>
+                  <td class="num">7,00 млн</td>
+                  <td class="num">$387</td>
+                  <td class="num flag">26 из 31</td>
+                </tr>
+                <tr>
+                  <td>Сентябрь</td>
+                  <td class="num">6,40</td>
+                  <td class="num">$354</td>
+                  <td class="num">5 из 30</td>
+                </tr>
+                <tr>
+                  <td>Октябрь</td>
+                  <td class="num">6,06</td>
+                  <td class="num">$335</td>
+                  <td class="num flag">21 из 31</td>
+                </tr>
+                <tr>
+                  <td>Ноябрь</td>
+                  <td class="num">5,72</td>
+                  <td class="num">$316</td>
+                  <td class="num">2 из 30</td>
+                </tr>
+                <tr>
+                  <td>Декабрь</td>
+                  <td class="num">6,30</td>
+                  <td class="num">$348</td>
+                  <td class="num">0</td>
+                </tr>
+                <tr>
+                  <td>Январь</td>
+                  <td class="num">6,50</td>
+                  <td class="num">$360</td>
+                  <td class="num">1 из 31</td>
+                </tr>
+                <tr>
+                  <td>Февраль</td>
+                  <td class="num">5,95</td>
+                  <td class="num">$329</td>
+                  <td class="num">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="caveat">
+          <p>
+            Отмеченные значения — месяцы, в которых закрыта заметная доля дат. Что это означает и
+            чего не означает — раздел 4.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Anjuna Bay · Анализ календарей Booking · 29 июля 2026</span>
+        <span>02 / 08</span>
+      </div>
+    </div>
+
+    <!-- ============================ Page 3 ============================ -->
+    <div class="page page--portrait">
+      <div class="doc-head">
+        <div class="head__row">
+          <p class="eyebrow">Раздел 3 · Пять наблюдений</p>
+          <p class="eyebrow">Anjuna Bay</p>
+        </div>
+        <h2>3. Пять наблюдений</h2>
+      </div>
+
+      <div class="doc-body spread">
+        <article class="obs">
+          <div class="obs__head">
+            <span class="numeral">3.1</span>
+            <h3>Цены на дальних датах вдвое выше, чем в июльском аудите</h3>
+          </div>
+          <div class="cols cols--sidebar obs__body">
+            <div>
+              <p>
+                Разрыв от 73% до 104%. Значит цифры аудита — это либо промо-тариф, либо цена
+                ближних дат после снижения, но не базовый прайс.
+              </p>
+              <p>
+                <strong>Следствие:</strong> тезис «объект продаётся ниже рынка» на этих данных не
+                подтверждается. Средняя по 2BR в $230 находится выше медианы Улувату ($216) из того
+                же аудита. Все расчёты, построенные на $114 / $133 / $170, нужно пересчитать.
+              </p>
+            </div>
+            <div class="card fig">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Тип</th>
+                    <th class="num">Аудит, июль</th>
+                    <th class="num">Календарь, 7 мес</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1BR</td>
+                    <td class="num">$114</td>
+                    <td class="num flag">$197</td>
+                  </tr>
+                  <tr>
+                    <td>2BR</td>
+                    <td class="num">$133</td>
+                    <td class="num flag">$230</td>
+                  </tr>
+                  <tr>
+                    <td>3BR</td>
+                    <td class="num">$170</td>
+                    <td class="num flag">$347</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+
+        <article class="obs">
+          <div class="obs__head">
+            <span class="numeral">3.2</span>
+            <h3>Надбавки за выходные нет почти нигде</h3>
+          </div>
+          <div class="cols cols--sidebar obs__body">
+            <div>
+              <p>
+                По аудиту рынок Улувату даёт на пятницу и субботу надбавку 100–125%. Здесь её нет.
+              </p>
+              <p>
+                <strong>Оценка упущенного:</strong> при 8–9 выходных ночах в месяц и надбавке всего
+                25% это порядка 8–10% месячной выручки на юнит.
+              </p>
+            </div>
+            <div class="card fig">
+              <h4>Примеры подряд идущих дат</h4>
+              <ul class="list">
+                <li>
+                  <strong>Вилла B, ноябрь:</strong> 15–21 числа
+                  <span class="seq">3,9 / 3,8 / 3,8 / 3,8 / 3,8 / 3,9 / 3,8</span>
+                  <span class="seq small">Суббота не отличается от вторника.</span>
+                </li>
+                <li>
+                  <strong>B13, февраль:</strong> 22–28 числа
+                  <span class="seq">€179 / 180 / 177 / 178 / 181 / 180 / 179</span>
+                  <span class="seq small">Разброс 2%.</span>
+                </li>
+                <li>
+                  <strong>Вилла A, февраль:</strong>
+                  <span class="seq">28 дней подряд в диапазоне 3,0–3,2 млн</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="obs">
+          <div class="obs__head">
+            <span class="numeral">3.3</span>
+            <h3>Механика динамического ценообразования существует — но работает одну неделю в году</h3>
+          </div>
+          <section class="cols cols--3 jumps">
+            <div>
+              <h4>Вилла C, декабрь</h4>
+              <p class="small">5,2 млн (9 дек) → 9,1 млн (30–31 дек)</p>
+              <span class="stat__value">+75%</span>
+            </div>
+            <div>
+              <h4>B13, декабрь</h4>
+              <p class="small">€177 (3 дек) → €257 (30–31 дек)</p>
+              <span class="stat__value">+45%</span>
+            </div>
+            <div>
+              <h4>Вилла B, декабрь</h4>
+              <p class="small">3,0 млн (1 дек) → 5,9 млн (29–30 дек)</p>
+              <span class="stat__value">+97%</span>
+            </div>
+          </section>
+        </article>
+      </div>
+
+      <div class="doc-foot">
+        <span>Anjuna Bay · Анализ календарей Booking · 29 июля 2026</span>
+        <span>03 / 08</span>
+      </div>
+    </div>
+
+    <!-- ============================ Page 4 ============================ -->
+    <div class="page page--portrait">
+      <div class="doc-head">
+        <div class="head__row">
+          <p class="eyebrow">Раздел 3 · Пять наблюдений</p>
+          <p class="eyebrow">Anjuna Bay</p>
+        </div>
+        <h2>3.3 — 3.5 · Продолжение</h2>
+      </div>
+
+      <div class="doc-body spread">
+        <section class="cols cols--sidebar band">
+          <div>
+            <p>
+              Инструмент есть, им умеют пользоваться, и на Новый год он применяется грамотно.
+              Остальные одиннадцать месяцев — статичный прайс с плавным сезонным сползанием.
+            </p>
+            <p class="small">
+              Три декабрьских кривых на предыдущей странице — единственный участок календаря, где
+              цена реагирует на спрос.
+            </p>
+          </div>
+          <div class="card card--ocean">
+            <h3>Это ключевой вывод отчёта</h3>
+            <p>
+              Задача не построить систему с нуля, а включить существующую на весь календарь.
+            </p>
+          </div>
+        </section>
+
+        <article class="obs">
+          <div class="obs__head">
+            <span class="numeral">3.4</span>
+            <h3>Разброс между одинаковыми юнитами — двукратный</h3>
+          </div>
+          <div class="cols cols--sidebar obs__body">
+            <div>
+              <p>
+                Вилла B и B13 — обе 2BR, цена практически совпадает: 4,74 млн против €224 ≈ 4,70
+                млн.
+              </p>
+              <p>
+                Одинаковый продукт, одинаковая цена, одинаковые даты — разница в 2,5 раза. Причина
+                не в цене и не в спросе. Остаются: качество листинга, фотографии, заголовок,
+                количество отзывов, позиция в выдаче.
+              </p>
+            </div>
+            <div class="card fig">
+              <h4>Август</h4>
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th class="num">Недоступно</th>
+                    <th class="num">Доля</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Вилла B</td>
+                    <td class="num">9 из 31</td>
+                    <td class="num">29%</td>
+                  </tr>
+                  <tr>
+                    <td class="flag">B13</td>
+                    <td class="num flag">23 из 31</td>
+                    <td class="num flag">74%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+
+        <article class="obs">
+          <div class="obs__head">
+            <span class="numeral">3.5</span>
+            <h3>Окно бронирования — около трёх месяцев</h3>
+          </div>
+          <div class="cols cols--sidebar obs__body">
+            <div>
+              <p>Кривая падает ровно и предсказуемо. Ничего не продаётся глубже квартала.</p>
+              <p>
+                При этом цена на дальних датах снижается всего на 15% (€224 → €191). Для сбора
+                раннего бронирования этого недостаточно.
+              </p>
+            </div>
+            <div class="card fig">
+              <h4>По B13, где данные наиболее полные</h4>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Месяц</th>
+                    <th class="num">Недоступно</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Август</td>
+                    <td class="num">74%</td>
+                  </tr>
+                  <tr>
+                    <td>Сентябрь</td>
+                    <td class="num">43%</td>
+                  </tr>
+                  <tr>
+                    <td>Октябрь</td>
+                    <td class="num">23%</td>
+                  </tr>
+                  <tr>
+                    <td>Ноябрь и дальше</td>
+                    <td class="num">0%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="doc-foot">
+        <span>Anjuna Bay · Анализ календарей Booking · 29 июля 2026</span>
+        <span>04 / 08</span>
+      </div>
+    </div>
+
+    <!-- ============================ Page 5 ============================ -->
+    <div class="page page--portrait page--paper">
+      <div class="doc-head">
+        <div class="head__row">
+          <p class="eyebrow">Раздел 4 · Границы применимости</p>
+          <p class="eyebrow">Anjuna Bay</p>
+        </div>
+        <h2>4. Чего эти данные НЕ доказывают</h2>
+        <p class="lede">Прочерк в календаре не равен «занято».</p>
+      </div>
+
+      <div class="doc-body spread">
+        <section class="block">
+          <p>
+            Поиск выполнялся на одну ночь. Booking скрывает даты и там, где действует ограничение
+            минимальной длительности проживания. В высокий сезон правило «от трёх ночей» — обычная
+            практика.
+          </p>
+          <p>Поэтому:</p>
+        </section>
+
+        <section class="cols cols--3 nots">
+          <div class="card">
+            <span class="numeral">01</span>
+            <p>
+              <strong
+                >Нельзя утверждать, что августовская загрузка виллы C составляет 84%.</strong
+              >
+              26 закрытых дат могут быть правилом минимального срока.
+            </p>
+          </div>
+          <div class="card">
+            <span class="numeral">02</span>
+            <p>
+              <strong>Нельзя утверждать, что ноябрь и февраль пустые.</strong> Можно утверждать
+              только, что на эти даты доступно бронирование одной ночи.
+            </p>
+          </div>
+          <div class="card">
+            <span class="numeral">03</span>
+            <p>
+              <strong>Нельзя вычислить реальную загрузку</strong> ни по одному юниту.
+            </p>
+          </div>
+        </section>
+
+        <section class="cols cols--sidebar band">
+          <div class="card card--ocean">
+            <h3>Проверка, снимающая неоднозначность</h3>
+            <p>
+              Повторить запрос с интервалом 3 ночи (например, 10–13 октября). Если прочерки
+              исчезают — это ограничение минимального срока, а не брони.
+            </p>
+          </div>
+          <div>
+            <h4>Также не проверено</h4>
+            <ul class="list list--bullet">
+              <li>Реализованные цены — витрина ≠ то, что заплатил гость</li>
+              <li>Фактические комиссии площадок</li>
+              <li>Отмены</li>
+              <li>Промо-тарифы</li>
+              <li>Owner blocks</li>
+            </ul>
+          </div>
+        </section>
+
+        <div class="caveat">
+          <p>
+            Всё, что ниже раздела 5, опирается на эти ограничения. Ни одна цифра из раздела 2 не
+            является утверждением о загрузке.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Anjuna Bay · Анализ календарей Booking · 29 июля 2026</span>
+        <span>05 / 08</span>
+      </div>
+    </div>
+
+    <!-- ============================ Page 6 ============================ -->
+    <div class="page page--portrait">
+      <div class="doc-head">
+        <div class="head__row">
+          <p class="eyebrow">Раздел 5 · Проверяемые утверждения</p>
+          <p class="eyebrow">Anjuna Bay</p>
+        </div>
+        <h2>5. Что можно утверждать на встрече</h2>
+        <p class="lede">
+          Формулировки, которые владелец проверит с телефона за минуту и которые не выходят за
+          рамки данных.
+        </p>
+      </div>
+
+      <div class="doc-body quotes">
+        <div class="quote-block">
+          <p class="eyebrow">Ценообразование · п. 3.3</p>
+          <blockquote>
+            <p>
+              <strong
+                >Динамическое ценообразование на объекте применяется примерно одну неделю в
+                году.</strong
+              >
+              На новогодние даты цена растёт на 45–97%. Остальные одиннадцать месяцев прайс
+              статичен: в феврале двадцать восемь дней подряд стоят одинаково.
+            </p>
+          </blockquote>
+        </div>
+
+        <div class="quote-block">
+          <p class="eyebrow">Выходные · п. 3.2</p>
+          <blockquote>
+            <p>
+              <strong>Надбавки за выходные нет ни в одном из проверенных юнитов.</strong> Суббота
+              стоит столько же, сколько вторник, при том что рынок Улувату даёт на выходных
+              существенно больше.
+            </p>
+          </blockquote>
+        </div>
+
+        <div class="quote-block">
+          <p class="eyebrow">Листинги · п. 3.4</p>
+          <blockquote>
+            <p>
+              <strong
+                >Две двухкомнатные виллы с одинаковой ценой имеют разную заполненность на одни и те
+                же даты.</strong
+              >
+              Разница не объясняется ни ценой, ни спросом — значит дело в листинге.
+            </p>
+          </blockquote>
+        </div>
+
+        <div class="quote-block">
+          <p class="eyebrow">Данные · п. 3.1</p>
+          <blockquote>
+            <p>
+              <strong
+                >Публичные цены на дальних датах вдвое выше тех, что фигурируют во внутреннем
+                аудите.</strong
+              >
+              Это само по себе требует объяснения: либо аудит нерепрезентативен, либо тарифы между
+              каналами и периодами не согласованы.
+            </p>
+          </blockquote>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Anjuna Bay · Анализ календарей Booking · 29 июля 2026</span>
+        <span>06 / 08</span>
+      </div>
+    </div>
+
+    <!-- ============================ Page 7 ============================ -->
+    <div class="page page--portrait">
+      <div class="doc-head">
+        <div class="head__row">
+          <p class="eyebrow">Разделы 6 и 7 · Действия и запрос</p>
+          <p class="eyebrow">Anjuna Bay</p>
+        </div>
+        <h2>6. План первых 30 дней по прайсу</h2>
+        <p class="lede">Без рекламного бюджета, только работа с ценой и листингами.</p>
+      </div>
+
+      <div class="doc-body spread">
+        <section class="cols cols--2 plan">
+          <ul class="list list--num">
+            <li>
+              <span class="step-n">01</span>
+              <span
+                ><strong>Надбавка за пятницу и субботу</strong> по всему календарю. Начать с 15–20%
+                и тестировать.</span
+              >
+            </li>
+            <li>
+              <span class="step-n">02</span>
+              <span
+                ><strong>Ценовая лестница по глубине бронирования:</strong> дальние даты дешевле,
+                цена растёт по мере заполнения. Сейчас разница дальний/ближний всего 15%.</span
+              >
+            </li>
+            <li>
+              <span class="step-n">03</span>
+              <span
+                ><strong>Минимальная длительность на пиковые даты</strong> — вместо разрывов
+                календаря.</span
+              >
+            </li>
+            <li>
+              <span class="step-n">04</span>
+              <span
+                ><strong>Скидки за длительность</strong> для закрытия дыр между бронями.</span
+              >
+            </li>
+          </ul>
+          <ul class="list list--num">
+            <li>
+              <span class="step-n">05</span>
+              <span
+                ><strong>Тариф раннего бронирования</strong> на месяцы с нулевой глубиной.</span
+              >
+            </li>
+            <li>
+              <span class="step-n">06</span>
+              <span
+                ><strong>Аудит листингов отстающих юнитов</strong> — сравнить с B13: фото,
+                заголовок, описание, отзывы.</span
+              >
+            </li>
+            <li>
+              <span class="step-n">07</span>
+              <span
+                ><strong>Проверить парность цен</strong> между Booking, Airbnb и остальными
+                каналами на одинаковые даты.</span
+              >
+            </li>
+          </ul>
+        </section>
+
+        <hr class="rule" />
+
+        <section class="block">
+          <h2>7. Что запросить у владельца</h2>
+          <p>Одна выгрузка закрывает все открытые вопросы:</p>
+        </section>
+
+        <section class="cols cols--sidebar band">
+          <div class="card card--ocean">
+            <h3>
+              Помесячно за 12 месяцев, по каждому юниту: проданные ночи, выручка, комиссия
+              площадки, канал.
+            </h3>
+            <p>
+              Из неё считаются без единого допущения: реализованная средняя цена, загрузка, RevPAR,
+              средняя комиссия, микс каналов.
+            </p>
+          </div>
+          <div>
+            <h4>Дополнительно</h4>
+            <ul class="list list--bullet">
+              <li>Правила минимальной длительности по сезонам</li>
+              <li>Календарь owner blocks</li>
+              <li>Текущие акции и промо-тарифы Booking</li>
+              <li>Доступ на чтение в PMS и channel manager</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <div class="doc-foot">
+        <span>Anjuna Bay · Анализ календарей Booking · 29 июля 2026</span>
+        <span>07 / 08</span>
+      </div>
+    </div>
+
+    <!-- ============================ Page 8 ============================ -->
+    <div class="page page--portrait page--ocean closing">
+      <div class="doc-head">
+        <div class="head__row">
+          <p class="eyebrow">Раздел 8 · Статус документа</p>
+          <p class="eyebrow">Anjuna Bay</p>
+        </div>
+        <h2>8. Оговорка о статусе документа</h2>
+        <p class="lede">
+          Все данные собраны из публичных календарей без доступа к системам объекта. Это внешний
+          срез на одну дату, а не отчёт о результатах.
+        </p>
+      </div>
+
+      <div class="doc-body spread">
+        <section class="cols cols--3 closing-three">
+          <div>
+            <h3>Цены</h3>
+            <p>Витринные, а не реализованные.</p>
+          </div>
+          <div>
+            <h3>Доступность</h3>
+            <p>Не загрузка.</p>
+          </div>
+          <div>
+            <h3>Четыре юнита</h3>
+            <p>Не весь пул.</p>
+          </div>
+        </section>
+
+        <section class="cols cols--sidebar band">
+          <div>
+            <p>
+              Документ показывает <strong>где искать</strong>, а не
+              <strong>сколько получится</strong>. Проверяемые выводы отмечены в разделе 5; всё
+              остальное требует подтверждения данными из раздела 7.
+            </p>
+          </div>
+          <div class="card card--plain">
+            <h4>Что закрывает вопрос</h4>
+            <p class="small">
+              Помесячная выгрузка за 12 месяцев по каждому юниту — раздел 7.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <div class="doc-foot">
+        <span>Anjuna Bay · Анализ календарей Booking · 29 июля 2026</span>
+        <span>08 / 08</span>
+      </div>
+    </div>
+  </body>
+</html>

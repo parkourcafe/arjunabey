@@ -1,0 +1,1197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Anjuna Bay — Sales &amp; Growth Proposal</title>
+    <link rel="stylesheet" href="anjuna-doc.css" />
+    <style>
+      /* Layout specific to this document. No colours, fonts or type sizes are
+         redefined here — only geometry, using the tokens already declared. */
+
+      /* Cover: a photographic band bleeds across the foot of the ocean page. */
+      .cover__band {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 72mm;
+        background-image: linear-gradient(
+            to bottom,
+            var(--ocean),
+            color-mix(in srgb, var(--ocean) 34%, transparent) 52%
+          ),
+          url('cover-cliff.jpg');
+        background-size: auto, cover;
+        background-position: center, center;
+        background-repeat: no-repeat;
+      }
+      .cover .doc-head,
+      .cover .doc-body,
+      .cover .doc-foot {
+        position: relative;
+        z-index: 1;
+      }
+      .cover .doc-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10mm;
+      }
+      .cover .doc-body {
+        padding-bottom: 56mm;
+        display: flex;
+        flex-direction: column;
+      }
+      .cover__title {
+        max-width: 46ch;
+      }
+      .cover__meta {
+        margin-top: auto;
+        display: grid;
+        grid-template-columns: 1fr 1.15fr 1fr;
+        gap: 10mm;
+        align-items: start;
+      }
+
+      /* Shared helpers */
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 5mm;
+      }
+      .grow {
+        flex: 1 1 auto;
+        min-height: 0;
+      }
+      .tight {
+        margin-bottom: 0;
+      }
+      .gap-s {
+        gap: 5mm;
+      }
+      .cols--stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+      }
+      .cols--stats > * {
+        padding: 0 7mm;
+        border-left: 1px solid var(--hairline);
+      }
+      .cols--stats > *:first-child {
+        padding-left: 0;
+        border-left: 0;
+      }
+      .page--ocean .cols--stats > * {
+        border-left-color: rgb(250 247 242 / 0.22);
+      }
+      .cols--lead {
+        display: grid;
+        grid-template-columns: 1.05fr 1fr;
+        gap: 9mm;
+        align-items: start;
+      }
+      .cols--wide-side {
+        display: grid;
+        grid-template-columns: 1.9fr 1fr;
+        gap: 9mm;
+        align-items: stretch;
+      }
+      .cols--path {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7mm;
+      }
+      .head--split {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 10mm;
+        align-items: end;
+      }
+      .head--split .lede {
+        margin-top: 0;
+      }
+      table.table--raci td:first-child,
+      table.table--terms td:first-child {
+        width: 34%;
+      }
+      table.table--raci th:not(:first-child),
+      table.table--raci td:not(:first-child) {
+        width: 22%;
+      }
+      table.table--terms td:nth-child(2) {
+        width: 34%;
+      }
+      table.table--leak td:first-child {
+        width: 26%;
+      }
+      table.table--leak td:nth-child(2) {
+        width: 42%;
+      }
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+      }
+      .steps > * {
+        padding: 0 6mm;
+        border-left: 1px solid var(--hairline);
+      }
+      .steps > *:first-child {
+        padding-left: 0;
+        border-left: 0;
+      }
+      .steps--centred > * {
+        justify-content: center;
+      }
+      .rule--tight {
+        margin: 5mm 0;
+      }
+      .card .stat__label {
+        max-width: 34ch;
+      }
+
+      /* Vertical rhythm helpers: these documents are read across a table, so
+         lists and tables are allowed to breathe into the full page height. */
+      .list--airy li {
+        padding-top: 5.5mm;
+        padding-bottom: 5.5mm;
+      }
+      .list--airy.list--bullet li::before {
+        top: 7.7mm;
+      }
+      /* Seven items in the first column, so this trio sits a shade tighter. */
+      .steps--90 .list--airy li {
+        padding-top: 4.4mm;
+        padding-bottom: 4.4mm;
+      }
+      .steps--90 .list--airy.list--bullet li::before {
+        top: 6.6mm;
+      }
+      .table--mid tbody td {
+        padding-top: 3.6mm;
+        padding-bottom: 3.6mm;
+      }
+      .table--airy tbody td {
+        padding-top: 4.4mm;
+        padding-bottom: 4.4mm;
+      }
+      .table--airier tbody td {
+        padding-top: 7mm;
+        padding-bottom: 7mm;
+      }
+      table.table--airier td:nth-child(2) {
+        width: 34%;
+      }
+      .flow {
+        display: flex;
+        flex-direction: column;
+      }
+      .stretch {
+        align-items: stretch;
+      }
+      .spread {
+        justify-content: space-between;
+      }
+      .findings li {
+        display: grid;
+        grid-template-columns: 12mm 70mm 1fr;
+        gap: 7mm;
+        align-items: baseline;
+        padding: 5.3mm 0;
+      }
+      .findings .numeral,
+      .findings h3,
+      .findings p {
+        margin: 0;
+      }
+      .closing {
+        margin: auto 0;
+      }
+      .mt-a {
+        margin-top: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============================== 01 · Cover ============================ -->
+    <div class="page page--ocean cover">
+      <div class="cover__band" aria-hidden="true"></div>
+
+      <div class="doc-head">
+        <p class="eyebrow">Anjuna&nbsp;&nbsp;Bay</p>
+        <p class="eyebrow">Live prototype · built before this meeting</p>
+      </div>
+
+      <div class="doc-body">
+        <div class="cover__title">
+          <h1>Sales &amp; Growth<br />Proposal</h1>
+          <p class="lede">More bookings. Better rate. Channels you own.</p>
+        </div>
+
+        <hr class="rule mt-a" style="margin-bottom: 0" />
+
+        <div class="cover__meta" style="margin-top: 7mm">
+          <div>
+            <p class="eyebrow">What this is</p>
+            <p class="small" style="margin-top: 3mm">
+              A commercial layer on top of your existing operation: pricing, distribution,
+              agents, brand and direct demand. Your team keeps running the property.
+            </p>
+          </div>
+          <div>
+            <p class="eyebrow">Prepared for</p>
+            <p class="small tight" style="margin-top: 3mm">Owner / Developer of Anjuna Bay</p>
+            <p class="eyebrow" style="margin-top: 5mm">Prepared by</p>
+            <p class="small tight" style="margin-top: 3mm">
+              Fadjri D. Roesman, CSMH — sales &amp; distribution
+            </p>
+            <p class="small tight">Selena Nigmatullaeva — brand &amp; digital systems</p>
+          </div>
+          <div>
+            <span class="tag">To confirm before meeting</span>
+            <p class="small" style="margin-top: 3mm">Owner name · phone · business email</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>01</span>
+      </div>
+    </div>
+
+    <!-- ============================== 02 · This morning ===================== -->
+    <div class="page">
+      <div class="doc-head">
+        <p class="eyebrow">This morning</p>
+        <div class="head--split">
+          <h2>We audited your live rates before writing a single slide.</h2>
+          <p class="lede">
+            Public data only. No access to your systems, no assumptions, nothing you cannot
+            check yourself in a minute.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-body stack">
+        <div class="cols--stats">
+          <div>
+            <span class="stat__value">4</span>
+            <span class="stat__label"
+              ><strong>units opened</strong><br />1BR · 2BR · 3BR across both channels</span
+            >
+          </div>
+          <div>
+            <span class="stat__value">8</span>
+            <span class="stat__label"
+              ><strong>months forward</strong><br />August 2026 to March 2027</span
+            >
+          </div>
+          <div>
+            <span class="stat__value">420+</span>
+            <span class="stat__label"
+              ><strong>dates recorded</strong><br />rate and availability, night by night</span
+            >
+          </div>
+          <div>
+            <span class="stat__value">0</span>
+            <span class="stat__label"
+              ><strong>access required</strong><br />everything below is public</span
+            >
+          </div>
+        </div>
+
+        <hr class="rule rule--tight" />
+
+        <h4>Four things came out of it</h4>
+
+        <ul class="list findings grow">
+          <li>
+            <span class="numeral">01</span>
+            <h3>Your rate barely moves</h3>
+            <p class="small">
+              Dynamic pricing exists on this property — and runs for about one week a year.
+            </p>
+          </li>
+          <li>
+            <span class="numeral">02</span>
+            <h3>The season curve is almost flat</h3>
+            <p class="small">
+              August and February are 27% apart. In Uluwatu that gap is normally 50–80%.
+            </p>
+          </li>
+          <li>
+            <span class="numeral">03</span>
+            <h3>Airbnb produces nothing</h3>
+            <p class="small">
+              Eight months forward, not one booking, while Booking.com carries bookings.
+            </p>
+          </li>
+          <li>
+            <span class="numeral">04</span>
+            <h3>A two-night minimum quietly kills nights</h3>
+            <p class="small">Single free nights between bookings cannot be sold at all.</p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>02</span>
+      </div>
+    </div>
+
+    <!-- ============================== 03 · Finding 01 ======================= -->
+    <div class="page page--paper">
+      <div class="doc-head">
+        <p class="eyebrow">Finding 01 · Rate architecture</p>
+        <div class="head--split">
+          <h2>Dynamic pricing works here. It runs one week a year.</h2>
+          <p class="lede">
+            This is not a missing capability. Someone on your team already knows how to do it.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-body stack">
+        <div class="cols cols--2 grow">
+          <div class="card flow">
+            <h4>What works · December</h4>
+            <div class="stat stat--clay">
+              <span class="stat__value">+75%</span>
+              <span class="stat__label"
+                >3-bedroom, 9&nbsp;December: 5.2M →&nbsp;30&nbsp;December: 9.1M</span
+              >
+            </div>
+            <hr class="rule rule--tight mt-a" />
+            <ul class="list list--bullet">
+              <li>The same pattern on the other units: +45% and +97% over New Year.</li>
+              <li>Correctly done, and it earns real money.</li>
+            </ul>
+          </div>
+
+          <div class="card flow">
+            <h4>What does not · the other eleven months</h4>
+            <ul class="list list--airy">
+              <li>February: 28 consecutive days at one rate.</li>
+              <li>November 15–21: seven days inside a 2% band.</li>
+              <li>
+                No weekend premium on any unit we opened — Sunday 15 Nov 3.9M, Wednesday 18 Nov
+                3.8M.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card card--ocean grow flow" style="justify-content: center">
+          <h4>What this is worth</h4>
+          <p class="tight">
+            Uluwatu weekends normally carry a material premium. Applying even a modest 15–20% to
+            Friday and Saturday, across roughly nine weekend nights a month, is worth
+            <strong>8–10% of monthly revenue per unit</strong> — with no advertising spend and no
+            new guests.
+          </p>
+        </div>
+
+        <div class="caveat">
+          <p>You can verify every number on this slide from your phone in under a minute.</p>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>03</span>
+      </div>
+    </div>
+
+    <!-- ============================== 04 · Finding 02 ======================= -->
+    <div class="page">
+      <div class="doc-head">
+        <p class="eyebrow">Finding 02 · Seasonality</p>
+        <div class="head--split">
+          <h2>Your high season is priced almost like your low season.</h2>
+          <p class="lede">
+            Weighted average rate across all 30 villas, taken from the live calendar.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-body">
+        <div class="cols--wide-side" style="height: 100%">
+          <div class="flow">
+            <table class="table--airy">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Season</th>
+                  <th class="num">Avg rate, all units</th>
+                  <th class="num">vs August</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>August</td>
+                  <td>High</td>
+                  <td class="num">4.73M</td>
+                  <td class="num">—</td>
+                </tr>
+                <tr>
+                  <td>September</td>
+                  <td>Shoulder</td>
+                  <td class="num">4.34M</td>
+                  <td class="num">−8%</td>
+                </tr>
+                <tr>
+                  <td>October</td>
+                  <td>Shoulder</td>
+                  <td class="num">4.07M</td>
+                  <td class="num">−14%</td>
+                </tr>
+                <tr>
+                  <td>November</td>
+                  <td>Low</td>
+                  <td class="num">3.81M</td>
+                  <td class="num">−19%</td>
+                </tr>
+                <tr>
+                  <td>December</td>
+                  <td>Mixed</td>
+                  <td class="num">4.19M</td>
+                  <td class="num">−11%</td>
+                </tr>
+                <tr>
+                  <td>January</td>
+                  <td>Mixed</td>
+                  <td class="num">4.10M</td>
+                  <td class="num">−13%</td>
+                </tr>
+                <tr>
+                  <td>February</td>
+                  <td>Low</td>
+                  <td class="num">3.72M</td>
+                  <td class="num flag">−21%</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="caveat mt-a">
+              <p>
+                The mirror image is also true: November and February look expensive for their
+                season — which is exactly where forward demand is thinnest. We would test those
+                months 10% lower midweek and let the response decide, rather than guess.
+              </p>
+            </div>
+          </div>
+
+          <div class="stack gap-s">
+            <div class="card">
+              <h4>The gap</h4>
+              <div class="stat stat--ocean">
+                <span class="stat__value">27%</span>
+                <span class="stat__label">between your peak and your trough</span>
+              </div>
+              <hr class="rule rule--tight" />
+              <p class="small tight">
+                In Uluwatu the August-to-February spread is normally 50–80%.
+              </p>
+            </div>
+
+            <div class="card card--ocean grow flow">
+              <h4>August alone</h4>
+              <div class="stat">
+                <span class="stat__value">+594M IDR</span>
+              </div>
+              <p class="small mt-a" style="margin-bottom: 0; color: inherit">
+                If the seasonal spread were 50% rather than 27%, August would price at 5.58M. At
+                75% occupancy across 30 villas that is roughly 594 million rupiah — in one month,
+                from the rate sheet alone.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>04</span>
+      </div>
+    </div>
+
+    <!-- ============================== 05 · Finding 03 ======================= -->
+    <div class="page page--paper">
+      <div class="doc-head">
+        <p class="eyebrow">Finding 03 · Distribution</p>
+        <div class="head--split">
+          <h2>One of the world’s two largest channels is producing nothing.</h2>
+          <p class="lede">We opened every Airbnb listing we could find for the property.</p>
+        </div>
+      </div>
+
+      <div class="doc-body stack">
+        <div class="cols cols--2">
+          <div class="card flow">
+            <h4>Booking.com</h4>
+            <h3>Bookings present.</h3>
+            <p class="small tight">
+              One 2-bedroom villa is largely closed out for August and roughly half taken in
+              September. Forward demand exists and reaches you.
+            </p>
+          </div>
+          <div class="card card--ocean flow">
+            <h4>Airbnb</h4>
+            <h3>Every date open. August 2026 to March 2027.</h3>
+            <p class="small tight" style="color: inherit">
+              A1, a one-bedroom, and A13, a two-bedroom: not one booked date in eight months.
+              This is not a single weak listing — it is the channel.
+            </p>
+          </div>
+        </div>
+
+        <hr class="rule rule--tight" />
+
+        <h4>This is not a demand problem — it is one of three fixable things</h4>
+
+        <div class="steps steps--centred grow">
+          <div class="flow">
+            <span class="numeral">01</span>
+            <h3>Rates not synced</h3>
+            <p class="small tight">
+              Availability and pricing drifting apart from Booking, so the listing is never
+              competitive on the day.
+            </p>
+          </div>
+          <div class="flow">
+            <span class="numeral">02</span>
+            <h3>Guest-side price too high</h3>
+            <p class="small tight">
+              Airbnb applies fees differently. The same villa can land in front of the guest
+              materially more expensive.
+            </p>
+          </div>
+          <div class="flow">
+            <span class="numeral">03</span>
+            <h3>Weak listing</h3>
+            <p class="small tight">
+              Few reviews, thin photography, unit codes for titles — the listing never surfaces
+              in results.
+            </p>
+          </div>
+        </div>
+
+        <div class="caveat">
+          <p>
+            All three are corrected inside the extranet. None of them costs money.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>05</span>
+      </div>
+    </div>
+
+    <!-- ============================== 06 · Finding 04 ======================= -->
+    <div class="page">
+      <div class="doc-head">
+        <p class="eyebrow">Finding 04 · Inventory loss</p>
+        <div class="head--split">
+          <h2>A two-night minimum is quietly deleting nights.</h2>
+          <p class="lede">A sensible rule with one missing exception.</p>
+        </div>
+      </div>
+
+      <div class="doc-body stack">
+        <div class="cols cols--2 grow">
+          <div class="card flow">
+            <h4>What happens</h4>
+            <p class="tight">
+              When a single free night sits between two bookings, the two-night minimum means it
+              cannot be sold at any price. It simply leaves your inventory.
+            </p>
+            <hr class="rule rule--tight mt-a" />
+            <p class="small tight">
+              Across 30 villas with an average stay of three to four nights, these gaps accumulate
+              continuously.
+            </p>
+          </div>
+          <div class="card flow">
+            <h4>The fix</h4>
+            <p class="tight">
+              An exception rule: <strong>minimum one night where the gap is one night.</strong>
+              Available in the Booking extranet and in every major channel manager.
+            </p>
+            <hr class="rule rule--tight mt-a" />
+            <p class="small tight">
+              Paired with a length-of-stay discount so the released dates actually sell.
+            </p>
+          </div>
+        </div>
+
+        <div class="card card--ocean grow flow spread">
+          <h4>What the four findings have in common</h4>
+          <blockquote style="border-left-color: rgb(250 247 242 / 0.4)">
+            <p>
+              None of them is a demand problem. Not one requires an advertising budget, a new
+              website, or a single additional guest to walk through the door.
+            </p>
+          </blockquote>
+          <p class="tight">
+            All four are corrected inside systems you already pay for — the extranet, the channel
+            manager and the rate sheet. That is where we start, and that is why the first ninety
+            days cost you nothing but attention.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>06</span>
+      </div>
+    </div>
+
+    <!-- ============================== 07 · Adds up to ======================= -->
+    <div class="page page--paper">
+      <div class="doc-head">
+        <p class="eyebrow">What it adds up to</p>
+        <div class="head--split">
+          <h2>Four findings, one leak.</h2>
+          <p class="lede">
+            Modelled at 70% occupancy across 30 villas — 630 nights a month, 2.61 bn IDR gross.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-body stack gap-s">
+        <table class="table--leak table--airy">
+          <thead>
+            <tr>
+              <th>Where it leaks</th>
+              <th>What actually happens</th>
+              <th>What it costs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1-bedroom rating at 8.1</td>
+              <td>
+                12 of 30 villas sit outside the 9+ filter, where the 2-bedroom at 9.1 is found
+              </td>
+              <td>caps occupancy before pricing even matters</td>
+            </tr>
+            <tr>
+              <td>Airbnb at zero</td>
+              <td>A1 and A13 both show no bookings in eight months forward</td>
+              <td>an entire channel producing nothing</td>
+            </tr>
+            <tr>
+              <td>Everything through platforms</td>
+              <td>20% commission on every single booking</td>
+              <td class="flag">522M IDR a month to the platforms</td>
+            </tr>
+            <tr>
+              <td>A rate sheet that does not move</td>
+              <td>no weekend premium; 27% season spread against a 50–80% market</td>
+              <td class="flag">8–10% of monthly revenue, every month</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <hr class="rule rule--tight" />
+
+        <div class="cols--lead stretch grow">
+          <div class="flow">
+            <h4>The same 630 nights, a different channel mix</h4>
+            <ul class="list list--split list--airy">
+              <li>
+                <span class="k">All through platforms, 20% commission</span>
+                <span class="v">2.09 bn</span>
+              </li>
+              <li>
+                <span class="k">55% platform / 25% agent / 20% direct</span>
+                <span class="v">2.24 bn</span>
+              </li>
+            </ul>
+            <p class="lede mt-a" style="margin-bottom: 0">
+              +150M a month. 1.8 bn a year. Not one additional booking.
+            </p>
+          </div>
+
+          <div class="card flow">
+            <h4>Why the order matters</h4>
+            <p class="small tight">
+              Rating opens visibility. Visibility fills nights. Occupancy earns the right to raise
+              rate. Channel mix keeps more of every rupiah that comes in.
+            </p>
+            <p class="small tight mt-a">
+              Each step is wasted without the one before it. That is why the website is not first.
+            </p>
+          </div>
+        </div>
+
+        <div class="caveat">
+          <p>
+            The rating itself is fixed by your operations team, not by us. What we bring is the
+            diagnosis: review analysis with causes, unit by unit, every month.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>07</span>
+      </div>
+    </div>
+
+    <!-- ============================== 08 · Honest baseline ================== -->
+    <div class="page">
+      <div class="doc-head">
+        <p class="eyebrow">Honest baseline</p>
+        <div class="head--split">
+          <h2>What we can see — and what nobody can see from outside.</h2>
+          <p class="lede">
+            We would rather show you the limits of our data than present estimates as facts.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-body stack">
+        <div class="cols cols--2 grow">
+          <div class="card">
+            <h4>Established this morning</h4>
+            <ul class="list list--bullet list--airy">
+              <li>Published rate by unit type, night by night</li>
+              <li>Seasonal curve across eight months forward</li>
+              <li>Availability patterns and minimum-stay behaviour</li>
+              <li>Presence and performance gaps between channels</li>
+              <li>Listing quality: titles, photography, review counts</li>
+              <li>Uluwatu market reference points</li>
+            </ul>
+          </div>
+          <div class="card card--ocean">
+            <h4>Requires your data</h4>
+            <ul class="list list--bullet list--airy">
+              <li>Realized rate after promotions and discounts</li>
+              <li>Actual occupancy and RevPAR by unit</li>
+              <li>Whether a closed date is booked or blocked</li>
+              <li>Real commission paid to each platform</li>
+              <li>Cancellations, no-shows and length of stay</li>
+              <li>Owner blocks and out-of-order nights</li>
+            </ul>
+          </div>
+        </div>
+
+        <blockquote>
+          <p>
+            One report closes all of it: monthly, per unit, last twelve months — nights sold,
+            revenue, platform commission, channel. From that, realized rate, occupancy, RevPAR and
+            channel mix calculate themselves, with no assumptions from us.
+          </p>
+        </blockquote>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>08</span>
+      </div>
+    </div>
+
+    <!-- ============================== 09 · The path ========================= -->
+    <div class="page page--paper">
+      <div class="doc-head">
+        <p class="eyebrow">The path</p>
+        <div class="head--split">
+          <h2>Where the growth actually comes from.</h2>
+          <p class="lede">
+            Three levers, in order of size and speed. Rate work first, channels second, new demand
+            third.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-body stack spread">
+        <div class="cols--path">
+          <div class="card flow">
+            <span class="numeral">1</span>
+            <h3>Occupancy</h3>
+            <p class="eyebrow" style="margin-bottom: 3mm">Months 1–6</p>
+            <p class="small tight mt-a">
+              Full inventory coverage, listing quality, Airbnb rebuilt, orphan nights released.
+              The largest and cheapest lever available.
+            </p>
+          </div>
+          <div class="card flow">
+            <span class="numeral">2</span>
+            <h3>Rate architecture</h3>
+            <p class="eyebrow" style="margin-bottom: 3mm">Months 1–9</p>
+            <p class="small tight mt-a">
+              Weekend premium, seasonal spread widened, depth-based ladder, minimum stay on peaks.
+              Tested against RevPAR, never headline rate.
+            </p>
+          </div>
+          <div class="card flow">
+            <span class="numeral">3</span>
+            <h3>Channel mix</h3>
+            <p class="eyebrow" style="margin-bottom: 3mm">Months 3–18</p>
+            <p class="small tight mt-a">
+              Agent portfolio at 10% instead of 20% platform commission, then direct bookings and
+              repeat guests. Same revenue, more of it reaching you.
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <table class="table--airier">
+            <thead>
+              <tr>
+                <th>Occupancy across 30 villas</th>
+                <th>Net revenue per month</th>
+                <th class="num">Change</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>50% — today</td>
+                <td>1.49 bn IDR</td>
+                <td class="num">—</td>
+              </tr>
+              <tr>
+                <td>60%</td>
+                <td>1.79 bn</td>
+                <td class="num">+20%</td>
+              </tr>
+              <tr>
+                <td>70%</td>
+                <td>2.09 bn</td>
+                <td class="num flag">+40%</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="caveat">
+            <p>
+              Two billion is reachable at 70% occupancy without raising the headline rate at all.
+              Three billion needs inventory — Palms and Urbana — not marketing.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>09</span>
+      </div>
+    </div>
+
+    <!-- ============================== 10 · First 90 days ==================== -->
+    <div class="page">
+      <div class="doc-head">
+        <p class="eyebrow">First 90 days</p>
+        <div class="head--split">
+          <h2>Fix, rebuild, then prove.</h2>
+          <p class="lede">
+            Everything in the first thirty days happens inside systems you already pay for.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-body stack">
+        <div class="steps steps--90 grow">
+          <div>
+            <p class="eyebrow">Days 1–30</p>
+            <h3 style="margin-top: 3mm">Fix the rate sheet</h3>
+            <ul class="list list--bullet list--airy">
+              <li>Weekend premium across the full calendar</li>
+              <li>Seasonal spread widened toward market</li>
+              <li>Depth-based rate ladder</li>
+              <li>Orphan-night exception rule</li>
+              <li>Minimum stay on peak dates</li>
+              <li>Low season tested at −10% midweek</li>
+              <li>Full inventory coverage check</li>
+            </ul>
+          </div>
+          <div>
+            <p class="eyebrow">Days 31–60</p>
+            <h3 style="margin-top: 3mm">Rebuild distribution</h3>
+            <ul class="list list--bullet list--airy">
+              <li>Airbnb listings rebuilt and synced</li>
+              <li>Rate parity across all channels</li>
+              <li>Titles and photography standardised</li>
+              <li>Agent contracts, quotas, seasonal terms</li>
+              <li>Website and direct path live</li>
+              <li>Google Business Profile claimed</li>
+            </ul>
+          </div>
+          <div>
+            <p class="eyebrow">Days 61–90</p>
+            <h3 style="margin-top: 3mm">Prove it</h3>
+            <ul class="list list--bullet list--airy">
+              <li>RevPAR against baseline</li>
+              <li>Forward booking depth</li>
+              <li>Channel mix and average commission</li>
+              <li>Airbnb from zero to measurable</li>
+              <li>Guest rating movement</li>
+              <li>Decision: continue, extend or stop</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card card--ocean">
+          <p class="tight">
+            No advertising budget is required in the first thirty days. Nothing in this column
+            depends on new demand.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>10</span>
+      </div>
+    </div>
+
+    <!-- ============================== 11 · Accountability =================== -->
+    <div class="page page--paper">
+      <div class="doc-head">
+        <p class="eyebrow">Accountability</p>
+        <div class="head--split">
+          <h2>Who does what.</h2>
+          <p class="lede">
+            Your team keeps the property. We take the commercial layer above it.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-body stack gap-s">
+        <div class="cols cols--2">
+          <div class="card">
+            <h3>Fadjri D. Roesman, CSMH</h3>
+            <h4>Sales, revenue and distribution</h4>
+            <p class="small tight">
+              <strong>26 years in commercial hotel roles.</strong> Director of Sales &amp;
+              Marketing at Le Meridien Jakarta, Sheraton Bandara, Westin Resort Nusa Dua, Ayodya
+              Resort Bali and The Sultan. Earlier at Mandarin Oriental Jakarta, Rosewood
+              Dharmawangsa and InterContinental Borobudur.
+            </p>
+            <p class="small tight" style="margin-top: 3mm">
+              General Manager and Cluster GM since 2017. Starwood regional sales trainer for South
+              East Asia. Secretary General, Indonesia Hotel &amp; General Manager Association.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Selena Nigmatullaeva</h3>
+            <h4>Brand &amp; Digital Systems Architect</h4>
+            <p class="small tight">
+              The prototype site you are looking at was built before this meeting, at our cost.
+            </p>
+            <ul class="list list--bullet" style="margin: 2mm 0">
+              <li>Brand strategy and positioning</li>
+              <li>SEO and digital visibility</li>
+              <li>Website and direct-booking architecture</li>
+              <li>CRM and guest-journey automation</li>
+              <li>Analytics and system integrations</li>
+            </ul>
+            <p class="small tight">
+              Founder &amp; Developer, KORA Food Hall, Ubud — 1,800 m², 12 food concepts, 400
+              seats. 80% built, opening December 2026. Visit any time. Founder, Selena Systems
+              &amp; OtherBali.com
+            </p>
+          </div>
+        </div>
+
+        <table class="table--raci table--mid">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Owner’s team</th>
+              <th>Fadjri</th>
+              <th>Selena</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Daily operations, staff, housekeeping, maintenance</td>
+              <td>Accountable</td>
+              <td>—</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>Pricing, channels, agents, OTA relationships</td>
+              <td>Data</td>
+              <td>Accountable</td>
+              <td>KPI framework</td>
+            </tr>
+            <tr>
+              <td>Brand, website, SEO, CRM, analytics</td>
+              <td>—</td>
+              <td>Input</td>
+              <td>Accountable</td>
+            </tr>
+            <tr>
+              <td>Owner reporting and P&amp;L</td>
+              <td>Accountable</td>
+              <td>Commercial input</td>
+              <td>Data infrastructure</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>11</span>
+      </div>
+    </div>
+
+    <!-- ============================== 12 · Commercial ======================= -->
+    <div class="page">
+      <div class="doc-head">
+        <p class="eyebrow">Commercial structure</p>
+        <div class="head--split">
+          <h2>Terms, open decisions and the next step.</h2>
+          <p class="lede">
+            We are paid on what actually reaches your account, after every platform commission.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-body stack">
+        <table class="table--terms table--mid">
+          <thead>
+            <tr>
+              <th>Decision</th>
+              <th>Proposed</th>
+              <th>To confirm together</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Fee base</td>
+              <td>Net revenue after all platform commissions</td>
+              <td>what your bank actually receives</td>
+            </tr>
+            <tr>
+              <td>Baseline</td>
+              <td>Your actual last 12 months, month by month</td>
+              <td>from the PMS export, not an estimate</td>
+            </tr>
+            <tr>
+              <td>Fee on baseline</td>
+              <td class="flag">To confirm %</td>
+              <td>the rate you keep paying on today’s business</td>
+            </tr>
+            <tr>
+              <td>Fee on growth</td>
+              <td class="flag">To confirm %</td>
+              <td>only on revenue above the matching month</td>
+            </tr>
+            <tr>
+              <td>New inventory</td>
+              <td>Baseline recalculated when units are added</td>
+              <td>Palms and Urbana enter at pool average</td>
+            </tr>
+            <tr>
+              <td>Advertising</td>
+              <td>Separate line, monthly cap you approve</td>
+              <td>reported at cost, zero markup</td>
+            </tr>
+            <tr>
+              <td>Assets at contract end</td>
+              <td>Property keeps domain, site, guest data</td>
+              <td>written into the agreement</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <hr class="rule rule--tight" />
+
+        <div class="cols--lead grow" style="grid-template-columns: 1.9fr 1fr">
+          <div class="steps">
+            <div>
+              <p class="eyebrow">Today</p>
+              <h3 style="margin-top: 3mm">Agree priorities and scope</h3>
+            </div>
+            <div>
+              <p class="eyebrow">This week</p>
+              <h3 style="margin-top: 3mm">12-month export, per unit</h3>
+            </div>
+            <div>
+              <p class="eyebrow">Day 30</p>
+              <h3 style="margin-top: 3mm">Rate sheet rebuilt, Airbnb live</h3>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="tag">To confirm before meeting</span>
+            <p class="small" style="margin: 3mm 0 0">
+              Presenter phone · business email · date of the second meeting
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>12</span>
+      </div>
+    </div>
+
+    <!-- ============================== 13 · In one line ====================== -->
+    <div class="page page--ocean">
+      <div class="doc-head">
+        <p class="eyebrow">In one line</p>
+      </div>
+
+      <div class="doc-body flow">
+        <div class="closing">
+          <h1>Anjuna Bay does not have a demand problem.</h1>
+          <p class="lede" style="max-width: 78ch">
+            It has a pricing, distribution and channel problem — and all four things we found this
+            morning are fixed from inside systems you already pay for.
+          </p>
+        </div>
+
+        <hr class="rule" style="margin-bottom: 8mm" />
+
+        <div class="cols--stats" style="margin-bottom: 4mm">
+          <div class="flow">
+            <span class="numeral">01</span>
+            <h3>Rate that moves</h3>
+            <p class="small tight" style="color: inherit">
+              Weekends, seasons and booking depth priced properly.
+            </p>
+          </div>
+          <div class="flow">
+            <span class="numeral">02</span>
+            <h3>Channels that work</h3>
+            <p class="small tight" style="color: inherit">
+              Airbnb rebuilt, parity restored, agents under contract.
+            </p>
+          </div>
+          <div class="flow">
+            <span class="numeral">03</span>
+            <h3>Nights that sell</h3>
+            <p class="small tight" style="color: inherit">
+              Orphan nights released instead of quietly disappearing.
+            </p>
+          </div>
+          <div class="flow">
+            <span class="numeral">04</span>
+            <h3>Demand you own</h3>
+            <p class="small tight" style="color: inherit">
+              Website, guest database and repeat bookings in your name.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Confidential · Anjuna Bay · 29 July 2026</span>
+        <span>13</span>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Anjuna Bay — Сводка на 29 июля 2026</title>
+    <link rel="stylesheet" href="anjuna-doc.css" />
+    <style>
+      /* Layout specific to the one-page summary sheet. Colours, fonts and type
+         sizes all come from anjuna-doc.css — only geometry is set here. */
+      .doc-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10mm;
+        margin-bottom: 4.5mm;
+      }
+      .doc-head h2 {
+        margin: 0;
+      }
+      .doc-body {
+        display: flex;
+        flex-direction: column;
+        gap: 5.5mm;
+      }
+
+      /* ---- Top: three assessment columns ---- */
+      /* Widths follow the content: the middle column carries the most lines. */
+      .assess {
+        grid-template-columns: 1fr 1.55fr 1.1fr;
+        gap: 7mm;
+      }
+      .assess > div {
+        border-top: 1px solid var(--hairline);
+        padding-top: 2.5mm;
+      }
+      .assess h4 {
+        color: var(--ink);
+        margin-bottom: 1mm;
+      }
+      .assess--flag {
+        border-top-color: var(--clay);
+      }
+      .assess--flag h4 {
+        color: var(--clay);
+      }
+      .assess .list--bullet li {
+        padding-top: 0.9mm;
+        padding-bottom: 0.9mm;
+      }
+      /* The scanning lists take the system's smaller step, but stay ink: they
+         are the substance of the sheet, not an aside. */
+      .assess .small {
+        color: var(--ink);
+      }
+
+      /* ---- Middle: the channels band ---- */
+      .channels-head {
+        display: flex;
+        align-items: baseline;
+        gap: 4mm;
+        margin-bottom: 2mm;
+      }
+      .channels-head h4 {
+        margin: 0;
+      }
+      .channels-head .rule-fill {
+        flex: 1 1 auto;
+        border-top: 1px solid var(--hairline);
+      }
+      .channels {
+        padding: 4mm 5mm;
+      }
+      .channels .cols--4 {
+        gap: 0;
+      }
+      .channels .cols--4 > div {
+        padding: 0 4.5mm;
+        border-left: 1px solid color-mix(in srgb, var(--paper) 22%, transparent);
+      }
+      .channels .cols--4 > div:first-child {
+        padding-left: 0;
+        border-left: 0;
+      }
+      .channels .cols--4 > div:last-child {
+        padding-right: 0;
+      }
+      .channels h4 {
+        margin-bottom: 1.5mm;
+      }
+      .channels p {
+        margin-bottom: 1.2mm;
+      }
+      .channels p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* ---- Bottom: the honest footnote ---- */
+      .caveat {
+        margin-top: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+      .caveat strong {
+        color: var(--ink);
+      }
+      .caveat p + p {
+        margin-top: 1mm;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="doc-head">
+        <h2>Что хорошо, что плохо, что добавляем мы</h2>
+        <p class="eyebrow">Anjuna Bay · Сводка на 29 июля 2026</p>
+      </div>
+
+      <div class="doc-body">
+        <section class="cols cols--3 assess">
+          <div>
+            <h4>Что хорошо</h4>
+            <ul class="list list--bullet">
+              <li><span class="small">2BR рейтинг 9,1 при 47 отзывах — продукт сильный</span></li>
+              <li><span class="small">2BR реально продаётся: B13 в августе на 74%, в сентябре на 43%</span></li>
+              <li><span class="small">Динамику цен умеют: декабрь +75% у 3BR, +97% у 2BR</span></li>
+              <li><span class="small">Цены НЕ низкие: средняя 2BR $230 против медианы Улувату $216</span></li>
+              <li><span class="small">Агент у владельца уже есть; сайт-прототип готов</span></li>
+              <li><span class="small">Фаджри: 26 лет коммерческих ролей, 6 дней в неделю на объекте</span></li>
+            </ul>
+          </div>
+
+          <div class="assess--flag">
+            <h4>Что плохо</h4>
+            <ul class="list list--bullet">
+              <li><span class="small">1BR рейтинг 8,1 — вне фильтра «9+». 12 из 30 вилл, 40% инвентаря</span></li>
+              <li><span class="small">Airbnb: A1 и A13 — ноль броней за 8 месяцев вперёд</span></li>
+              <li><span class="small">Прайс статичный: февраль — 28 дней одна цена, выходные = будни</span></li>
+              <li><span class="small">Сезонный разрыв 27% против рыночных 50–80%</span></li>
+              <li><span class="small">Минимум 2 ночи без исключения — одиночные ночи не продаются</span></li>
+              <li><span class="small">100% выручки через площадки = 20% комиссии со всего</span></li>
+              <li><span class="small">Глубина бронирования нулевая дальше трёх месяцев</span></li>
+              <li><span class="small">Цены в старом аудите вдвое ниже реальных — аудит нерепрезентативен</span></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>Цифры</h4>
+            <ul class="list list--bullet">
+              <li><span class="small">30 вилл: 12 × 1BR, 15 × 2BR, 3 × 3BR</span></li>
+              <li><span class="small">Средняя витрина 4,14 млн ($229); после 20% — 3,31 млн ($183)</span></li>
+              <li><span class="small">Доступно 900 ночей в месяц</span></li>
+              <li><span class="small">При 50% — 1,49 млрд чистыми. Сходится с цифрой владельца</span></li>
+              <li><span class="small">Потолок при 100%: 2,98 млрд</span></li>
+              <li><span class="small">60% → 1,79 млрд · 70% → 2,09 млрд</span></li>
+              <li><span class="small">2 млрд = 70% загрузки без роста цены; 3 млрд — только с Palms</span></li>
+              <li><span class="small">Площадкам уходит 522 млн в месяц при 70%</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <section>
+          <div class="channels-head">
+            <h4>Что добавляем мы — каналы, которых сегодня нет</h4>
+            <span class="rule-fill"></span>
+          </div>
+
+          <div class="card card--ocean channels">
+            <div class="cols cols--4">
+              <div>
+                <h4>Агенты · 5% + 3%</h4>
+                <p class="small">
+                  Комиссия плюс эквайринг = 8% против 20% у площадок. Ночь через агента даёт
+                  владельцу ~$27 сверху.
+                </p>
+                <p class="small">
+                  Быстро: договор, квоты, сезонные условия. Ни трафика, ни рекламы. Зона Фаджри.
+                </p>
+              </div>
+              <div>
+                <h4>Прямые · 3%</h4>
+                <p class="small">
+                  Только эквайринг, комиссии нет. ~$39 с ночи сверху при той же цене для гостя.
+                </p>
+                <p class="small">
+                  Медленно, но это актив: сайт, база гостей, история. Зона Селены.
+                </p>
+              </div>
+              <div>
+                <h4>Повторные гости</h4>
+                <p class="small">
+                  Через объект проходит ~1 500 броней в год. Даже 8% возврата — 120 броней.
+                </p>
+                <p class="small">
+                  Единственный канал с почти нулевой стоимостью привлечения. Нужен доступ к базе.
+                </p>
+              </div>
+              <div>
+                <h4>Итог по миксу</h4>
+                <p class="small">
+                  55 / 25 / 20 вместо 100% площадок: средняя комиссия 13,6% вместо 20%, эквайринг
+                  учтён.
+                </p>
+                <p class="small">
+                  +167 млн в месяц, 2,0 млрд в год. Та же загрузка, та же цена, ни одной новой
+                  брони.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="caveat">
+          <p>
+            <strong>Чего мы не знаем и не говорим, что знаем:</strong> реальная загрузка ·
+            реализованные цены после скидок · фактическая комиссия · агенты по комиссии или по
+            нетто-тарифу · входит ли эквайринг в комиссию Booking · есть ли блок A на Booking ·
+            правила минимальной длительности · owner blocks
+          </p>
+          <p>
+            Закрывается одной выгрузкой: помесячно за 12 месяцев по каждому юниту — ночи, выручка,
+            комиссия, канал.
+          </p>
+        </div>
+      </div>
+
+      <div class="doc-foot">
+        <span>Anjuna Bay · Сводка</span>
+        <span>1 / 1</span>
+      </div>
+    </div>
+  </body>
+</html>

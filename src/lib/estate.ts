@@ -6,6 +6,9 @@
  *   [DEV]  theanjunabay.com, the developer's own site — the 8.5-hectare
  *          cliff-front community, direct Thomas Beach access, and the
  *          residential/retail/wellness/leisure programme.
+ *   [OWN]  Owner side, confirmed 29 Jul 2026 — Surf & Sunset is 30 villas.
+ *          We publish the 23 carrying a mandate, so the site states the
+ *          relationship rather than implying 23 is the whole cluster.
  *   [DECK] Anjuna_Full_Deck (Selena Systems, Jul 2026), slide 4 — estate
  *          composition and build status per cluster.
  *   [OTA]  Anjuna_Metrics — published guest ratings and review counts.
@@ -26,6 +29,13 @@ export interface EstateFact {
   note?: string;
 }
 
+/**
+ * Villas in the Surf & Sunset cluster — the built, operating one. Confirmed
+ * owner-side 29 Jul 2026. Not every one carries a letting mandate, so this is
+ * the cluster size, never the number we can book.
+ */
+export const SURF_AND_SUNSET_VILLAS = 30;
+
 /** Headline figures for the estate, safe to state. */
 export const ESTATE_FACTS: EstateFact[] = [
   { value: '8.5 ha', label: 'Cliff-front community at Thomas Beach' },
@@ -42,7 +52,7 @@ export const ESTATE_FACTS: EstateFact[] = [
 export const ESTATE_CLUSTERS = [
   {
     name: 'Surf & Sunset',
-    detail: 'The cliffside pool villas — one, two and three bedrooms',
+    detail: '30 cliffside pool villas — one, two and three bedrooms',
     status: 'Built and operating',
   },
   {

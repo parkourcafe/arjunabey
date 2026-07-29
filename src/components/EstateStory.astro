@@ -10,7 +10,12 @@
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import estateImage from '../assets/placeholders/about-hero.jpg';
-import { ESTATE_FACTS, ESTATE_CLUSTERS, ESTATE_AMENITIES } from '../lib/estate';
+import {
+  ESTATE_FACTS,
+  ESTATE_CLUSTERS,
+  ESTATE_AMENITIES,
+  SURF_AND_SUNSET_VILLAS,
+} from '../lib/estate';
 
 export interface Props {
   tone?: 'sand' | 'paper';
@@ -26,7 +31,11 @@ const bedroomRange = [...new Set(live.map((v) => v.data.bedrooms))].sort((a, b) 
 const sleeps = live.map((v) => v.data.maximumGuests);
 
 const facts = [
-  { value: String(live.length), label: 'Villas available to book' },
+  // Stated as a relationship, not a bare count. The cluster is 30 villas; we
+  // let the ones carrying a mandate (CLAUDE.md rule 7). "23" alone would read
+  // as the whole estate and undersell it, while quietly claiming all 30 would
+  // advertise villas we cannot actually book.
+  { value: `${live.length} of ${SURF_AND_SUNSET_VILLAS}`, label: 'Villas available to book' },
   {
     value: `${bedroomRange[0]}–${bedroomRange[bedroomRange.length - 1]}`,
     label: `Bedrooms, sleeping ${Math.min(...sleeps)} to ${Math.max(...sleeps)}`,
