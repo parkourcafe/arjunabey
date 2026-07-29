@@ -1,8 +1,8 @@
 ---
 /**
  * Reserve — Guesty booking engine embed. noindex (docs/BUILD.md §9.10).
- * Until the direct Guesty engine is connected, the planner calculates the
- * stay and hands the guest to the villa's verified Airbnb live checkout.
+ * Until the direct Guesty engine is connected, the planner shows the observed
+ * OTA guide and hands the guest to the villa's verified Airbnb live checkout.
  */
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
@@ -21,7 +21,7 @@ const villas = (await getCollection("villas"))
 
 <BaseLayout
   title="Reserve a Cliffside Pool Villa at Thomas Beach | Anjuna Bay"
-  description="Check dates and guests for a cliffside pool villa at Anjuna Bay, a short walk from Thomas Beach in Uluwatu, and we will confirm the final rate."
+  description="Choose a cliffside pool villa at Anjuna Bay and continue to its verified Airbnb listing for live prices and availability."
   canonicalUrl={canonicalFor("/book")}
   noindex={true}
   transparentHeader={true}
@@ -31,7 +31,7 @@ const villas = (await getCollection("villas"))
     imageAlt="A villa bedroom at Anjuna Bay in golden-hour light"
     eyebrow="Check availability"
     headline="Check availability"
-    subhead="Choose your villa and dates, and we will come back with the final rate and terms."
+    subhead="Choose your villa and dates, then continue to its verified Airbnb listing for the live total and secure checkout."
     height="tall"
   />
 

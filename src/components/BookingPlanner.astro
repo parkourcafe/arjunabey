@@ -6,6 +6,7 @@ import {
   PRICING_CHECKOUT_MAX,
   PRICING_LAST_NIGHT,
   PRICING_START,
+  observedRateGuide,
 } from "../lib/pricing";
 
 export interface Props {
@@ -29,15 +30,13 @@ const genericWaHref = whatsappLink();
         Choose a villa and your dates
       </h2>
       <p class="mt-3 max-w-xl text-sm leading-relaxed text-muted">
-        See the accommodation estimate instantly, then continue to the villa's
-        verified Airbnb listing for live availability and secure checkout.
+        Select a villa and dates, then continue to its verified Airbnb listing
+        for the live price, availability and secure checkout.
       </p>
 
       <form class="mt-8 space-y-5" data-booking-form>
         <label class="block">
-          <span
-            class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted"
-          >
+          <span class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted">
             Villa
           </span>
           <select
@@ -47,27 +46,29 @@ const genericWaHref = whatsappLink();
           >
             <option value="">Choose a villa</option>
             {
-              villas.map((villa) => (
-                <option
-                  value={villa.data.landmarkName}
-                  data-bedrooms={villa.data.bedrooms}
-                  data-guests={villa.data.maximumGuests}
-                  data-adjustment={villa.data.pricingAdjustmentPercent}
-                  data-airbnb-url={airbnbListingUrl(villa.slug) ?? ""}
-                >
-                  {villa.data.landmarkName} · {villa.data.bedrooms}-Bedroom Pool
-                  Villa
-                </option>
-              ))
+              villas.map((villa) => {
+                const guide = observedRateGuide(villa.data.bedrooms);
+                return (
+                  <option
+                    value={villa.data.landmarkName}
+                    data-bedrooms={villa.data.bedrooms}
+                    data-guests={villa.data.maximumGuests}
+                    data-minimum={guide.minimum}
+                    data-maximum={guide.maximum}
+                    data-airbnb-url={airbnbListingUrl(villa.slug) ?? ""}
+                  >
+                    {villa.data.landmarkName} · {villa.data.bedrooms}-Bedroom Pool
+                    Villa
+                  </option>
+                );
+              })
             }
           </select>
         </label>
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label class="block">
-            <span
-              class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted"
-            >
+            <span class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted">
               Arrival
             </span>
             <input
@@ -80,9 +81,7 @@ const genericWaHref = whatsappLink();
             />
           </label>
           <label class="block">
-            <span
-              class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted"
-            >
+            <span class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted">
               Departure
             </span>
             <input
@@ -97,9 +96,7 @@ const genericWaHref = whatsappLink();
         </div>
 
         <label class="block">
-          <span
-            class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted"
-          >
+          <span class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted">
             Guests
           </span>
           <select
@@ -113,18 +110,14 @@ const genericWaHref = whatsappLink();
       </form>
     </div>
 
-    <div
-      class="flex min-h-[300px] flex-col justify-between border-l-0 border-hairline lg:border-l lg:pl-10"
-    >
+    <div class="flex min-h-[300px] flex-col justify-between border-l-0 border-hairline lg:border-l lg:pl-10">
       <div>
-        <p class="eyebrow">Stay estimate</p>
+        <p class="eyebrow">Observed OTA guide</p>
         <div class="mt-8" data-planner-empty>
-          <p class="font-serif text-2xl text-ink">
-            Your dates, clearly priced.
-          </p>
+          <p class="font-serif text-2xl text-ink">Live rates, without guessing.</p>
           <p class="mt-3 text-sm leading-relaxed text-muted">
-            Select a villa and dates to see the nightly total and any
-            length-of-stay saving.
+            Select a villa to see the observed category range. Your booking
+            platform will show the exact total for the chosen dates.
           </p>
         </div>
 
@@ -133,33 +126,20 @@ const genericWaHref = whatsappLink();
           data-planner-error
           role="status"
           aria-live="polite"
-        >
-        </p>
+        />
 
         <div class="mt-8 hidden" data-planner-result aria-live="polite">
-          <p class="font-serif text-2xl text-ink" data-planner-villa></p>
-          <p class="mt-1 text-sm text-muted" data-planner-dates></p>
-          <div class="mt-6 space-y-2 text-sm">
-            <div class="flex justify-between gap-4 text-muted">
-              <span data-planner-nights></span>
-              <span data-planner-subtotal></span>
-            </div>
-            <div
-              class="hidden justify-between gap-4 text-ocean"
-              data-planner-discount-row
-            >
-              <span data-planner-discount-label></span>
-              <span data-planner-discount></span>
-            </div>
-            <div
-              class="mt-5 flex items-end justify-between gap-4 border-t border-hairline pt-5"
-            >
-              <span class="text-xs uppercase tracking-[0.12em] text-muted"
-                >Accommodation total</span
-              >
-              <span class="font-serif text-3xl text-ink" data-planner-total
-              ></span>
-            </div>
+          <p class="font-serif text-2xl text-ink" data-planner-villa />
+          <p class="mt-1 text-sm text-muted" data-planner-dates />
+          <div class="mt-6 border-l-2 border-clay pl-4">
+            <p class="text-xs uppercase tracking-[0.12em] text-muted">
+              Observed nightly range
+            </p>
+            <p class="mt-2 font-serif text-3xl text-ink" data-planner-range />
+            <p class="mt-2 text-xs leading-relaxed text-muted">
+              Based on public OTA calendars supplied on 29 July 2026. This is
+              not a live quote and may vary by villa, availability, fees and promotions.
+            </p>
           </div>
         </div>
       </div>
@@ -188,8 +168,8 @@ const genericWaHref = whatsappLink();
           )
         }
         <p class="mt-3 text-center text-xs leading-relaxed text-muted">
-          Airbnb provides live availability, applicable fees, cancellation terms
-          and secure payment.
+          Airbnb provides the live total, applicable fees, availability,
+          cancellation terms and secure payment.
         </p>
       </div>
     </div>
@@ -198,21 +178,16 @@ const genericWaHref = whatsappLink();
 
 <script>
   import { airbnbBookingUrl } from "../lib/airbnb";
-  import {
-    PRICING_CHECKOUT_MAX,
-    calculateStayQuote,
-    type SupportedBedrooms,
-  } from "../lib/pricing";
+  import { PRICING_CHECKOUT_MAX } from "../lib/pricing";
 
   const DAY_MS = 86_400_000;
-
-  const money = (amount: number) =>
-    new Intl.NumberFormat("en-US", {
+  const idr = (amount: number) =>
+    new Intl.NumberFormat("en-ID", {
       style: "currency",
-      currency: "USD",
+      currency: "IDR",
+      currencyDisplay: "narrowSymbol",
       maximumFractionDigits: 0,
     }).format(amount);
-
   const dateLabel = (isoDate: string) =>
     new Intl.DateTimeFormat("en-GB", {
       day: "numeric",
@@ -224,44 +199,23 @@ const genericWaHref = whatsappLink();
   document
     .querySelectorAll<HTMLElement>("[data-booking-planner]")
     .forEach((planner) => {
-      const form = planner.querySelector<HTMLFormElement>(
-        "[data-booking-form]",
-      );
-      const villaSelect = form?.elements.namedItem(
-        "villa",
-      ) as HTMLSelectElement | null;
-      const checkIn = form?.elements.namedItem(
-        "checkIn",
-      ) as HTMLInputElement | null;
-      const checkOut = form?.elements.namedItem(
-        "checkOut",
-      ) as HTMLInputElement | null;
-      const guestSelect = form?.elements.namedItem(
-        "guests",
-      ) as HTMLSelectElement | null;
-      const result = planner.querySelector<HTMLElement>(
-        "[data-planner-result]",
-      );
+      const form = planner.querySelector<HTMLFormElement>("[data-booking-form]");
+      const villaSelect = form?.elements.namedItem("villa") as HTMLSelectElement | null;
+      const checkIn = form?.elements.namedItem("checkIn") as HTMLInputElement | null;
+      const checkOut = form?.elements.namedItem("checkOut") as HTMLInputElement | null;
+      const guestSelect = form?.elements.namedItem("guests") as HTMLSelectElement | null;
+      const result = planner.querySelector<HTMLElement>("[data-planner-result]");
       const empty = planner.querySelector<HTMLElement>("[data-planner-empty]");
       const error = planner.querySelector<HTMLElement>("[data-planner-error]");
-      const cta =
-        planner.querySelector<HTMLAnchorElement>("[data-planner-cta]");
-      const whatsappCta = planner.querySelector<HTMLAnchorElement>(
-        "[data-planner-whatsapp]",
-      );
-      const discountRow = planner.querySelector<HTMLElement>(
-        "[data-planner-discount-row]",
-      );
+      const cta = planner.querySelector<HTMLAnchorElement>("[data-planner-cta]");
+      const whatsappCta = planner.querySelector<HTMLAnchorElement>("[data-planner-whatsapp]");
       const whatsappNumber = planner.dataset.whatsappNumber ?? "";
 
-      function selectedVilla() {
-        return villaSelect?.selectedOptions[0] ?? null;
-      }
+      const selectedVilla = () => villaSelect?.selectedOptions[0] ?? null;
 
       function updateGuests() {
         if (!guestSelect) return;
-        const option = selectedVilla();
-        const maximumGuests = Number(option?.dataset.guests ?? 0);
+        const maximumGuests = Number(selectedVilla()?.dataset.guests ?? 0);
         guestSelect.replaceChildren();
         if (!maximumGuests) {
           guestSelect.append(new Option("Choose a villa first", ""));
@@ -269,23 +223,12 @@ const genericWaHref = whatsappLink();
           return;
         }
         for (let guests = 1; guests <= maximumGuests; guests += 1) {
-          guestSelect.append(
-            new Option(
-              `${guests} guest${guests === 1 ? "" : "s"}`,
-              String(guests),
-            ),
-          );
+          guestSelect.append(new Option(`${guests} guest${guests === 1 ? "" : "s"}`, String(guests)));
         }
         guestSelect.value = String(maximumGuests);
         guestSelect.disabled = false;
       }
 
-      /**
-       * Whenever there is no valid quote the CTA has to stop pointing at a
-       * checkout. Leaving the previous link in place sent the guest to Airbnb
-       * with dates the form no longer showed — they would have booked one stay
-       * while reading another.
-       */
       function resetCta(label: string) {
         if (cta) {
           cta.href = "/villas";
@@ -299,122 +242,79 @@ const genericWaHref = whatsappLink();
 
       function refresh() {
         const option = selectedVilla();
-        if (
-          !option?.value ||
-          !checkIn?.value ||
-          !checkOut?.value ||
-          !guestSelect?.value
-        ) {
+        if (!option?.value) {
           result?.classList.add("hidden");
           error?.classList.add("hidden");
           empty?.classList.remove("hidden");
-          resetCta("Choose a villa and dates");
+          resetCta("Choose a villa first");
           return;
         }
 
-        try {
-          const quote = calculateStayQuote({
-            checkIn: checkIn.value,
-            checkOut: checkOut.value,
-            bedrooms: Number(option.dataset.bedrooms) as SupportedBedrooms,
-            adjustmentPercent: Number(option.dataset.adjustment ?? 0),
-          });
+        empty?.classList.add("hidden");
+        result?.classList.remove("hidden");
+        error?.classList.add("hidden");
 
-          empty?.classList.add("hidden");
-          error?.classList.add("hidden");
-          result?.classList.remove("hidden");
+        const villaLabel = planner.querySelector<HTMLElement>("[data-planner-villa]");
+        const datesLabel = planner.querySelector<HTMLElement>("[data-planner-dates]");
+        const rangeLabel = planner.querySelector<HTMLElement>("[data-planner-range]");
+        if (villaLabel) villaLabel.textContent = option.value;
+        if (rangeLabel) {
+          rangeLabel.textContent = `${idr(Number(option.dataset.minimum))}–${idr(Number(option.dataset.maximum))}`;
+        }
 
-          const villaLabel = planner.querySelector<HTMLElement>(
-            "[data-planner-villa]",
-          );
-          const datesLabel = planner.querySelector<HTMLElement>(
-            "[data-planner-dates]",
-          );
-          const nightsLabel = planner.querySelector<HTMLElement>(
-            "[data-planner-nights]",
-          );
-          const subtotal = planner.querySelector<HTMLElement>(
-            "[data-planner-subtotal]",
-          );
-          const discountLabel = planner.querySelector<HTMLElement>(
-            "[data-planner-discount-label]",
-          );
-          const discount = planner.querySelector<HTMLElement>(
-            "[data-planner-discount]",
-          );
-          const total = planner.querySelector<HTMLElement>(
-            "[data-planner-total]",
-          );
+        const hasDates = Boolean(checkIn?.value && checkOut?.value && guestSelect?.value);
+        if (datesLabel) {
+          datesLabel.textContent = hasDates
+            ? `${dateLabel(checkIn!.value)} – ${dateLabel(checkOut!.value)}`
+            : "Choose dates to continue to live availability";
+        }
 
-          if (villaLabel) villaLabel.textContent = option.value;
-          if (datesLabel)
-            datesLabel.textContent = `${dateLabel(quote.checkIn)} – ${dateLabel(quote.checkOut)}`;
-          if (nightsLabel)
-            nightsLabel.textContent = `${quote.nights} night${quote.nights === 1 ? "" : "s"} · avg. ${money(quote.averageNightlyRate)}`;
-          if (subtotal) subtotal.textContent = money(quote.subtotal);
-          if (total) total.textContent = money(quote.total);
+        if (!hasDates) {
+          resetCta("Choose dates to check live price");
+          return;
+        }
 
-          if (quote.discountPercent > 0) {
-            discountRow?.classList.remove("hidden");
-            discountRow?.classList.add("flex");
-            if (discountLabel)
-              discountLabel.textContent = `Length-of-stay saving · ${quote.discountPercent}%`;
-            if (discount)
-              discount.textContent = `−${money(quote.discountAmount)}`;
-          } else {
-            discountRow?.classList.add("hidden");
-            discountRow?.classList.remove("flex");
-          }
-
-          const message = [
-            "Hello Anjuna Bay,",
-            `I would like to confirm a stay at ${option.value}.`,
-            `Arrival: ${dateLabel(quote.checkIn)}.`,
-            `Departure: ${dateLabel(quote.checkOut)}.`,
-            `Guests: ${guestSelect.value}.`,
-            `Stay: ${quote.nights} night${quote.nights === 1 ? "" : "s"}.`,
-            `Estimated accommodation total: USD ${quote.total}.`,
-            quote.discountPercent > 0
-              ? `The estimate includes a ${quote.discountPercent}% length-of-stay saving.`
-              : "",
-            "Please confirm availability, taxes, any applicable fees and final booking terms.",
-          ]
-            .filter(Boolean)
-            .join(" ");
-
-          const airbnbUrl = option.dataset.airbnbUrl ?? "";
-          if (cta && airbnbUrl) {
-            cta.href = airbnbBookingUrl(airbnbUrl, {
-              checkIn: quote.checkIn,
-              checkOut: quote.checkOut,
-              guests: Number(guestSelect.value),
-            });
-            cta.target = "_blank";
-            cta.rel = "noopener noreferrer";
-            cta.textContent = "Check live availability on Airbnb";
-          } else if (cta && whatsappNumber) {
-            cta.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-            cta.target = "_blank";
-            cta.rel = "noopener noreferrer";
-            cta.textContent = "Confirm on WhatsApp";
-          }
-
-          if (whatsappCta && whatsappNumber) {
-            whatsappCta.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-            whatsappCta.classList.remove("hidden");
-            whatsappCta.classList.add("block");
-          }
-        } catch (caught) {
-          empty?.classList.add("hidden");
-          result?.classList.add("hidden");
+        const arrival = new Date(`${checkIn!.value}T00:00:00Z`);
+        const departure = new Date(`${checkOut!.value}T00:00:00Z`);
+        if (departure.getTime() <= arrival.getTime()) {
           if (error) {
-            error.textContent =
-              caught instanceof Error
-                ? caught.message
-                : "Please check your dates.";
+            error.textContent = "Departure must be after arrival.";
             error.classList.remove("hidden");
           }
-          resetCta("See all villas");
+          resetCta("Check your dates");
+          return;
+        }
+
+        const airbnbUrl = option.dataset.airbnbUrl ?? "";
+        const message = [
+          "Hello Anjuna Bay,",
+          `I would like to check ${option.value}.`,
+          `Arrival: ${dateLabel(checkIn!.value)}.`,
+          `Departure: ${dateLabel(checkOut!.value)}.`,
+          `Guests: ${guestSelect!.value}.`,
+          "Please confirm live availability, the final price, taxes, fees and booking terms.",
+        ].join(" ");
+
+        if (cta && airbnbUrl) {
+          cta.href = airbnbBookingUrl(airbnbUrl, {
+            checkIn: checkIn!.value,
+            checkOut: checkOut!.value,
+            guests: Number(guestSelect!.value),
+          });
+          cta.target = "_blank";
+          cta.rel = "noopener noreferrer";
+          cta.textContent = "Check live price on Airbnb";
+        } else if (cta && whatsappNumber) {
+          cta.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+          cta.target = "_blank";
+          cta.rel = "noopener noreferrer";
+          cta.textContent = "Confirm dates on WhatsApp";
+        }
+
+        if (whatsappCta && whatsappNumber) {
+          whatsappCta.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+          whatsappCta.classList.remove("hidden");
+          whatsappCta.classList.add("block");
         }
       }
 
