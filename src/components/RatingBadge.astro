@@ -2,21 +2,47 @@
 /**
  * RatingBadge — renders nothing if rating/reviewCount are null. Never
  * fabricate a placeholder score (CLAUDE.md rule 6).
+ *
+ * The source is named on the face of the badge. These scores were collected by
+ * Airbnb, not by us, and an unattributed "4.87 (86 reviews)" reads as our own
+ * review programme. Naming the platform is also what lets us show the number
+ * at all — it stays out of structured data for the same reason (see
+ * lib/seo.ts, vacationRental).
  */
 export interface Props {
   rating: number | null;
   reviewCount: number | null;
+  /** Platform that collected the reviews. */
+  source?: string;
+  /** Listing the score belongs to, linked so a guest can check it. */
+  sourceUrl?: string | null;
 }
 
-const { rating, reviewCount } = Astro.props;
+const { rating, reviewCount, source = 'Airbnb', sourceUrl = null } = Astro.props;
 ---
 
 {
   rating && (
-    <span class="inline-flex items-center gap-1.5 text-sm text-ink">
+    <span class="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-ink">
       <span aria-hidden="true">★</span>
       {rating.toFixed(2)}
       {reviewCount && <span class="text-muted">({reviewCount} reviews)</span>}
+      <span class="text-muted">
+        on{' '}
+        {sourceUrl ? (
+          <a
+            href={sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="underline underline-offset-4"
+            data-track="review_source_click"
+          >
+            {source}
+          </a>
+        ) : (
+          source
+        )}
+      </span>
     </span>
   )
 }

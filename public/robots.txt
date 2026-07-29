@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /book
-Disallow: /api/
-
-Sitemap: https://arjunabey.vercel.app/sitemap-index.xml

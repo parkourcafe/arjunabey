@@ -11,16 +11,36 @@ import vercel from '@astrojs/vercel/serverless';
 // `netlify()` (from '@astrojs/netlify') if hosting moves to Netlify instead —
 // no other change needed.
 
+// Mirrors src/lib/site.ts — the config runs before that module can be imported,
+// so the resolution order is repeated here rather than shared. No hardcoded
+// domain: Vercel reports where it deployed, so canonical follows whatever
+// address is attached to the project.
+const SITE_URL = (
+  process.env.PUBLIC_SITE_URL ??
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ??
+  process.env.VERCEL_URL ??
+  'http://localhost:4321'
+).replace(/^(?!https?:\/\/)/, 'https://');
+
+// A private prototype until someone deliberately says otherwise.
+const IS_PREVIEW = process.env.PUBLIC_SITE_STATUS !== 'production';
+
 export default defineConfig({
-  site: process.env.PUBLIC_SITE_URL ?? 'https://arjunabey.vercel.app',
+  site: SITE_URL,
   output: 'hybrid', // static pages by default; src/pages/api/enquiry.ts opts into server rendering
   adapter: vercel(),
   integrations: [
     tailwind({ applyBaseStyles: false }),
     mdx(),
-    sitemap({
-      filter: (page) => !page.includes('/book') && !page.includes('/_styleguide'),
-    }),
+    // No sitemap while the site is a preview: publishing one invites the
+    // crawlers the noindex header is there to keep out.
+    ...(IS_PREVIEW
+      ? []
+      : [
+          sitemap({
+            filter: (page) => !page.includes('/book') && !page.includes('/_styleguide'),
+          }),
+        ]),
     partytown({
       config: { forward: ['dataLayer.push', 'gtag'] }, // offloads GA4/Meta Pixel off the main thread
     }),

@@ -1,16 +1,49 @@
 ---
 /**
- * EnquiryForm — posts to /api/enquiry.ts. Honeypot field for basic spam
- * protection (real rate-limiting lives server-side, docs/BUILD.md §6).
+ * EnquiryForm — posts to /api/enquiry.ts.
+ *
+ * If no recipient is configured the form renders disabled rather than
+ * collecting a name, an email and a stay request that nobody receives. The
+ * success message promises the property team will be in touch; sending that
+ * into an unset mailbox makes it a lie from the first enquiry — and the first
+ * one may well be submitted during the owner demo (ТЗ §4).
+ *
+ * Spam protection is layered: a honeypot here, a submit-too-fast trap here,
+ * and the rate limit server-side. No CAPTCHA — it costs conversion and looks
+ * cheap on a property this size.
  */
 export interface Props {
   defaultSegment?: string;
 }
 
 const { defaultSegment = '' } = Astro.props;
+
+// Read at build time. These are server-only secrets, so they are never
+// inlined into the client bundle — only the resulting boolean is.
+const enquiriesOpen = Boolean(
+  import.meta.env.ENQUIRY_TO && import.meta.env.EMAIL_API_KEY && import.meta.env.ENQUIRY_FROM,
+);
 ---
 
-<form id="enquiry-form" class="space-y-5" novalidate>
+<div class="space-y-6">
+  {
+    !enquiriesOpen && (
+      <div class="border border-hairline bg-sand p-5">
+        <p class="text-sm leading-relaxed text-ink">
+          Booking enquiries open shortly. In the meantime the fastest route to us is a message
+          or an email — we answer both the same day.
+        </p>
+      </div>
+    )
+  }
+
+  <form
+  id="enquiry-form"
+  class:list={['space-y-5', !enquiriesOpen && 'pointer-events-none select-none opacity-50']}
+  novalidate
+  inert={!enquiriesOpen}
+  aria-hidden={!enquiriesOpen}
+>
   <div class="hidden">
     <label for="company">Company</label>
     <input type="text" id="company" name="company" tabindex="-1" autocomplete="off" />
@@ -72,9 +105,28 @@ const { defaultSegment = '' } = Astro.props;
     ></textarea>
   </div>
 
+  <!-- The form takes a name, an email and a stay request. That is personal
+       data, so consent is asked for explicitly rather than implied by the act
+       of submitting. Unticked by default — a pre-ticked box is not consent. -->
+  <div class="flex items-start gap-3">
+    <input
+      type="checkbox" id="consent" name="consent" required
+      class="mt-1 h-4 w-4 shrink-0 accent-ocean"
+    />
+    <label for="consent" class="text-sm leading-relaxed text-muted">
+      I agree to be contacted about this enquiry. See our
+      <a href="/privacy" class="underline underline-offset-4">Privacy Notice</a>.
+    </label>
+  </div>
+
+  <!-- Time-to-submit trap: filled and sent inside three seconds is a script,
+       not a guest. Recorded here, enforced server-side. -->
+  <input type="hidden" name="renderedAt" data-rendered-at />
+
   <button type="submit" class="btn-primary" data-enquiry-submit>Send enquiry</button>
   <p class="text-sm" data-enquiry-status role="status" aria-live="polite"></p>
-</form>
+  </form>
+</div>
 
 <script>
   const form = document.getElementById('enquiry-form');
@@ -94,6 +146,11 @@ const { defaultSegment = '' } = Astro.props;
     segment.value = requestedSegment;
   }
 
+  // Stamped when the form is rendered rather than at page load, so the server
+  // can tell a considered enquiry from an instant scripted post.
+  const renderedAt = form?.querySelector('[data-rendered-at]');
+  if (renderedAt instanceof HTMLInputElement) renderedAt.value = String(Date.now());
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!(form instanceof HTMLFormElement) || !status || !(submitBtn instanceof HTMLButtonElement)) return;
@@ -102,6 +159,14 @@ const { defaultSegment = '' } = Astro.props;
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
       status.textContent = "That email doesn't look quite right — mind checking it?";
       status.className = 'text-sm text-red-700';
+      return;
+    }
+
+    const consent = form.elements.namedItem('consent');
+    if (consent instanceof HTMLInputElement && !consent.checked) {
+      status.textContent = 'Please confirm we may contact you about this enquiry.';
+      status.className = 'text-sm text-red-700';
+      consent.focus();
       return;
     }
 
@@ -119,6 +184,11 @@ const { defaultSegment = '' } = Astro.props;
     } catch {
       status.textContent = 'Something went wrong — message us on WhatsApp instead and we\'ll pick it up directly.';
       status.className = 'text-sm text-red-700';
+      // Without this the only sign the form is broken is guests quietly not
+      // arriving (ТЗ §21).
+      window.dispatchEvent(
+        new CustomEvent('anjuna:track', { detail: { event: 'availability_request_error' } }),
+      );
     } finally {
       submitBtn.disabled = false;
     }

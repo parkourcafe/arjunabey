@@ -28,18 +28,22 @@ const META_PIXEL_ID = import.meta.env.PUBLIC_META_PIXEL_ID;
       A few cookies help us understand how the site is used. Nothing loads until you say yes —
       <a href="/privacy" class="underline">Privacy Notice</a>.
     </p>
+    <!-- Decline and Accept carry equal visual weight. A bright Accept beside a
+         greyed-out Decline is a dark pattern: it reads as cheap next to an
+         owner who is judging the brand, and in several jurisdictions it does
+         not constitute valid consent at all (ТЗ §7). -->
     <div class="flex shrink-0 items-center gap-2.5">
       <button
         type="button"
         id="cookie-decline"
-        class="px-3 py-2 text-xs font-medium tracking-wide text-muted underline-offset-4 transition-colors duration-400 ease-elegant hover:text-ink hover:underline md:text-sm"
+        class="border border-ocean px-5 py-2 text-xs font-medium tracking-wide text-ocean transition-colors duration-400 ease-elegant hover:bg-ocean/10 md:px-6 md:py-2.5 md:text-sm"
       >
         Decline
       </button>
       <button
         type="button"
         id="cookie-accept"
-        class="bg-ocean px-5 py-2 text-xs font-medium tracking-wide text-paper transition-colors duration-400 ease-elegant hover:bg-ocean-dark md:px-6 md:py-2.5 md:text-sm"
+        class="border border-ocean bg-ocean px-5 py-2 text-xs font-medium tracking-wide text-paper transition-colors duration-400 ease-elegant hover:bg-ocean-dark md:px-6 md:py-2.5 md:text-sm"
       >
         Accept
       </button>
@@ -105,6 +109,7 @@ const META_PIXEL_ID = import.meta.env.PUBLIC_META_PIXEL_ID;
     // lifts its own buttons clear while the banner is up.
     document.body.style.paddingBottom = height;
     document.documentElement.style.setProperty('--consent-height', height);
+    liftFloatingControls();
   }
 
   function hideBanner() {
@@ -119,6 +124,14 @@ const META_PIXEL_ID = import.meta.env.PUBLIC_META_PIXEL_ID;
     window.addEventListener('resize', reserveSpace, { passive: true });
   }
 
+  // The WhatsApp bubble and the assistant sit bottom-right; without this the
+  // banner lands on top of them (ТЗ §7).
+  function liftFloatingControls() {
+    document.querySelectorAll('[data-floating-action]').forEach((el) => {
+      el.style.marginBottom = 'var(--consent-height, 0px)';
+    });
+  }
+
   function applyStoredChoice() {
     const choice = localStorage.getItem(STORAGE_KEY);
     if (choice === 'granted') {
@@ -131,19 +144,55 @@ const META_PIXEL_ID = import.meta.env.PUBLIC_META_PIXEL_ID;
     }
   }
 
-  acceptBtn?.addEventListener('click', () => {
-    localStorage.setItem(STORAGE_KEY, 'granted');
-    injectAnalyticsTags();
+  function recordChoice(choice) {
+    localStorage.setItem(STORAGE_KEY, choice);
+    if (choice === 'granted') injectAnalyticsTags();
     hideBanner();
+    // The consent rate decides how much of the rest of the analytics is even
+    // representative, so it is measured itself (ТЗ §21).
+    window.dispatchEvent(
+      new CustomEvent('anjuna:track', { detail: { event: 'cookie_consent_set', choice } }),
+    );
+  }
+
+  acceptBtn?.addEventListener('click', () => recordChoice('granted'));
+  declineBtn?.addEventListener('click', () => recordChoice('denied'));
+
+  // Escape is handled on the document, not the banner. The banner deliberately
+  // does not steal focus when it appears — snatching it away from the hero on
+  // first load is worse than the problem it solves — so a listener bound to the
+  // banner would only ever fire once the guest had already tabbed into it.
+  //
+  // Escape declines rather than merely dismissing: leaving with no choice
+  // recorded means the banner returns on the next page, and an unanswered
+  // banner must never be treated as agreement.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    if (banner?.classList.contains('hidden')) return;
+    recordChoice('denied');
   });
 
-  declineBtn?.addEventListener('click', () => {
-    localStorage.setItem(STORAGE_KEY, 'denied');
-    hideBanner();
+  // Tab cycles within the banner once focus is actually inside it.
+  banner?.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const focusable = banner.querySelectorAll('button, a[href]');
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
   });
 
   // Exposed for Footer.astro's "Cookie preferences" link.
-  window.__anjunaOpenConsent = showBanner;
+  window.__anjunaOpenConsent = () => {
+    showBanner();
+    declineBtn?.focus();
+  };
 
   applyStoredChoice();
 </script>

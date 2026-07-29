@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/preview-headers.mjs",
+    "check:facts": "node scripts/check-facts.mjs",
     "preview": "astro preview",
     "check": "astro check && tsc --noEmit",
     "lint": "eslint . --ext .ts,.tsx,.astro",

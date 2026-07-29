@@ -24,7 +24,28 @@ function json(body: object, status: number): Response {
   });
 }
 
-export const POST: APIRoute = async ({ request }) => {
+/**
+ * Rate limit, in memory. A serverless instance is short-lived and there may be
+ * several at once, so this is not a hard guarantee — it is enough to stop one
+ * script hammering a form on a villa site, which is the realistic threat.
+ * Move to a shared store if this ever needs to be exact.
+ */
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 60 * 60 * 1000;
+const MIN_FILL_MS = 3_000;
+const recentByIp = new Map<string, number[]>();
+
+function overRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const hits = (recentByIp.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  hits.push(now);
+  recentByIp.set(ip, hits);
+  // Unbounded growth would be its own denial of service.
+  if (recentByIp.size > 5_000) recentByIp.clear();
+  return hits.length > RATE_LIMIT;
+}
+
+export const POST: APIRoute = async ({ request, clientAddress }) => {
   let form: FormData;
   try {
     form = await request.formData();
@@ -32,9 +53,35 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ ok: false, error: 'invalid_body' }, 400);
   }
 
-  // Honeypot — bots tend to fill every field.
+  // Honeypot — bots tend to fill every field. Answered with 200 so a script
+  // cannot learn which field gave it away.
   if (String(form.get('company') ?? '').trim().length > 0) {
     return json({ ok: true }, 200);
+  }
+
+  // Nobody reads a form and composes an enquiry in under three seconds.
+  const renderedAt = Number(form.get('renderedAt') ?? 0);
+  if (renderedAt && Date.now() - renderedAt < MIN_FILL_MS) {
+    return json({ ok: true }, 200);
+  }
+
+  let ip = '';
+  try {
+    ip = clientAddress ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '';
+  } catch {
+    // clientAddress can throw depending on how the route is rendered.
+    ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '';
+  }
+  // Deliberately not rate-limited when the address is unknown: bucketing every
+  // such request together would let one script lock out real guests. The
+  // honeypot, the timing trap and the consent requirement still apply.
+  if (ip && overRateLimit(ip)) {
+    return json({ ok: false, error: 'rate_limited' }, 429);
+  }
+
+  // Personal data is not collected without agreement (ТЗ §4).
+  if (!form.get('consent')) {
+    return json({ ok: false, error: 'consent_required' }, 400);
   }
 
   const name = String(form.get('name') ?? '').trim();

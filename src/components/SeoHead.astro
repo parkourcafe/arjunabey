@@ -7,6 +7,7 @@
  */
 import { getImage } from 'astro:assets';
 import defaultOgSource from '../assets/placeholders/home-hero.jpg';
+import { isIndexable } from '../lib/site';
 
 export interface Props {
   title: string;
@@ -18,6 +19,11 @@ export interface Props {
 }
 
 const { title, description, canonicalUrl, ogImage, noindex = false, jsonLd } = Astro.props;
+
+// A page is indexable only if it asks to be AND the whole site is published.
+// While the site is a preview, nothing is — the owner has not approved us to
+// publish this property yet, so indexing it would be doing so on their behalf.
+const blockIndexing = noindex || !isIndexable(true);
 const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
 // Every page needs a share image: this brand gets passed around on WhatsApp
@@ -40,7 +46,7 @@ const shareImage = new URL(ogImage ?? fallbackOg.src, origin).href;
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalUrl} />
-{noindex && <meta name="robots" content="noindex, nofollow" />}
+{blockIndexing && <meta name="robots" content="noindex, nofollow" />}
 
 <meta property="og:type" content="website" />
 <meta property="og:title" content={title} />

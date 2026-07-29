@@ -9,9 +9,10 @@
 
 import { OPERATOR } from './operator';
 import { whatsappNumber } from './whatsapp';
+import { siteUrl } from './site';
 
 const SITE_NAME = 'Anjuna Bay';
-const SITE_URL = import.meta.env.PUBLIC_SITE_URL ?? 'https://arjunabey.vercel.app';
+const SITE_URL = siteUrl();
 
 export interface VillaLike {
   landmarkName: string;
@@ -50,18 +51,21 @@ export function lodgingBusiness() {
   };
 }
 
-export function aggregateRating(rating: number | null, reviewCount: number | null) {
-  if (!rating || !reviewCount) return null; // never fabricate — omit the block entirely
-  return {
-    '@type': 'AggregateRating',
-    ratingValue: rating,
-    reviewCount,
-    bestRating: 5,
-  };
-}
-
+/**
+ * Deliberately NOT emitted into structured data.
+ *
+ * Our ratings come from the villas' Airbnb listings. Google's review-snippet
+ * policy requires that a marked-up rating be collected by the site itself and
+ * be visible on the page it describes; marking up a rating gathered by another
+ * platform is grounds for a manual action against the domain. That risk lands
+ * on whatever domain this brand ends up on, so the block stays out of JSON-LD.
+ *
+ * The rating is still shown to guests — see RatingBadge.astro — with the
+ * source named. Showing an OTA rating is fine; claiming it as our own
+ * structured data is not. Once reviews are collected first-party, this can
+ * come back.
+ */
 export function vacationRental(villa: VillaLike, canonicalUrl: string) {
-  const rating = aggregateRating(villa.rating, villa.reviewCount);
   return {
     '@context': 'https://schema.org',
     '@type': 'VacationRental',
@@ -69,7 +73,6 @@ export function vacationRental(villa: VillaLike, canonicalUrl: string) {
     url: canonicalUrl,
     image: villa.heroImageUrl,
     numberOfBedrooms: villa.bedrooms,
-    ...(rating ? { aggregateRating: rating } : {}),
     ...(villa.ratePublic
       ? {
           offers: {
