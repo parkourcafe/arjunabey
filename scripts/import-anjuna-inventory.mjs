@@ -16,7 +16,7 @@ const approved = [
 
 const slugify = (value) => value.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-').replaceAll(/^-|-$/g, '');
 const yaml = (value) => JSON.stringify(value);
-const publicFromRate = { 1: 115, 2: 190, 3: 280 };
+const publicFromRate = { 1: 3_000_000, 2: 3_500_000, 3: 5_200_000 };
 const codeMap = new Map(research.map((row) => [row.unit_code, row]));
 const nameMapRows = [];
 
@@ -64,7 +64,7 @@ ${amenities.map((item) => `  - ${yaml(item)}`).join('\n')}
 includes:
   - "Daily housekeeping"
 ratePublic: ${publicFromRate[row.bedrooms]}
-currency: "USD"
+currency: "IDR"
 pricingAdjustmentPercent: 0
 guestyUnitId: null
 rating: ${row.airbnb_rating ?? 'null'}

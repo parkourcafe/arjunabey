@@ -40,7 +40,7 @@ const villas = defineCollection({
       // null renders "Enquire for rates" rather than a guessed figure.
       ratePublic: z.number().positive().nullable().default(null),
       freeCancelRate: z.number().positive().nullable().optional(),
-      currency: z.string().default('USD'),
+      currency: z.string().default('IDR'),
       pricingAdjustmentPercent: z.number().min(-30).max(30).default(0),
 
       // null → booking CTA falls back to WhatsApp (src/lib/guesty.ts bookingLink()).

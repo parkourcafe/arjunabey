@@ -1,10 +1,9 @@
 ---
 /**
- * RateBlock — six-month stay calculator and booking hand-off.
+ * RateBlock — evidence-based OTA guide and live booking hand-off.
  *
- * The calculator quotes approved public asking rates but never claims live
- * availability. Until Guesty is connected, selected dates, guests and the
- * calculated accommodation total are passed to WhatsApp for confirmation.
+ * Category ranges are observations from supplied public OTA calendars. This
+ * component never manufactures a stay total or claims live availability.
  */
 import { bookingLink, hasGuestyBooking } from "../lib/guesty";
 import { whatsappLink, whatsappNumber } from "../lib/whatsapp";
@@ -12,8 +11,8 @@ import {
   PRICING_CHECKOUT_MAX,
   PRICING_LAST_NIGHT,
   PRICING_START,
-  SEASONS,
-  publicFromRate,
+  formatIdr,
+  observedRateGuide,
   type SupportedBedrooms,
 } from "../lib/pricing";
 import WhatsAppButton from "./WhatsAppButton.astro";
@@ -36,17 +35,13 @@ const {
   landmarkName,
   bedrooms,
   maximumGuests,
-  pricingAdjustmentPercent = 0,
   guestyUnitId,
   airbnbUrl,
-  ratePublic,
-  currency,
   includes,
   offPlan = false,
 } = Astro.props;
 
-const currencySymbol = currency === "USD" ? "$" : `${currency} `;
-const fromRate = ratePublic ?? publicFromRate(bedrooms);
+const guide = observedRateGuide(bedrooms);
 const guestyHref = bookingLink(guestyUnitId);
 const showGuestyCta = hasGuestyBooking(guestyUnitId) && guestyHref;
 const bookingProvider = showGuestyCta
@@ -56,31 +51,15 @@ const bookingProvider = showGuestyCta
     : "whatsapp";
 const waNumber = whatsappNumber();
 const genericWaHref = whatsappLink({ villa: landmarkName });
-const dateLabel = (isoDate: string) =>
-  new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "short",
-    timeZone: "UTC",
-  }).format(new Date(`${isoDate}T00:00:00Z`));
-const rateGuide = SEASONS.map((season) => {
-  const rates = season.rates[bedrooms];
-  const adjustment = 1 + pricingAdjustmentPercent / 100;
-  return {
-    ...season,
-    weekday: Math.round(rates.weekday * adjustment),
-    weekend: Math.round(rates.weekend * adjustment),
-  };
-});
 ---
 
 {
   offPlan ? (
     <div class="border border-hairline bg-paper p-6 md:p-8" id="rate">
       <p class="eyebrow mb-5 text-clay">Coming soon</p>
-      <p class="font-serif text-2xl text-ink">Not yet mandated for booking.</p>
+      <p class="font-serif text-2xl text-ink">Not yet available to book.</p>
       <p class="mt-4 text-sm leading-relaxed text-muted">
-        {landmarkName} is still completing handover, furnishing and licensing.
-        We'll open it for reservations once a signed owner mandate is confirmed.
+        We'll open {landmarkName} for reservations once its availability is confirmed.
       </p>
       <div class="mt-6">
         <WhatsAppButton
@@ -95,33 +74,40 @@ const rateGuide = SEASONS.map((season) => {
     <section
       class="border border-hairline bg-paper p-6 md:p-8"
       id="rate"
-      data-rate-calculator
+      data-rate-handoff
       data-villa={landmarkName}
-      data-bedrooms={bedrooms}
-      data-adjustment={pricingAdjustmentPercent}
-      data-currency={currency}
-      data-whatsapp-number={waNumber ?? ""}
       data-airbnb-url={airbnbUrl ?? ""}
       data-booking-provider={bookingProvider}
+      data-whatsapp-number={waNumber ?? ""}
     >
-      <div class="flex items-start justify-between gap-5">
+      <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
         <div>
-          <p class="eyebrow">Plan your stay</p>
+          <p class="eyebrow">Observed OTA rate guide</p>
           <h2 class="mt-2 font-serif text-2xl text-ink">
-            Check your stay price
+            Check live price and availability
           </h2>
         </div>
-        <p class="shrink-0 text-right text-sm text-muted">
-          From
+        <p class="shrink-0 text-left text-sm text-muted sm:text-right">
+          Observed from
           <span class="block font-serif text-2xl text-ink">
-            {currencySymbol}
-            {fromRate}
+            {formatIdr(guide.minimum)}
           </span>
           per night
         </p>
       </div>
 
-      <form class="mt-7 space-y-5" data-quote-form>
+      <div class="mt-6 border-l-2 border-clay pl-4">
+        <p class="text-sm leading-relaxed text-ink">
+          Public OTA calendars observed between {formatIdr(guide.minimum)} and{" "}
+          {formatIdr(guide.maximum)} per night for {bedrooms}-bedroom villas.
+        </p>
+        <p class="mt-1 text-xs leading-relaxed text-muted">
+          Checked 29 July 2026. Prices vary by date, villa, stay length, availability,
+          taxes and account-specific promotions. This is a guide, not a live quote.
+        </p>
+      </div>
+
+      <form class="mt-7 space-y-5" data-rate-form>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <label class="block">
             <span class="mb-2 block text-xs font-medium uppercase tracking-[0.12em] text-muted">
@@ -172,93 +158,43 @@ const rateGuide = SEASONS.map((season) => {
 
       <p
         class="mt-5 hidden border-l-2 border-clay pl-3 text-sm text-ink"
-        data-quote-error
+        data-rate-message
         aria-live="polite"
       />
 
-      <div
-        class="mt-6 hidden border-t border-hairline pt-5"
-        data-quote-result
-        aria-live="polite"
-      >
-        <div class="space-y-2 text-sm">
-          <div class="flex justify-between gap-4 text-muted">
-            <span data-quote-nights />
-            <span data-quote-subtotal />
-          </div>
-          <div
-            class="hidden justify-between gap-4 text-ocean"
-            data-quote-discount-row
-          >
-            <span data-quote-discount-label />
-            <span data-quote-discount />
-          </div>
-          <div class="mt-4 flex items-end justify-between gap-4 border-t border-hairline pt-4">
-            <div>
-              <p class="text-xs uppercase tracking-[0.12em] text-muted">
-                Accommodation total
-              </p>
-              <p class="mt-1 text-xs text-muted">
-                Availability and final charges confirmed before payment
-              </p>
-            </div>
-            <span class="font-serif text-3xl text-ink" data-quote-total />
-          </div>
-        </div>
-      </div>
-
       <div class="mt-6">
-        {showGuestyCta ? (
+        <a
+          href={showGuestyCta ? guestyHref : airbnbUrl ?? genericWaHref ?? "/contact"}
+          target={showGuestyCta || airbnbUrl || genericWaHref ? "_blank" : undefined}
+          rel={showGuestyCta || airbnbUrl || genericWaHref ? "noopener noreferrer" : undefined}
+          class="btn-primary w-full"
+          data-rate-cta
+          data-track="start_booking"
+          data-villa={landmarkName}
+        >
+          {showGuestyCta
+            ? "Check live availability"
+            : airbnbUrl
+              ? "Check live price on Airbnb"
+              : genericWaHref
+                ? "Confirm dates on WhatsApp"
+                : "Send an enquiry"}
+        </a>
+        {airbnbUrl && genericWaHref && (
           <a
-            href={guestyHref}
-            class="btn-primary w-full"
-            data-track="start_booking"
-            data-villa={landmarkName}
-            data-quote-cta
-          >
-            Check availability
-          </a>
-        ) : airbnbUrl ? (
-          <a
-            href={airbnbUrl}
+            href={genericWaHref}
             target="_blank"
             rel="noopener noreferrer"
-            class="btn-primary w-full"
-            data-track="start_booking"
-            data-villa={landmarkName}
-            data-quote-cta
-          >
-            Check live availability on Airbnb
-          </a>
-        ) : (
-          <a
-            href={genericWaHref ?? "/contact"}
-            target={genericWaHref ? "_blank" : undefined}
-            rel={genericWaHref ? "noopener noreferrer" : undefined}
-            class="btn-primary w-full"
+            class="mt-3 block text-center text-sm text-ocean underline underline-offset-4"
             data-track="whatsapp_click"
             data-villa={landmarkName}
-            data-quote-cta
           >
-            {genericWaHref ? "Confirm dates on WhatsApp" : "Send an enquiry"}
-          </a>
-        )}
-        {airbnbUrl && (
-          <a
-            href={genericWaHref ?? "/contact"}
-            target={genericWaHref ? "_blank" : undefined}
-            rel={genericWaHref ? "noopener noreferrer" : undefined}
-            class="mt-3 block text-center text-sm text-ocean underline underline-offset-4"
-            data-track={genericWaHref ? "whatsapp_click" : "enquiry_click"}
-            data-villa={landmarkName}
-          >
-            {genericWaHref ? "Book direct — message us" : "Book direct — send an enquiry"}
+            Ask a question on WhatsApp
           </a>
         )}
         <p class="mt-3 text-center text-xs leading-relaxed text-muted">
-          {airbnbUrl
-            ? "That button opens Airbnb, where live availability sits while our own booking is connected. Book with us instead and the airport transfer is included."
-            : "This calculator shows the accommodation rate. Live availability, taxes and any applicable fees are confirmed with our reservations team."}
+          The booking platform shows the live total, applicable fees, availability,
+          cancellation terms and secure payment before you commit.
         </p>
       </div>
 
@@ -272,203 +208,75 @@ const rateGuide = SEASONS.map((season) => {
           ))}
         </ul>
       )}
-
-      <details class="mt-6 border-t border-hairline pt-5">
-        <summary class="cursor-pointer text-sm font-medium text-ocean">
-          View seasonal rate guide
-        </summary>
-        <div class="mt-4 overflow-x-auto">
-          <table class="w-full min-w-[360px] text-left text-xs">
-            <thead class="text-muted">
-              <tr>
-                <th class="pb-2 font-medium">Dates</th>
-                <th class="pb-2 text-right font-medium">Sun–Thu</th>
-                <th class="pb-2 text-right font-medium">Fri–Sat</th>
-                <th class="pb-2 text-right font-medium">Min.</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-hairline text-ink">
-              {rateGuide.map((season) => (
-                <tr>
-                  <td class="py-2.5 pr-3">
-                    <span class="block">{season.label}</span>
-                    <span class="text-muted">
-                      {dateLabel(season.start)}–{dateLabel(season.end)}
-                    </span>
-                  </td>
-                  <td class="py-2.5 text-right">
-                    {currencySymbol}
-                    {season.weekday}
-                  </td>
-                  <td class="py-2.5 text-right">
-                    {currencySymbol}
-                    {season.weekend}
-                  </td>
-                  <td class="py-2.5 text-right">{season.minimumStay}n</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </details>
     </section>
   )
 }
 
 <script>
   import { airbnbBookingUrl } from "../lib/airbnb";
-  import {
-    PRICING_CHECKOUT_MAX,
-    calculateStayQuote,
-    type SupportedBedrooms,
-  } from "../lib/pricing";
+  import { PRICING_CHECKOUT_MAX } from "../lib/pricing";
 
   const DAY_MS = 86_400_000;
 
-  function formatMoney(amount: number, currency: string): string {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  }
-
-  function formatDate(isoDate: string): string {
-    return new Intl.DateTimeFormat("en-GB", {
+  const dateLabel = (isoDate: string) =>
+    new Intl.DateTimeFormat("en-GB", {
       day: "numeric",
       month: "long",
       year: "numeric",
       timeZone: "UTC",
     }).format(new Date(`${isoDate}T00:00:00Z`));
-  }
 
   document
-    .querySelectorAll<HTMLElement>("[data-rate-calculator]")
-    .forEach((calculator) => {
-      const form =
-        calculator.querySelector<HTMLFormElement>("[data-quote-form]");
-      const checkIn = form?.elements.namedItem(
-        "checkIn",
-      ) as HTMLInputElement | null;
-      const checkOut = form?.elements.namedItem(
-        "checkOut",
-      ) as HTMLInputElement | null;
-      const guests = form?.elements.namedItem(
-        "guests",
-      ) as HTMLSelectElement | null;
-      const result = calculator.querySelector<HTMLElement>(
-        "[data-quote-result]",
-      );
-      const error = calculator.querySelector<HTMLElement>("[data-quote-error]");
-      const cta =
-        calculator.querySelector<HTMLAnchorElement>("[data-quote-cta]");
-      const discountRow = calculator.querySelector<HTMLElement>(
-        "[data-quote-discount-row]",
-      );
-      const villa = calculator.dataset.villa ?? "Anjuna Bay villa";
-      const bedrooms = Number(calculator.dataset.bedrooms) as SupportedBedrooms;
-      const adjustmentPercent = Number(calculator.dataset.adjustment ?? 0);
-      const currency = calculator.dataset.currency ?? "USD";
-      const whatsappNumber = calculator.dataset.whatsappNumber ?? "";
-      const airbnbUrl = calculator.dataset.airbnbUrl ?? "";
-      const bookingProvider = calculator.dataset.bookingProvider ?? "whatsapp";
+    .querySelectorAll<HTMLElement>("[data-rate-handoff]")
+    .forEach((section) => {
+      const form = section.querySelector<HTMLFormElement>("[data-rate-form]");
+      const checkIn = form?.elements.namedItem("checkIn") as HTMLInputElement | null;
+      const checkOut = form?.elements.namedItem("checkOut") as HTMLInputElement | null;
+      const guests = form?.elements.namedItem("guests") as HTMLSelectElement | null;
+      const cta = section.querySelector<HTMLAnchorElement>("[data-rate-cta]");
+      const message = section.querySelector<HTMLElement>("[data-rate-message]");
+      const villa = section.dataset.villa ?? "Anjuna Bay villa";
+      const airbnbUrl = section.dataset.airbnbUrl ?? "";
+      const provider = section.dataset.bookingProvider ?? "whatsapp";
+      const whatsappNumber = section.dataset.whatsappNumber ?? "";
 
-      function hideQuote() {
-        result?.classList.add("hidden");
-        error?.classList.add("hidden");
-      }
-
-      function refreshQuote() {
-        if (!checkIn?.value || !checkOut?.value || !guests) {
-          hideQuote();
+      function refreshHandoff() {
+        if (!checkIn?.value || !checkOut?.value || !guests?.value) {
+          message?.classList.add("hidden");
           return;
         }
 
-        try {
-          const quote = calculateStayQuote({
+        const arrival = new Date(`${checkIn.value}T00:00:00Z`);
+        const departure = new Date(`${checkOut.value}T00:00:00Z`);
+        const nights = Math.round((departure.getTime() - arrival.getTime()) / DAY_MS);
+
+        if (nights <= 0) {
+          if (message) {
+            message.textContent = "Departure must be after arrival.";
+            message.classList.remove("hidden");
+          }
+          return;
+        }
+
+        message?.classList.add("hidden");
+        if (cta && provider === "airbnb" && airbnbUrl) {
+          cta.href = airbnbBookingUrl(airbnbUrl, {
             checkIn: checkIn.value,
             checkOut: checkOut.value,
-            bedrooms,
-            adjustmentPercent,
+            guests: Number(guests.value),
           });
-
-          error?.classList.add("hidden");
-          result?.classList.remove("hidden");
-
-          const nightsLabel = calculator.querySelector<HTMLElement>(
-            "[data-quote-nights]",
-          );
-          const subtotalLabel = calculator.querySelector<HTMLElement>(
-            "[data-quote-subtotal]",
-          );
-          const discountLabel = calculator.querySelector<HTMLElement>(
-            "[data-quote-discount-label]",
-          );
-          const discountValue = calculator.querySelector<HTMLElement>(
-            "[data-quote-discount]",
-          );
-          const totalLabel =
-            calculator.querySelector<HTMLElement>("[data-quote-total]");
-
-          if (nightsLabel) {
-            nightsLabel.textContent = `${quote.nights} night${quote.nights === 1 ? "" : "s"} · avg. ${formatMoney(quote.averageNightlyRate, currency)}`;
-          }
-          if (subtotalLabel)
-            subtotalLabel.textContent = formatMoney(quote.subtotal, currency);
-          if (totalLabel)
-            totalLabel.textContent = formatMoney(quote.total, currency);
-
-          if (quote.discountPercent > 0) {
-            discountRow?.classList.remove("hidden");
-            discountRow?.classList.add("flex");
-            if (discountLabel)
-              discountLabel.textContent = `Length-of-stay saving · ${quote.discountPercent}%`;
-            if (discountValue)
-              discountValue.textContent = `−${formatMoney(quote.discountAmount, currency)}`;
-          } else {
-            discountRow?.classList.add("hidden");
-            discountRow?.classList.remove("flex");
-          }
-
-          if (cta && bookingProvider === "airbnb" && airbnbUrl) {
-            cta.href = airbnbBookingUrl(airbnbUrl, {
-              checkIn: quote.checkIn,
-              checkOut: quote.checkOut,
-              guests: Number(guests.value),
-            });
-            cta.target = "_blank";
-            cta.rel = "noopener noreferrer";
-            cta.textContent = "Check live availability on Airbnb";
-          } else if (cta && bookingProvider === "whatsapp" && whatsappNumber) {
-            const message = [
-              "Hello Anjuna Bay,",
-              `I would like to confirm a stay at ${villa}.`,
-              `Arrival: ${formatDate(quote.checkIn)}.`,
-              `Departure: ${formatDate(quote.checkOut)}.`,
-              `Guests: ${guests.value}.`,
-              `Stay: ${quote.nights} night${quote.nights === 1 ? "" : "s"}.`,
-              `Estimated accommodation total: ${currency} ${quote.total}.`,
-              quote.discountPercent > 0
-                ? `The estimate includes a ${quote.discountPercent}% length-of-stay saving.`
-                : "",
-              "Please confirm availability, taxes, any applicable fees and final booking terms.",
-            ]
-              .filter(Boolean)
-              .join(" ");
-            cta.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-            cta.target = "_blank";
-            cta.rel = "noopener noreferrer";
-            cta.textContent = "Confirm dates on WhatsApp";
-          }
-        } catch (caught) {
-          result?.classList.add("hidden");
-          if (error) {
-            error.textContent =
-              caught instanceof Error
-                ? caught.message
-                : "Please check your dates.";
-            error.classList.remove("hidden");
-          }
+          cta.textContent = "Check live price on Airbnb";
+        } else if (cta && provider === "whatsapp" && whatsappNumber) {
+          const text = [
+            "Hello Anjuna Bay,",
+            `I would like to check ${villa}.`,
+            `Arrival: ${dateLabel(checkIn.value)}.`,
+            `Departure: ${dateLabel(checkOut.value)}.`,
+            `Guests: ${guests.value}.`,
+            "Please confirm live availability, the final price, taxes, fees and booking terms.",
+          ].join(" ");
+          cta.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+          cta.textContent = "Confirm dates on WhatsApp";
         }
       }
 
@@ -480,9 +288,9 @@ const rateGuide = SEASONS.map((season) => {
         checkOut.min = minimum;
         checkOut.max = PRICING_CHECKOUT_MAX;
         if (checkOut.value && checkOut.value < minimum) checkOut.value = "";
-        refreshQuote();
+        refreshHandoff();
       });
-      checkOut?.addEventListener("change", refreshQuote);
-      guests?.addEventListener("change", refreshQuote);
+      checkOut?.addEventListener("change", refreshHandoff);
+      guests?.addEventListener("change", refreshHandoff);
     });
 </script>

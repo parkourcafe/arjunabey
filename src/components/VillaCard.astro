@@ -13,6 +13,7 @@ import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import { formatWalkTimes } from '../lib/walktimes';
 import { leadAudience } from '../lib/audience';
+import { formatIdr, observedRateGuide } from '../lib/pricing';
 
 export interface Props {
   villa: CollectionEntry<'villas'>;
@@ -23,11 +24,10 @@ const d = villa.data;
 const offPlan = d.status === 'off-plan';
 const walk = formatWalkTimes(d.walkTimes)[0];
 const suitedTo = leadAudience(d);
+const observedRate = observedRateGuide(d.bedrooms);
 const priceLabel = offPlan
   ? 'Coming soon'
-  : d.ratePublic
-    ? `Seasonal rates from $${d.ratePublic} / night`
-    : 'Enquire for rates';
+  : `Observed OTA rates from ${formatIdr(observedRate.minimum)} / night`;
 ---
 
 <a

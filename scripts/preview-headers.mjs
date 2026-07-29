@@ -19,7 +19,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
 
 const CONFIG = '.vercel/output/config.json';
-const MARKER = 'anjuna-preview-noindex';
 const isPreview = process.env.PUBLIC_SITE_STATUS !== 'production';
 
 const raw = await readFile(CONFIG, 'utf8').catch(() => null);
@@ -29,11 +28,17 @@ if (!raw) {
 }
 
 const config = JSON.parse(raw);
-config.routes = (config.routes ?? []).filter((route) => route?.[MARKER] !== true);
+config.routes = (config.routes ?? []).filter(
+  (route) =>
+    !(
+      route?.src === '/(.*)' &&
+      route?.continue === true &&
+      route?.headers?.['x-robots-tag'] === 'noindex, nofollow'
+    ),
+);
 
 if (isPreview) {
   config.routes.unshift({
-    [MARKER]: true,
     src: '/(.*)',
     headers: { 'x-robots-tag': 'noindex, nofollow' },
     continue: true,
