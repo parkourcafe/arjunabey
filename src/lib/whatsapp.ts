@@ -14,7 +14,20 @@ export interface WhatsAppOptions {
   guests?: number;
 }
 
-const RAW_NUMBER = import.meta.env.PUBLIC_WHATSAPP_NUMBER ?? '';
+/**
+ * Confirmed for guest use by the owner-side decision, and published on
+ * theanjunabay.com. It is the developer's property-sales line rather than a
+ * dedicated guest line, so the prefilled message leads with the fact that the
+ * sender is asking about a stay — see whatsappPrefilledMessage.
+ *
+ * Not a secret, so it lives here rather than only in an environment variable:
+ * a missing variable would silently remove every WhatsApp link on the site,
+ * which is the failure this file exists to prevent. PUBLIC_WHATSAPP_NUMBER
+ * still overrides it once a dedicated guest line exists.
+ */
+const CONFIRMED_NUMBER = '6281322777710';
+
+const RAW_NUMBER = import.meta.env.PUBLIC_WHATSAPP_NUMBER || CONFIRMED_NUMBER;
 
 /** Digits only, per WhatsApp's wa.me link requirements. */
 function sanitizeNumber(n: string): string {
@@ -27,7 +40,10 @@ export function whatsappNumber(): string | null {
 }
 
 export function whatsappPrefilledMessage(opts: WhatsAppOptions = {}): string {
-  const lines = ['Hello Anjuna Bay,'];
+  // "about a stay" is doing real work: this number also handles property
+  // sales, and without it an enquiry about a villa reads as an enquiry about
+  // buying one.
+  const lines = ['Hello Anjuna Bay, I am asking about a stay.'];
   if (opts.villa) lines.push(`I'm interested in ${opts.villa}.`);
   if (opts.checkIn) {
     lines.push(`Dates: ${opts.checkIn}${opts.checkOut ? ` – ${opts.checkOut}` : ''}.`);

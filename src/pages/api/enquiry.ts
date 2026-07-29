@@ -101,8 +101,13 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   };
 
   const apiKey = import.meta.env.EMAIL_API_KEY;
-  const to = import.meta.env.ENQUIRY_TO;
-  const from = import.meta.env.ENQUIRY_FROM;
+  // Destination and sender have confirmed defaults so that only the API key —
+  // the one genuine secret — has to be set in the hosting dashboard. Resend's
+  // shared onboarding sender needs no domain verification, which is what lets
+  // this work before the brand has a domain of its own.
+  // TODO(owner): move both to the brand domain once DNS exists.
+  const to = import.meta.env.ENQUIRY_TO || 'saidalarust@gmail.com';
+  const from = import.meta.env.ENQUIRY_FROM || 'Anjuna Bay <onboarding@resend.dev>';
 
   if (!apiKey || !to || !from) {
     return json({ ok: false, error: 'service_unavailable' }, 503);

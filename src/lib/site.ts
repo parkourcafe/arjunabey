@@ -2,18 +2,11 @@
  * site.ts — the site's own address and publication status, resolved in one
  * place so no page has to guess either.
  *
- * WHY THERE IS NO HARDCODED DOMAIN HERE. The brand name in the repository
- * ("arjunabey") is not the brand the site presents, and it used to be baked
- * into canonical URLs, Open Graph tags and structured data as a fallback. The
- * platform already knows where it deployed the site, so we ask it rather than
- * assert an answer: add a domain in Vercel and canonical follows it, with no
- * code change and no stale brand left in the markup.
- *
- * Resolution order:
- *   1. PUBLIC_SITE_URL                  — set this once a real domain exists
- *   2. VERCEL_PROJECT_PRODUCTION_URL    — the project's production alias
- *   3. VERCEL_URL                       — this specific deployment
- *   4. localhost                        — local development only
+ * The canonical origin used to be a fallback carrying the repository's name
+ * ("arjunabey"), which is not the brand the site presents — it reached
+ * canonical URLs, Open Graph tags and structured data. It is now the address
+ * the site is actually shown at, overridable by PUBLIC_SITE_URL the moment a
+ * real domain is attached.
  */
 
 /** `preview` = a private prototype. `production` = approved by the owner. */
@@ -32,12 +25,14 @@ function withProtocol(host: string): string {
   return /^https?:\/\//.test(host) ? host : `https://${host}`;
 }
 
+/**
+ * The address the owner is being shown. Added in Vercel as an alias alongside
+ * the original, so the original keeps working and nothing breaks mid-demo.
+ */
+const CONFIRMED_URL = 'https://anjunabay.vercel.app';
+
 export function siteUrl(): string {
-  const candidate =
-    readEnv('PUBLIC_SITE_URL') ??
-    readEnv('VERCEL_PROJECT_PRODUCTION_URL') ??
-    readEnv('VERCEL_URL') ??
-    'http://localhost:4321';
+  const candidate = readEnv('PUBLIC_SITE_URL') || CONFIRMED_URL;
   return withProtocol(candidate).replace(/\/$/, '');
 }
 

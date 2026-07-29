@@ -39,11 +39,13 @@ export function lodgingBusiness() {
       addressRegion: 'Bali',
       addressCountry: 'ID',
     },
+    // Only the channels that actually exist — an empty email or url in
+    // structured data is worse than none at all.
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'reservations',
-      email: OPERATOR.email,
-      url: OPERATOR.website,
+      ...(OPERATOR.email ? { email: OPERATOR.email } : {}),
+      ...(OPERATOR.website ? { url: OPERATOR.website } : {}),
       ...(phone ? { telephone: `+${phone}` } : {}),
     },
     // TODO: real aggregate figures come from the Guesty/OTA export — do not

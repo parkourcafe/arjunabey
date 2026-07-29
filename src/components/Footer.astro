@@ -77,21 +77,31 @@ const whatsapp = whatsappLink();
               </a>
             )
           }
+          {
+            OPERATOR.email && (
+              <>
+                <span class="px-2 text-muted/50">·</span>
+                <a href={`mailto:${OPERATOR.email}`} class="footer-link">
+                  {OPERATOR.email}
+                </a>
+              </>
+            )
+          }
           <span class="px-2 text-muted/50">·</span>
-          <a href={`mailto:${OPERATOR.email}`} class="footer-link">{OPERATOR.email}</a>
+          <a href="/contact" class="footer-link">Enquire</a>
           <span class="px-2 text-muted/50">·</span>
           <a href="/book" class="footer-link">Plan your stay</a>
         </p>
         <p class="mt-1.5">
-          Guest operations by
-          <a
-            href={OPERATOR.website}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="footer-link"
-          >
-            {OPERATOR.name}
-          </a>
+          Guest operations by {
+            OPERATOR.website ? (
+              <a href={OPERATOR.website} target="_blank" rel="noopener noreferrer" class="footer-link">
+                {OPERATOR.name}
+              </a>
+            ) : (
+              <span class="text-ink">{OPERATOR.name}</span>
+            )
+          }
         </p>
       </div>
 

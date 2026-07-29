@@ -11,16 +11,13 @@ import vercel from '@astrojs/vercel/serverless';
 // `netlify()` (from '@astrojs/netlify') if hosting moves to Netlify instead —
 // no other change needed.
 
-// Mirrors src/lib/site.ts — the config runs before that module can be imported,
-// so the resolution order is repeated here rather than shared. No hardcoded
-// domain: Vercel reports where it deployed, so canonical follows whatever
-// address is attached to the project.
-const SITE_URL = (
-  process.env.PUBLIC_SITE_URL ??
-  process.env.VERCEL_PROJECT_PRODUCTION_URL ??
-  process.env.VERCEL_URL ??
-  'http://localhost:4321'
-).replace(/^(?!https?:\/\/)/, 'https://');
+// Mirrors CONFIRMED_URL in src/lib/site.ts — the config runs before that module
+// can be imported, so the value is repeated rather than shared. Keep the two in
+// step; PUBLIC_SITE_URL overrides both once a real domain is attached.
+const SITE_URL = (process.env.PUBLIC_SITE_URL || 'https://anjunabay.vercel.app').replace(
+  /^(?!https?:\/\/)/,
+  'https://',
+);
 
 // A private prototype until someone deliberately says otherwise.
 const IS_PREVIEW = process.env.PUBLIC_SITE_STATUS !== 'production';

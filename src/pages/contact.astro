@@ -48,7 +48,7 @@ const faqs = [
     imageAlt="A villa entrance courtyard in late afternoon light"
     eyebrow="Get in touch"
     headline="Enquire"
-    subhead="Message the Balinest Villas guest operations team for dates, booking help or questions about your stay."
+    subhead="Message the guest operations team for dates, booking help or questions about your stay."
     height="tall"
   />
 
@@ -91,24 +91,34 @@ const faqs = [
             <div>
               <dt class="text-muted">Guest operator</dt>
               <dd class="mt-1 text-ink">
-                <a
-                  href={OPERATOR.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="underline underline-offset-4"
-                >
-                  {OPERATOR.name}
-                </a>
+                {
+                  OPERATOR.website ? (
+                    <a
+                      href={OPERATOR.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="underline underline-offset-4"
+                    >
+                      {OPERATOR.name}
+                    </a>
+                  ) : (
+                    OPERATOR.name
+                  )
+                }
               </dd>
             </div>
-            <div>
-              <dt class="text-muted">Email</dt>
-              <dd class="mt-1 text-ink">
-                <a href={`mailto:${OPERATOR.email}`} class="underline underline-offset-4">
-                  {OPERATOR.email}
-                </a>
-              </dd>
-            </div>
+            {
+              OPERATOR.email && (
+                <div>
+                  <dt class="text-muted">Email</dt>
+                  <dd class="mt-1 text-ink">
+                    <a href={`mailto:${OPERATOR.email}`} class="underline underline-offset-4">
+                      {OPERATOR.email}
+                    </a>
+                  </dd>
+                </div>
+              )
+            }
             {
               whatsapp && phone && (
                 <div>

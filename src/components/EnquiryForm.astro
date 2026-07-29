@@ -18,11 +18,11 @@ export interface Props {
 
 const { defaultSegment = '' } = Astro.props;
 
-// Read at build time. These are server-only secrets, so they are never
-// inlined into the client bundle — only the resulting boolean is.
-const enquiriesOpen = Boolean(
-  import.meta.env.ENQUIRY_TO && import.meta.env.EMAIL_API_KEY && import.meta.env.ENQUIRY_FROM,
-);
+// Read at build time. The key is a server-only secret, so it is never inlined
+// into the client bundle — only the resulting boolean is. Destination and
+// sender have confirmed defaults in the endpoint, so the key alone decides
+// whether enquiries can be delivered.
+const enquiriesOpen = Boolean(import.meta.env.EMAIL_API_KEY);
 ---
 
 <div class="space-y-6">
